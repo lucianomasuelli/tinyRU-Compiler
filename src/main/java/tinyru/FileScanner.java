@@ -1,25 +1,35 @@
 package tinyru;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.io.*;
+import java.nio.charset.Charset;
+
 public class FileScanner {
-    private static void handleFile(File file, Charset encoding)
-            throws IOException {
-        try (InputStream in = new FileInputStream(file);
-             Reader reader = new InputStreamReader(in, encoding);
-             // buffer for efficiency
-             Reader buffer = new BufferedReader(reader)) {
-            handleCharacters(buffer);
-        }
+    private final BufferedReader reader;
+    private int currentChar;
+
+    public FileScanner(String filePath, Charset charset) throws IOException {
+        reader = new BufferedReader(new FileReader(filePath, charset));
+        advance(); // Leer el primer caracter al inicializar el Scanner
     }
 
-    private static void handleCharacters(Reader reader)
-            throws IOException {
-        int r;
-        while ((r = reader.read()) != -1) {
-            char ch = (char) r;
-            System.out.println("Do something with " + ch);
-        }
+    public int getCurrentChar() {
+        return currentChar;
+    }
+
+    public void advance() throws IOException {
+        currentChar = reader.read(); // Leer el siguiente caracter del archivo
+    }
+
+    public int seeNextChar() throws IOException {
+        reader.mark(1);
+        currentChar = reader.read();
+        reader.reset();
+        return currentChar;
+    }
+
+
+
+    public void close() throws IOException {
+        reader.close(); // Cerrar el BufferedReader cuando hayamos terminado de leer el archivo
     }
 }
