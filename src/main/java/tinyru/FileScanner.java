@@ -27,7 +27,13 @@ public class FileScanner {
         return currentChar;
     }
 
+    public int getLine() {
+        return ((LineNumberReader) reader).getLineNumber();
+    }
 
+    public int getColumn() {
+        return ((LineNumberReader) reader).getLineNumber();
+    }
 
     public void close() throws IOException {
         reader.close(); // Cerrar el BufferedReader cuando hayamos terminado de leer el archivo
