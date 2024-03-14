@@ -18,6 +18,8 @@ class FileScannerTest {
                 // Procesar el caracter actual
                 contentBuilder.append((char) scanner.getCurrentChar());
 
+                System.out.println("Next char: " + (char) scanner.seeNextChar());
+
                 // Avanzar al siguiente caracter
                 scanner.advance();
             }

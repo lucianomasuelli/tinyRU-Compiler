@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 public class FileScanner {
-    private BufferedReader reader;
+    private final BufferedReader reader;
     private int currentChar;
 
     public FileScanner(String filePath, Charset charset) throws IOException {
@@ -19,6 +19,15 @@ public class FileScanner {
     public void advance() throws IOException {
         currentChar = reader.read(); // Leer el siguiente caracter del archivo
     }
+
+    public int seeNextChar() throws IOException {
+        reader.mark(1);
+        currentChar = reader.read();
+        reader.reset();
+        return currentChar;
+    }
+
+
 
     public void close() throws IOException {
         reader.close(); // Cerrar el BufferedReader cuando hayamos terminado de leer el archivo

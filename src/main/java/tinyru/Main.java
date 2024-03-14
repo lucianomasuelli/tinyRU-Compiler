@@ -19,6 +19,8 @@ public class Main {
                 // Procesar el caracter actual
                 System.out.print((char) scanner.getCurrentChar());
 
+                System.out.println("Next char: " + (char) scanner.seeNextChar());
+
                 // Avanzar al siguiente caracter
                 scanner.advance();
             }
