@@ -6,7 +6,11 @@ import java.nio.charset.StandardCharsets;
 public class Main {
     public static void main(String[] args) {
         if (args.length != 1) {
-            System.out.println("Uso: java -jar etapa1.jar archivo.ru");
+            //System.out.println("Uso: java -jar etapa1.jar archivo.ru");
+
+            TokenType tkType = TokenType.PSTRUCT;
+            Token token = new Token(tkType, "struct", 1, 1);
+            System.out.println(token.toString());
             return;
         }
 
