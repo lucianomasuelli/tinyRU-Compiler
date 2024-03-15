@@ -27,6 +27,12 @@ public class Lexer {
                 case ','-> tokens.add(new Token(TokenType.COMMA, ",", scanner.getLine(), scanner.getColumn()));
                 case '"' -> {afrString(scanner);}
                 case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {afrNumber(scanner);}
+                //caso en el que el caracter es una letra mayúscula
+                case 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                        'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' -> {afrIdentifier(scanner);}
+                // caso en el que el caracter es una letra minúscula
+                case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                        'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' -> {afrIdentifier(scanner);}
             }
             scanner.advance();
             currChar = scanner.getCurrentChar();
@@ -37,10 +43,12 @@ public class Lexer {
     private void afrNumber(FileScanner scanner) throws IOException {
         StringBuilder number = new StringBuilder();
         int currChar = scanner.getCurrentChar();
-        while (Character.isDigit(currChar)) {
-            number.append((char) currChar);
+        int nextChar = scanner.seeNextChar();
+        while (Character.isDigit(nextChar)) {
             scanner.advance();
             currChar = scanner.getCurrentChar();
+            number.append((char) currChar);
+            nextChar = scanner.seeNextChar();
         }
         tokens.add(new Token(TokenType.NUM, number.toString(), scanner.getLine(), scanner.getColumn()));
     }
@@ -58,5 +66,17 @@ public class Lexer {
         string.insert(0, "\"");
         string.append("\"");
         tokens.add(new Token(TokenType.STRING, string.toString(), scanner.getLine(), scanner.getColumn()));
+    }
+
+    private void afrIdentifier(FileScanner scanner) throws IOException {
+        StringBuilder identifier = new StringBuilder();
+        int currChar = scanner.getCurrentChar();
+
+        while (Character.isLetterOrDigit(currChar)) {
+            identifier.append((char) currChar);
+            scanner.advance();
+            currChar = scanner.getCurrentChar();
+        }
+        tokens.add(new Token(TokenType.ID, identifier.toString(), scanner.getLine(), scanner.getColumn()));
     }
 }
