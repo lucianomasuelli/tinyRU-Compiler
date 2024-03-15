@@ -17,5 +17,11 @@ public enum TokenType {
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
     DOT, COMMA, SEMICOLON, COLON,   LBRACKET, RBRACKET,
+
+    //Números
+    NUM,
+
+    //Cadenas
+    STRING, ID,
 }
 

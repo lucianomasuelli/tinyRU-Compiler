@@ -6,6 +6,8 @@ import java.nio.charset.Charset;
 public class FileScanner {
     private final BufferedReader reader;
     private int currentChar;
+    private int line = 1;
+    private int column;
 
     public FileScanner(String filePath, Charset charset) throws IOException {
         reader = new BufferedReader(new FileReader(filePath, charset));
@@ -18,6 +20,15 @@ public class FileScanner {
 
     public void advance() throws IOException {
         currentChar = reader.read(); // Leer el siguiente caracter del archivo
+        if (currentChar == '\n') {
+            line++;
+            column = 0;
+        }
+        else {
+            if (currentChar != ' ' && currentChar != '\t' && currentChar != '\r' && currentChar != -1) {
+                column++;
+            }
+        }
     }
 
     public int seeNextChar() throws IOException {
@@ -28,11 +39,11 @@ public class FileScanner {
     }
 
     public int getLine() {
-        return ((LineNumberReader) reader).getLineNumber();
+        return line;
     }
 
     public int getColumn() {
-        return ((LineNumberReader) reader).getLineNumber();
+        return column;
     }
 
     public void close() throws IOException {
