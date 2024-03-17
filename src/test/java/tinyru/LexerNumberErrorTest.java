@@ -1,7 +1,7 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
-import tinyru.exceptions.IllegalCharError;
+import tinyru.IllegalCharError;
 
 import java.io.IOException;
 
