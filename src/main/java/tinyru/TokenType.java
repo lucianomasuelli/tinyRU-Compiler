@@ -22,6 +22,6 @@ public enum TokenType {
     NUM,
 
     //Cadenas
-    STRING, ID,
+    STRING, ID, STRUCTID,
 }
 
