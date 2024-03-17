@@ -20,8 +20,12 @@ class LexerGeneralTest {
         try {
             ArrayList<Token> tokens = new ArrayList<Token>();
             int currChar = lexer.getCurrentChar();
+            Token token = lexer.nextToken();
             while (currChar != -1) {
-                tokens.add(lexer.nextToken());
+                if (token != null) {
+                    tokens.add(token);
+                }
+                token = lexer.nextToken();
                 currChar = lexer.getCurrentChar();
             }
             System.out.println(tokens);

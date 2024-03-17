@@ -4,7 +4,7 @@ package tinyru;
 public enum TokenType {
     //Palabras reservadas
     PSTRUCT, PIMPL, PIF, PELSE, PRET, PWHILE, PNEW, PFN,
-    PST, PPRI, PSELF, PTRUE, PFALSE, PNIL,
+    PST, PPRI, PSELF, PTRUE, PFALSE, PNIL, PSTART,
 
     //Tipos de datos
     PARRAY, PINT, PSTR, PBOOL, PCHAR,
@@ -16,7 +16,10 @@ public enum TokenType {
 
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
-    DOT, COMMA, SEMICOLON, COLON,   LBRACKET, RBRACKET,
+    COMMA, SEMICOLON, COLON,   LBRACKET, RBRACKET,
+
+    //Constructor
+    CONSTRUCT,
 
     //Números
     NUM,
