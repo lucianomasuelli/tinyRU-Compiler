@@ -2,22 +2,35 @@ package tinyru;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class LexerNumberTest {
 
     @Test
-    void tokenize() {
-        Lexer lexer = new Lexer();
+    void nextToken() {
+        Lexer lexer = null;
         try {
-            lexer.tokenize("src/test/resources/lexer_num_test.ru");
-            System.out.println(lexer.tokens);
+            lexer = new Lexer("src/test/resources/number_test.ru");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            Token token1 = lexer.nextToken();
+            assertEquals(TokenType.NUM, token1.getType());
+            assertEquals("645465", token1.getLexeme());
+            assertEquals(1, token1.getLine());
+            assertEquals(1, token1.getColumn());
+
+            Token token2 = lexer.nextToken();
+            assertEquals(TokenType.NUM, token2.getType());
+            assertEquals("9656", token2.getLexeme());
+            assertEquals(1, token2.getLine());
+            assertEquals(8, token2.getColumn());
+
         } catch (Exception e) {
             fail(e);
         }
-        assertEquals(1, lexer.tokens.size());
-        assertEquals(TokenType.NUM, lexer.tokens.get(0).getType());
-        assertEquals("546515", lexer.tokens.get(0).getLexeme());
-
     }
 }

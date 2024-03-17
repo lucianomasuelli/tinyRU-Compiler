@@ -25,7 +25,7 @@ public class FileScanner {
             column = 0;
         }
         else {
-            if (currentChar != ' ' && currentChar != '\t' && currentChar != '\r' && currentChar != -1) {
+            if (currentChar != '\t' && currentChar != '\r' && currentChar != -1) {
                 column++;
             }
         }
