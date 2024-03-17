@@ -13,7 +13,7 @@ public class AFRIdentifier {
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
     private final Set<Character> transition_2 = new HashSet<>(Arrays.asList(' ', '+', '-', '*', '/', '=', ';', ',', '(', ')', '\n', '\uFFFF'));
     private final Set<String> reservedWords = new HashSet<>(Arrays.asList("if", "else", "while", "struct", "impl", "ret",
-    "new", "fn", "st", "pri", "self", "true", "false", "nil" ));
+    "new", "fn", "st", "pri", "self", "true", "false", "nil", "start" ));
 
 
     public Token recognize(FileScanner scanner) throws IOException {

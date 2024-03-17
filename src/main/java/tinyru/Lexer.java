@@ -18,6 +18,8 @@ public class Lexer {
             case '}'-> {token = new Token(TokenType.RBRACE, "}", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '('-> {token = new Token(TokenType.LPAREN, "(", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ')'-> {token = new Token(TokenType.RPAREN, ")", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '['-> {token = new Token(TokenType.LBRACKET, "[", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case ']'-> {token = new Token(TokenType.RBRACKET, "]", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '+'-> {token = new Token(TokenType.SUM, "+", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '-'-> {token = new Token(TokenType.RESTA, "-", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '*'-> {token = new Token(TokenType.PROD, "*", scanner.getLine(), scanner.getColumn());scanner.advance();}
@@ -25,6 +27,8 @@ public class Lexer {
             case '='-> {token = new Token(TokenType.ASSIGN, "=", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ';'-> {token = new Token(TokenType.SEMICOLON, ";", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ','-> {token = new Token(TokenType.COMMA, ",", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case ':'-> {token = new Token(TokenType.COLON, ":", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '.'-> {token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '"' -> {}
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                 AFRNumber afrNumber = new AFRNumber();
