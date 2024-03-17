@@ -13,7 +13,9 @@ public class Lexer {
         Token token = null;
         int currChar = scanner.getCurrentChar();
         switch (currChar) {
+
             case ' ', '\t', '\n', '\r' -> {scanner.advance();}
+
             case '{'-> {token = new Token(TokenType.LBRACE, "{", scanner.getLine(), scanner.getColumn()); scanner.advance();}
             case '}'-> {token = new Token(TokenType.RBRACE, "}", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '('-> {token = new Token(TokenType.LPAREN, "(", scanner.getLine(), scanner.getColumn());scanner.advance();}
