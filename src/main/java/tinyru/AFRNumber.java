@@ -9,7 +9,7 @@ import java.util.Set;
 
 public class AFRNumber {
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9'));
-    private final Set<Character> transition_2 = new HashSet<>(Arrays.asList(' ', '+', '-', '*', '/', '=', ';', ',', '(', ')', '\n', '\uFFFF'));
+    private final Set<Character> transition_2 = new HashSet<>(Arrays.asList(' ','<', '>', '+', '-', '*', '/', '=', ';', ',', '(', ')', '[',']' ,'\n', '\uFFFF', '\\'));
 
     public Token recognize(FileScanner scanner) throws IOException {
         int initialColumn = scanner.getColumn();

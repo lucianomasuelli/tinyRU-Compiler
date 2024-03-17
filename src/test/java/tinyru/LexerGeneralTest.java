@@ -13,19 +13,20 @@ class LexerGeneralTest {
     void nextToken() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/general_test.ru");
+            lexer = new Lexer("src/test/resources/fibonacci.ru");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
         try {
+            int i = 0;
             ArrayList<Token> tokens = new ArrayList<Token>();
             int currChar = lexer.getCurrentChar();
-            Token token = lexer.nextToken();
+            Token token;
             while (currChar != -1) {
+                token = lexer.nextToken();
                 if (token != null) {
                     tokens.add(token);
                 }
-                token = lexer.nextToken();
                 currChar = lexer.getCurrentChar();
             }
             System.out.println(tokens);
