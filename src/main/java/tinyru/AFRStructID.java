@@ -13,7 +13,7 @@ public class AFRStructID {
             'j', 'k', 'l', 'm','n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E',
             'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M','N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'));
     //transicion 3: espacio, símbolos y fin de línea
-    private final Set<Character> transition_3 = new HashSet<>(Arrays.asList(' ', '+', '-', '*', '/', '=', ';', ',', '(', ')', '\n', '\uFFFF'));
+    private final Set<Character> transition_3 = new HashSet<>(Arrays.asList(' ','<', '>', '+', '-', '*', '/', '=', ';', ',','.', '(', ')', '[',']', '{','}' ,'\n', '\uFFFF','\\'));
 
     private final Set<String> dataTypes = new HashSet<>(Arrays.asList("Array", "Int", "Str", "Bool", "Char"));
 
