@@ -62,7 +62,7 @@ public class AFRString {
                             || transition_3.contains((char) currChar)){
                         // Reconocer que no sea un \0
                         if ((char) currChar == '0'){
-                            throw new IllegalStringError('\0', initialLine, initialColumn);
+                            throw new IllegalStringError('\0', scanner.getLine(), scanner.getColumn());
                         }
                         currState = 0;
                     }
