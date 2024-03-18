@@ -1,4 +1,7 @@
-package tinyru;
+package tinyru.AFR;
+
+import tinyru.*;
+import tinyru.Exceptions.*;
 
 import java.io.IOException;
 import java.util.Arrays;

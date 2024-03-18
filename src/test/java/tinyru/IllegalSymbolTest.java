@@ -1,6 +1,7 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
+import tinyru.Exceptions.IllegalSymbolError;
 
 import static org.junit.jupiter.api.Assertions.*;
 

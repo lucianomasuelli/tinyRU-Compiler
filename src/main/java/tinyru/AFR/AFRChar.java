@@ -1,4 +1,7 @@
-package tinyru;
+package tinyru.AFR;
+
+import tinyru.*;
+import tinyru.Exceptions.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -56,6 +59,9 @@ public class AFRChar {
                 }
                 case 2-> {
                     if(transition_1.contains((char) currChar)){
+                        if ((char) currChar == '0'){
+                            throw new IllegalCharError('\0', scanner.getLine(), scanner.getColumn());
+                        }
                         currState = 1;
                     }
                 }
@@ -67,8 +73,10 @@ public class AFRChar {
             }
             else {
                 switch (str.toString()) {
-                    case "\\t" -> token = new Token(TokenType.TAB, "\\t", initialLine, initialColumn);
-                    case "\\n" -> token = new Token(TokenType.NEWLINE, "\\n", initialLine, initialColumn);
+                    case "\\t" -> token = new Token(TokenType.CHAR, "\\t", initialLine, initialColumn);
+                    case "\\n" -> token = new Token(TokenType.CHAR, "\\n", initialLine, initialColumn);
+                    case "\\r" -> token = new Token(TokenType.CHAR, "\\r", initialLine, initialColumn);
+                    case "\\v" -> token = new Token(TokenType.CHAR, "\\v", initialLine, initialColumn);
                     default -> token = new Token(TokenType.CHAR, str.toString(), initialLine, initialColumn);
                 }
             }

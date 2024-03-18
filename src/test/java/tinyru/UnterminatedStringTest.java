@@ -1,6 +1,7 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
+import tinyru.Exceptions.UnterminatedStringError;
 
 import static org.junit.jupiter.api.Assertions.*;
 

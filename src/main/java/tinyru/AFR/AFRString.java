@@ -1,4 +1,7 @@
-package tinyru;
+package tinyru.AFR;
+
+import tinyru.*;
+import tinyru.Exceptions.*;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -16,7 +19,7 @@ public class AFRString {
 
     private final Set<Character> transition_3 = new HashSet<>(Arrays.asList('"'));
 
-    private final Set<Character> transition_4 = new HashSet<>(Arrays.asList('\uFFFF'));
+    private final Set<Character> transition_4 = new HashSet<>(Arrays.asList('\uFFFF','\n'));
 
 
     public Token recognize(FileScanner scanner) throws IOException {
