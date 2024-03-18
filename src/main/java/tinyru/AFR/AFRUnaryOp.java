@@ -1,4 +1,9 @@
-package tinyru;
+package tinyru.AFR;
+
+import tinyru.FileScanner;
+import tinyru.Exceptions.*;
+import tinyru.Token;
+import tinyru.TokenType;
 
 import java.io.IOException;
 import java.util.Arrays;

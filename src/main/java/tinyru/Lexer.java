@@ -1,5 +1,8 @@
 package tinyru;
 
+import tinyru.AFR.*;
+import tinyru.Exceptions.IllegalSymbolError;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
