@@ -11,7 +11,7 @@ public class AFRString {
             'j', 'k', 'l', 'm','n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E',
             'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M','N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_',
             '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '(', ')', '[',']','{','}', '<', '>', '=', '!', '+', '-','/',
-            '*','%','&','|','^','~',',',';',':','.', ' ', '\n','¡','¿','?','@','\''));
+            '*','%','&','|','^','~',',',';',':','.', ' ','¡','¿','?','@','\''));
     private final Set<Character> transition_2 = new HashSet<>(Arrays.asList('\\'));
 
     private final Set<Character> transition_3 = new HashSet<>(Arrays.asList('"'));
@@ -48,7 +48,7 @@ public class AFRString {
                             }
                             else {
                                 if (transition_4.contains((char) currChar)) {
-                                    throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn());
+                                    throw new UnterminatedStringError(initialLine, initialColumn);
                                 } else {
                                     throw new IllegalStringError((char) currChar, scanner.getLine(), scanner.getColumn());
                                 }
@@ -68,7 +68,7 @@ public class AFRString {
                     }
                     else {
                         if (transition_4.contains((char) currChar)){
-                            throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn());
+                            throw new UnterminatedStringError(initialLine, initialColumn);
                         }
                         else {
                             throw new IllegalStringError((char) currChar, scanner.getLine(), scanner.getColumn());
