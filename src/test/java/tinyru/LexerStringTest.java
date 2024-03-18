@@ -17,8 +17,11 @@ class LexerStringTest {
             throw new RuntimeException(e);
         }
         try {
-            Token token = lexer.nextToken();
-            System.out.println(token);
+            while (){
+                Token token = lexer.nextToken();
+                System.out.println(token);
+            }
+
         } catch (Exception e) {
             fail(e);
         }
