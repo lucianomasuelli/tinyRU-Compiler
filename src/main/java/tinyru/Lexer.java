@@ -76,7 +76,7 @@ public class Lexer {
                 token = afrIdentifier.recognize(scanner);
             }
             default -> {
-                throw new IllegalCharError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
+                throw new IllegalSymbolError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
             }
         }
         if(scanner.getCurrentChar() == '\uFFFF') {
