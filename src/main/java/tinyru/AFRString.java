@@ -23,6 +23,7 @@ public class AFRString {
         int initialLine = scanner.getLine();
         int initialColumn = scanner.getColumn();
         int currState = 0;
+        int length = 0;
         scanner.advance();
         int currChar = scanner.getCurrentChar();
         StringBuilder str = new StringBuilder();
@@ -47,7 +48,6 @@ public class AFRString {
                             }
                             else {
                                 if (transition_4.contains((char) currChar)) {
-                                    throw new UnterminatedStringError(initialLine, initialColumn);
                                     throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn(), str.toString());
                                 } else {
                                     throw new IllegalStringError((char) currChar, scanner.getLine(), scanner.getColumn());
@@ -68,7 +68,6 @@ public class AFRString {
                     }
                     else {
                         if (transition_4.contains((char) currChar)){
-                            throw new UnterminatedStringError(initialLine, initialColumn);
                             throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn(), str.toString());
                         }
                         else {
