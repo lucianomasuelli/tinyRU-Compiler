@@ -60,6 +60,10 @@ public class AFRString {
                     if (transition_1.contains((char) currChar )
                             || transition_2.contains((char) currChar)
                             || transition_3.contains((char) currChar)){
+                        // Reconocer que no sea un \0
+                        if ((char) currChar == '0'){
+                            throw new IllegalStringError('\0', initialLine, initialColumn);
+                        }
                         currState = 0;
                     }
                     else {
