@@ -79,7 +79,7 @@ public class AFRString {
             }
         }
         token = new Token(TokenType.STRING, str.toString(), initialLine, initialColumn);
-
+        scanner.advance();
         return token;
     }
 }
