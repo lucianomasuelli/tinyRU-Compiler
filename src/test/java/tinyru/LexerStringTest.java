@@ -3,6 +3,7 @@ package tinyru;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,8 +18,13 @@ class LexerStringTest {
             throw new RuntimeException(e);
         }
         try {
-            Token token = lexer.nextToken();
-            System.out.println(token);
+            int i = 0;
+            int currChar = lexer.getCurrentChar();
+            while (currChar != -1){
+                Token token = lexer.nextToken();
+                System.out.println(token);
+            }
+
         } catch (Exception e) {
             fail(e);
         }

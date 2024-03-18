@@ -58,7 +58,10 @@ public class Lexer {
                 AFRComparision afrComparision = new AFRComparision();
                 token = afrComparision.recognize('>', scanner);
             }
-            case '"' -> {}
+            case '"' -> {
+                AFRString afrString = new AFRString();
+                token = afrString.recognize(scanner);
+            }
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                 AFRNumber afrNumber = new AFRNumber();
                 token = afrNumber.recognize(scanner);
@@ -76,10 +79,11 @@ public class Lexer {
                 token = afrIdentifier.recognize(scanner);
             }
             default -> {
-                throw new IllegalCharError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
+                throw new IllegalSymbolError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
             }
         }
         if(scanner.getCurrentChar() == '\uFFFF') {
+            token = new Token(TokenType.EOF, "", scanner.getLine(), scanner.getColumn());
             scanner.close();
         }
         return token;

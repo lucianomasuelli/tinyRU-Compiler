@@ -14,42 +14,49 @@ public class LexerError extends RuntimeException {
 
 class IllegalCharError extends LexerError {
     public IllegalCharError(char c, int line, int column) {
-        super( "| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Illegal character '" + c + "'");
+        super( "| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Illegal character '" + c + "'");
     }
 }
 
 class IllegalStringError extends LexerError {
-    public IllegalStringError(int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Illegal string");
+    public IllegalStringError(char c, int line, int column) {
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                +"| DESCRIPCION: " + "Illegal character '" + c + "' found in the string");
     }
 }
 
 class IllegalSymbolError extends LexerError {
     public IllegalSymbolError(char c, int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Invalid simbol '" + c + "'");
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Invalid simbol '" + c + "'");
     }
 }
 
 class InvalidOperatorError extends LexerError {
     public InvalidOperatorError(char c, int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "InvalidOperator '" + c + "'");
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "InvalidOperator '" + c + "'");
     }
 }
 
 class UnterminatedStringError extends LexerError {
     public UnterminatedStringError(int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Unterminated string");
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Unterminated string");
     }
 }
 
 class UnterminatedCharError extends LexerError {
     public UnterminatedCharError(int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Unterminated char");
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Unterminated char");
     }
 }
 class CharTooLongError extends LexerError {
     public CharTooLongError(int line, int column) {
-        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column + "| DESCRIPCION: " + "Char too long");
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Char too long");
     }
 }
 
