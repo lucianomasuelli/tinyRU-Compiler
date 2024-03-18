@@ -22,16 +22,46 @@ public class Lexer {
             case ')'-> {token = new Token(TokenType.RPAREN, ")", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '['-> {token = new Token(TokenType.LBRACKET, "[", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ']'-> {token = new Token(TokenType.RBRACKET, "]", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '+'-> {token = new Token(TokenType.SUM, "+", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '-'-> {token = new Token(TokenType.RESTA, "-", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '+'-> {
+                AFRUnaryOp afrSum = new AFRUnaryOp();
+                token = afrSum.recognize('+',scanner);}
+            case '-'-> {
+                AFRUnaryOp afrSub = new AFRUnaryOp();
+                token = afrSub.recognize('-',scanner);
+            }
             case '*'-> {token = new Token(TokenType.PROD, "*", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '/'-> {token = new Token(TokenType.DIV, "/", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '='-> {token = new Token(TokenType.ASSIGN, "=", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '/'-> {
+                if(scanner.seeNextChar() == '?'){ //En caso de ser un comentario
+                    scanner.advance();
+                    while (scanner.getCurrentChar() != '\n' && scanner.getCurrentChar() != -1){
+                        scanner.advance();
+                    }
+                    scanner.advance();
+                }
+                else {
+                    token = new Token(TokenType.DIV, "/", scanner.getLine(), scanner.getColumn());scanner.advance();
+                }
+            }
+            case '='-> {
+                AFRComparision afrComparision = new AFRComparision();
+                token = afrComparision.recognize('=', scanner);
+            }
             case ';'-> {token = new Token(TokenType.SEMICOLON, ";", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ','-> {token = new Token(TokenType.COMMA, ",", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ':'-> {token = new Token(TokenType.COLON, ":", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '.'-> {token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '"' -> {}
+            case '<'-> {
+                AFRComparision afrComparision = new AFRComparision();
+                token = afrComparision.recognize('<', scanner);
+            }
+            case '>'-> {
+                AFRComparision afrComparision = new AFRComparision();
+                token = afrComparision.recognize('>', scanner);
+            }
+            case '"' -> {
+                AFRString afrString = new AFRString();
+                token = afrString.recognize(scanner);
+            }
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> {
                 AFRNumber afrNumber = new AFRNumber();
                 token = afrNumber.recognize(scanner);
@@ -48,8 +78,12 @@ public class Lexer {
                 AFRIdentifier afrIdentifier = new AFRIdentifier();
                 token = afrIdentifier.recognize(scanner);
             }
+            default -> {
+                throw new IllegalSymbolError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
+            }
         }
-        if(currChar == -1) {
+        if(scanner.getCurrentChar() == '\uFFFF') {
+            token = new Token(TokenType.EOF, "", scanner.getLine(), scanner.getColumn());
             scanner.close();
         }
         return token;

@@ -37,7 +37,7 @@ public class Token {
         return "Token {" +
                 "type=" + type +
                 ", lexeme='" + lexeme +
-                ", line=" + line +
+                "', line=" + line +
                 ", column=" + column +'}';
     }
 

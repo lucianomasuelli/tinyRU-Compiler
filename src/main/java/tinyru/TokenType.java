@@ -16,7 +16,7 @@ public enum TokenType {
 
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
-    COMMA, SEMICOLON, COLON,   LBRACKET, RBRACKET,
+    COMMA, SEMICOLON, COLON,   LBRACKET, RBRACKET, RETURN_TYPE,
 
     //Constructor
     CONSTRUCT,
@@ -26,5 +26,8 @@ public enum TokenType {
 
     //Cadenas
     STRING, ID, STRUCTID,
+
+    //End of file
+    EOF,
 }
 
