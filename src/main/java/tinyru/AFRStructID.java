@@ -1,7 +1,5 @@
 package tinyru;
 
-import tinyru.IllegalCharError;
-
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -41,7 +39,7 @@ public class AFRStructID {
                         else {
                             // obtengo el caracter anterior al actual
                             char prevChar = structID.charAt(structID.length() - 1);
-                            throw new IllegalCharError(prevChar, prevLine, prevColumn);
+                            throw new IllegalStructIdError(prevLine, prevColumn, structID.toString());
                         }
                     }
                 }

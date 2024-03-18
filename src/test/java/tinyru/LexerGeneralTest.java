@@ -13,7 +13,7 @@ class LexerGeneralTest {
     void nextToken() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/fibonacci.ru");
+            lexer = new Lexer("src/test/resources/general_test.ru");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

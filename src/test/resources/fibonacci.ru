@@ -31,6 +31,16 @@ impl Fibonacci {
             j=0; /? inicializo j
             suma=0; /? inicializo suma
             }
+        fn imprimo_numero(Int num) -> void{
+            (IO.out_str("f_"));
+            (IO.out_int(num));
+            (IO.out_str("="));
+        }
+        fn imprimo_sucesion(Int s) -> void{
+            /?El valor es:
+            (IO.out_int(s));
+            (IO.out_str("\n"));
+        }
     }
 start{
     Fibonacci fib;

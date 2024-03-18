@@ -41,22 +41,29 @@ class InvalidOperatorError extends LexerError {
 }
 
 class UnterminatedStringError extends LexerError {
-    public UnterminatedStringError(int line, int column) {
+    public UnterminatedStringError(int line, int column, String id) {
         super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
-                + "| DESCRIPCION: " + "Unterminated string");
+                + "| DESCRIPCION: " + "Unterminated string: " + id);
     }
 }
 
 class UnterminatedCharError extends LexerError {
-    public UnterminatedCharError(int line, int column) {
+    public UnterminatedCharError(int line, int column, String id) {
         super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
-                + "| DESCRIPCION: " + "Unterminated char");
+                + "| DESCRIPCION: " + "Unterminated char: " + "'"+ id);
     }
 }
 class CharTooLongError extends LexerError {
     public CharTooLongError(int line, int column) {
         super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
                 + "| DESCRIPCION: " + "Char too long");
+    }
+}
+
+class IllegalStructIdError extends LexerError {
+    public IllegalStructIdError(int line, int column, String id) {
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                + "| DESCRIPCION: " + "Illegal struct identifier: " + id);
     }
 }
 

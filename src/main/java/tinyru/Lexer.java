@@ -58,6 +58,10 @@ public class Lexer {
                 AFRComparision afrComparision = new AFRComparision();
                 token = afrComparision.recognize('>', scanner);
             }
+            case '\'' -> {
+                AFRChar afrChar = new AFRChar();
+                token = afrChar.recognize(scanner);
+            }
             case '"' -> {
                 AFRString afrString = new AFRString();
                 token = afrString.recognize(scanner);

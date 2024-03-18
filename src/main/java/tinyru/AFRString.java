@@ -47,7 +47,7 @@ public class AFRString {
                             }
                             else {
                                 if (transition_4.contains((char) currChar)) {
-                                    throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn());
+                                    throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn(), str.toString());
                                 } else {
                                     throw new IllegalStringError((char) currChar, scanner.getLine(), scanner.getColumn());
                                 }
@@ -63,7 +63,7 @@ public class AFRString {
                     }
                     else {
                         if (transition_4.contains((char) currChar)){
-                            throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn());
+                            throw new UnterminatedStringError(scanner.getLine(), scanner.getColumn(), str.toString());
                         }
                         else {
                             throw new IllegalStringError((char) currChar, scanner.getLine(), scanner.getColumn());

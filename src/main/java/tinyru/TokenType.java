@@ -26,6 +26,8 @@ public enum TokenType {
 
     //Cadenas
     STRING, ID, STRUCTID,
+    //Caracteres
+    CHAR, NEWLINE, TAB,
 
     //End of file
     EOF,
