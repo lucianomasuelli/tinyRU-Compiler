@@ -8,6 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase que reconoce un caracter
+ *
+ * @autor Luciano Massuelli
+ */
 public class AFRStructID {
     //transicion 1: números y guion bajo
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '_'));

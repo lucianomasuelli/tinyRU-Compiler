@@ -10,6 +10,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase que se encarga de reconocer los operadores de comparación
+ *
+ * @autor Luciano Massuelli
+ */
 public class AFRIdentifier {
     //trsnsition 1 solo acpta letras minusculas
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',

@@ -8,6 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase que reconoce un caracter
+ *
+ * @autor Luciano Massuelli
+ */
 public class AFRChar {
     //transition_1: acepta todos los caracteres conocidos quitando '\\', '\'', salto de linea.
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',

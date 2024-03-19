@@ -6,12 +6,30 @@ import tinyru.Exceptions.IllegalSymbolError;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * Lexer class reconoce los tokens de un archivo de texto
+ *
+ * @author Luciano Massuelli, Gabriel Mangione
+ * @version 1.0
+ */
 public class Lexer {
     private final FileScanner scanner;
 
+    /**
+     * Constructor de la clase Lexer
+     * @param filePath ruta del archivo a leer
+     * @throws IOException
+     */
     public Lexer(String filePath) throws IOException {
         scanner = new FileScanner(filePath, StandardCharsets.UTF_8);
     }
+
+    /**
+     * Método que reconoce el siguiente token del archivo
+     * @return Token
+     * @throws IOException
+     * @throws LexerError
+     */
     public Token nextToken() throws IOException {
         Token token = null;
         int currChar = scanner.getCurrentChar();

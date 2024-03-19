@@ -8,6 +8,11 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Clase que se encarga de reconocer los strings
+ *
+ * @autor Gabriel Mangione
+ */
 public class AFRString {
     //transition_1: acepta todos los caracteres conocidos
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',

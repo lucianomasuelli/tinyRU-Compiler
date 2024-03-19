@@ -5,12 +5,23 @@ import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+/**
+ * Clase que se encarga de ejecutar el analizador léxico
+ *
+ * @autor Luciano Massuelli
+ */
+
 public class Executor {
     private String outputFile;
 
     public Executor(String outputFile) {
         this.outputFile = outputFile;
     }
+
+    /**
+     * Método que ejecuta el analizador léxico
+     * @param filePath ruta del archivo a leer
+     */
     public void execute(String filePath) {
         Lexer lexer = null;
         try {
