@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Executor {
-    public static void main(String[] args) {
+    public void execute(String filePath) {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/fibonacci.ru");
+            lexer = new Lexer(filePath);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
