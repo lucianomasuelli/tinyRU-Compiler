@@ -2,8 +2,15 @@ package tinyru;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 
 public class Executor {
+    private String outputFile;
+
+    public Executor(String outputFile) {
+        this.outputFile = outputFile;
+    }
     public void execute(String filePath) {
         Lexer lexer = null;
         try {
@@ -32,6 +39,23 @@ public class Executor {
                         | %s | %s | %d (%d) |
                         %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn());
             }
+
+            if (outputFile != null) {
+                try (BufferedWriter writer = new BufferedWriter(new FileWriter(outputFile))) {
+
+                    writer.write("""
+                            CORRECTO: ANÁLISIS LÉXICO\s
+                            | TOKEN | LEXEMA | NÚMERO DE LINEA  (NÚMERO DE COLUMNA) |
+                            """);
+                    writer.newLine();
+                    for (Token t : tokens) {
+                        writer.write(String.format("""
+                                | %s | %s | %d (%d) |
+                                %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn()));
+                    }
+                }
+            }
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -26,15 +26,13 @@ public class AFRComparision {
 
         while (currState != -1) {
             switch (currState) {
-                case 0-> {
+                case 0 -> {
                     if (currChar == op) {
                         currState = 1;
-                    }
-                    else {
+                    } else {
                         if (transition_1.contains((char) currChar)) {
                             currState = -1;
-                        }
-                        else {
+                        } else {
                             throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
                         }
                     }
@@ -42,32 +40,29 @@ public class AFRComparision {
                 case 1 -> {
                     if (currChar == '=') {
                         currState = 2;
-                    }
-                    else {
+                    } else {
                         if (transition_1.contains((char) currChar)) {
                             currState = -1;
-                        }
-                        else {
+                        } else {
                             throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
                         }
 
                     }
                 }
-                case 2->{
+                case 2 -> {
                     if (transition_1.contains((char) currChar)) {
                         currState = -1;
-                    }
-                    else {
+                    } else {
                         throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
                     }
                 }
             }
-            if(currState != -1) {
+            if (currState != -1) {
                 operator.append((char) currChar);
                 scanner.advance();
                 currChar = scanner.getCurrentChar();
             }
-            switch (operator.toString()){
+            switch (operator.toString()) {
                 case "<" -> token = new Token(TokenType.MENOR, "<", scanner.getLine(), initialColumn);
                 case "<=" -> token = new Token(TokenType.MENORIGUAL, "<=", scanner.getLine(), initialColumn);
                 case ">" -> token = new Token(TokenType.MAYOR, ">", scanner.getLine(), initialColumn);

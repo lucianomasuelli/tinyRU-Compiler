@@ -6,12 +6,27 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length != 1) {
-            throw new IllegalArgumentException("Se necesita un argumento: la ruta del archivo a analizar");
+        if (args.length > 0) {
+            if (!args[0].endsWith(".ru")) {
+                throw new IllegalArgumentException("El archivo a analizar debe tener extensión .ru");
+            }
+            String filePath = args[0];
+            if (args.length == 1) {
+                Executor executor = new Executor(null);
+                executor.execute(filePath);
+            }
+            else {
+                if (args.length == 2) {
+                    Executor executor = new Executor(args[1]);
+                    executor.execute(filePath);
+                }
+                else {
+                    throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
+                }
+            }
         }
-
-        String filePath = args[0];
-        Executor executor = new Executor();
-        executor.execute(filePath);
+            else {
+                throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
+            }
+        }
     }
-}
