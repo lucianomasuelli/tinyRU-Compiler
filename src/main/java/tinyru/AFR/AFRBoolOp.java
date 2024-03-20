@@ -37,8 +37,8 @@ public class AFRBoolOp {
             throw new InvalidOperatorError(op, scanner.getLine(), scanner.getColumn());
         }
         switch (lexeme.toString()) {
-            case "&&" -> token = new Token(TokenType.SUM, "+", scanner.getLine(), initialColumn);
-            case "||" -> token = new Token(TokenType.RESTA, "-", scanner.getLine(), initialColumn);
+            case "&&" -> token = new Token(TokenType.AND, "&&", scanner.getLine(), initialColumn);
+            case "||" -> token = new Token(TokenType.OR, "||", scanner.getLine(), initialColumn);
         }
         scanner.advance();
         return token;
