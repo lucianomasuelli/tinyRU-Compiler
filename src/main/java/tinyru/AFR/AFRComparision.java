@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Clase que se encarga de reconocer los operadores de comparación
  *
- * @autor Luciano Massuelli
+ * @autor Luciano Masuelli
  */
 public class AFRComparision {
     private final Set<Character> transition_1 = new HashSet<>(Arrays.asList(' ', '(', ')', '0', '1', '2', '3', '4', '5',

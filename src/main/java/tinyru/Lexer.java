@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 /**
  * Lexer class reconoce los tokens de un archivo de texto
  *
- * @author Luciano Massuelli, Gabriel Mangione
+ * @author Luciano Masuelli, Gabriel Mangione
  */
 public class Lexer {
     private final FileScanner scanner;

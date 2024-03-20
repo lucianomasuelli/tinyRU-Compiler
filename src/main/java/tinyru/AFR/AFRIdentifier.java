@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Clase que se encarga de reconocer los identificadores y palabras reservadas
  *
- * @autor Luciano Massuelli
+ * @autor Luciano Masuelli
  */
 public class AFRIdentifier {
     //trsnsition 1 solo acpta letras minusculas

@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Clase que reconocer los id de estructuras y los tipos de datos
  *
- * @autor Luciano Massuelli
+ * @autor Luciano Masuelli
  */
 public class AFRStructID {
     //transicion 1: números y guion bajo

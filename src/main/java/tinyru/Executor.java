@@ -10,7 +10,7 @@ import tinyru.Exceptions.LexerError;
  * Clase que se encarga de ejecutar el analizador léxico
  * y escribir los resultados en un archivo de salida o
  * mostrarlos por consola
- * @author Luciano Massuelli
+ * @author Luciano Masuelli
  */
 
 public class Executor {
@@ -60,7 +60,7 @@ public class Executor {
                     writer.newLine();
                     for (Token t : tokens) {
                         writer.write(String.format("""
-                                | %s | %s | %d (%d) |
+                                | %s | %s | LINEA %d (COLUMNA %d) |
                                 %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn()));
                     }
                 }
@@ -72,7 +72,7 @@ public class Executor {
                     """);
                 for (Token t : tokens) {
                     System.out.printf("""
-                        | %s | %s | %d (%d) |
+                        | %s | %s | LINEA %d (COLUMNA %d) |
                         %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn());
                 }
             }

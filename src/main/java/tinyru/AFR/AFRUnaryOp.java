@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Clase que se encarga de reconocer los operadores unarios
  *
- * @author Luciano Massuelli
+ * @author Luciano Masuelli
  */
 public class AFRUnaryOp {
     //transition_1: espacio, parentesis, numeros, letras y operadores + y -

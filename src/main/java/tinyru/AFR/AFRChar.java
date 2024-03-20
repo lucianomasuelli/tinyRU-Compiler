@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Clase que reconoce un caracter
  *
- * @autor Luciano Massuelli
+ * @autor Luciano Masuelli
  */
 public class AFRChar {
     //transition_1: acepta todos los caracteres conocidos quitando '\\', '\'', salto de linea.

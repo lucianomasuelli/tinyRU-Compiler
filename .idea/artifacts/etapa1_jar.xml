@@ -1,11 +1,11 @@
 <component name="ArtifactManager">
-  <artifact type="jar" name="tinyRU-Compiler:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/tinyRU_Compiler_jar</output-path>
+  <artifact type="jar" name="etapa1:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/etapa1_jar</output-path>
     <root id="archive" name="tinyRU-Compiler.jar">
       <element id="directory" name="META-INF">
         <element id="file-copy" path="$PROJECT_DIR$/src/META-INF/MANIFEST.MF" />
       </element>
-      <element id="module-output" name="tinyRU-Compiler" />
+      <element id="module-output" name="etapa1" />
     </root>
   </artifact>
 </component>
