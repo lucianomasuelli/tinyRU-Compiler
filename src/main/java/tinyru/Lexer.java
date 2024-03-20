@@ -42,6 +42,10 @@ public class Lexer {
             case ')'-> {token = new Token(TokenType.RPAREN, ")", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '['-> {token = new Token(TokenType.LBRACKET, "[", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ']'-> {token = new Token(TokenType.RBRACKET, "]", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '!'-> {
+                AFRNot afrNot = new AFRNot();
+                token = afrNot.recognize('!', scanner);
+            }
             case '+'-> {
                 AFRUnaryOp afrSum = new AFRUnaryOp();
                 token = afrSum.recognize('+',scanner);}
