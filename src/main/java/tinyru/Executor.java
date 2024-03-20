@@ -83,7 +83,7 @@ public class Executor {
         }
         catch (LexerError e) {
             System.out.println(e.getMessage());
-            }
+
         }
     }
 }
