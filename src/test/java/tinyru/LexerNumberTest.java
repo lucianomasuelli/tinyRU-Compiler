@@ -12,7 +12,7 @@ class LexerNumberTest {
     void nextToken() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/number_test.ru");
+            lexer = new Lexer("src/test/resources/numberTest.ru");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

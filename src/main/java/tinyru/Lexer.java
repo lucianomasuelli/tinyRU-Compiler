@@ -67,20 +67,20 @@ public class Lexer {
                 }
             }
             case '='-> {
-                AFRComparision afrComparision = new AFRComparision();
-                token = afrComparision.recognize('=', scanner);
+                AFRComparison afrComparison = new AFRComparison();
+                token = afrComparison.recognize('=', scanner);
             }
             case ';'-> {token = new Token(TokenType.SEMICOLON, ";", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ','-> {token = new Token(TokenType.COMMA, ",", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ':'-> {token = new Token(TokenType.COLON, ":", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '.'-> {token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '<'-> {
-                AFRComparision afrComparision = new AFRComparision();
-                token = afrComparision.recognize('<', scanner);
+                AFRComparison afrComparison = new AFRComparison();
+                token = afrComparison.recognize('<', scanner);
             }
             case '>'-> {
-                AFRComparision afrComparision = new AFRComparision();
-                token = afrComparision.recognize('>', scanner);
+                AFRComparison afrComparison = new AFRComparison();
+                token = afrComparison.recognize('>', scanner);
             }
             case '\'' -> {
                 AFRChar afrChar = new AFRChar();

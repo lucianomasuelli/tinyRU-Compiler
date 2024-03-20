@@ -82,7 +82,13 @@ public class AFRChar {
                     case "\\n" -> token = new Token(TokenType.CHAR, "\\n", initialLine, initialColumn);
                     case "\\r" -> token = new Token(TokenType.CHAR, "\\r", initialLine, initialColumn);
                     case "\\v" -> token = new Token(TokenType.CHAR, "\\v", initialLine, initialColumn);
-                    default -> token = new Token(TokenType.CHAR, str.toString(), initialLine, initialColumn);
+                    default -> {
+                        if (str.length() > 1) {
+                            //elimino el primer elemento del string
+                            str.deleteCharAt(0);
+                        }
+                        token = new Token(TokenType.CHAR, str.toString(), initialLine, initialColumn);
+                    }
                 }
             }
         }
