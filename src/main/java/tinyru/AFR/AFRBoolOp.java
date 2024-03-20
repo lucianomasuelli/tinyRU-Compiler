@@ -31,11 +31,12 @@ public class AFRBoolOp {
 
         if (currChar == op){
             lexeme.append(op);
-            lexeme.append(currChar);
+            lexeme.append(op);
         }
         else {
             throw new InvalidOperatorError(op, scanner.getLine(), scanner.getColumn());
         }
+
         switch (lexeme.toString()) {
             case "&&" -> token = new Token(TokenType.AND, "&&", scanner.getLine(), initialColumn);
             case "||" -> token = new Token(TokenType.OR, "||", scanner.getLine(), initialColumn);
