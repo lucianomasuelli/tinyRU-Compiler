@@ -81,12 +81,8 @@ public class Executor {
         catch (IOException e) {
             throw new RuntimeException(e);
         }
-        catch (LexerError e) { //Duda de si se muestra por pantalla
-            if (outputFile != null){
-                writer.write(e.getMessage());
-            }
-            else {
-                System.out.println(e.getMessage());
+        catch (LexerError e) {
+            System.out.println(e.getMessage());
             }
         }
     }
