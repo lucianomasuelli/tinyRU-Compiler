@@ -40,7 +40,10 @@ public class AFRBoolOp {
             case "&&" -> token = new Token(TokenType.AND, "&&", scanner.getLine(), initialColumn);
             case "||" -> token = new Token(TokenType.OR, "||", scanner.getLine(), initialColumn);
         }
+
         scanner.advance();
+        scanner.advance();
+
         return token;
     }
 }
