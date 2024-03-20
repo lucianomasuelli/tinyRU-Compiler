@@ -31,6 +31,7 @@ public class AFRNumber {
                     currState = -1;
                 }
                 else {
+                    // Que error debería tirar porque no es lexico
                     throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
                 }
             }
