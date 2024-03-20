@@ -17,7 +17,7 @@ public enum TokenType {
     //Operadores
     SUM, RESTA, DIV, PROD, MOD, INC, DEC,
     AND, OR, IGUAL, NOT, MAYOR, MENOR,
-    MAYORIGUAL, MENORIGUAL, ASSIGN,
+    MAYORIGUAL, MENORIGUAL, ASSIGN, DIF,
 
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
