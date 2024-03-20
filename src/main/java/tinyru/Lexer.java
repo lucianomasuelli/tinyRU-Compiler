@@ -73,7 +73,10 @@ public class Lexer {
             case ';'-> {token = new Token(TokenType.SEMICOLON, ";", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ','-> {token = new Token(TokenType.COMMA, ",", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case ':'-> {token = new Token(TokenType.COLON, ":", scanner.getLine(), scanner.getColumn());scanner.advance();}
-            case '.'-> {token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), scanner.getColumn());scanner.advance();}
+            case '.'-> {
+                AFRDot afrDot = new AFRDot();
+                token = afrDot.recognize('.', scanner);
+            }
             case '<'-> {
                 AFRComparison afrComparison = new AFRComparison();
                 token = afrComparison.recognize('<', scanner);
