@@ -24,12 +24,11 @@ public class AFRBoolOp {
      */
     public Token recognize(char op, FileScanner scanner) throws IOException {
         int initialColumn = scanner.getColumn();
-        scanner.advance();
-        int currChar = scanner.getCurrentChar();
+        int nextChar = scanner.seeNextChar();
         StringBuilder lexeme = new StringBuilder();
         Token token = null;
 
-        if (currChar == op){
+        if (nextChar == op){
             lexeme.append(op);
             lexeme.append(op);
         }

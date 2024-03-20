@@ -7,17 +7,23 @@ import tinyru.TokenType;
 
 import java.io.IOException;
 
+/**
+ * AFRNot reconoce el operador de negación y el operador de desigualdad
+ * de la gramática de TinyRU
+ * @author Gabriel Mangione
+
+ */
 public class AFRNot {
     public Token recognize(char op, FileScanner scanner) throws IOException {
         int initialColumn = scanner.getColumn();
-        scanner.advance();
-        int currChar = scanner.getCurrentChar();
+        int nextChar = scanner.seeNextChar();
         StringBuilder lexeme = new StringBuilder();
         Token token = null;
 
-        if (currChar == '='){
+        if (nextChar == '='){
             lexeme.append(op);
-            lexeme.append(currChar);
+            lexeme.append(nextChar);
+            scanner.advance();
         }
         else {
             lexeme.append(op);
