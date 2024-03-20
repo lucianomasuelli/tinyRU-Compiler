@@ -10,7 +10,6 @@ import java.nio.charset.StandardCharsets;
  * Lexer class reconoce los tokens de un archivo de texto
  *
  * @author Luciano Massuelli, Gabriel Mangione
- * @version 1.0
  */
 public class Lexer {
     private final FileScanner scanner;
@@ -28,7 +27,7 @@ public class Lexer {
      * Método que reconoce el siguiente token del archivo
      * @return Token
      * @throws IOException
-     * @throws LexerError
+     * @throws IllegalSymbolError cuando el simbolo leido no pertenece al alfabeto
      */
     public Token nextToken() throws IOException {
         Token token = null;
@@ -102,6 +101,11 @@ public class Lexer {
                     'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' -> {
                 AFRIdentifier afrIdentifier = new AFRIdentifier();
                 token = afrIdentifier.recognize(scanner);
+            }
+            case '%' -> { token = new Token(TokenType.MOD, "%", scanner.getLine(), scanner.getColumn()); scanner.advance();}
+            case '|','&' -> {
+                AFRBoolOp afrBoolOp = new AFRBoolOp();
+                token = afrBoolOp.recognize((char) currChar, scanner);
             }
             default -> {
                 throw new IllegalSymbolError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());

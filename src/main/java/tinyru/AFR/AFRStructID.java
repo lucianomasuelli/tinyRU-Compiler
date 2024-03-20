@@ -9,7 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Clase que reconoce un caracter
+ * Clase que reconocer los id de estructuras y los tipos de datos
  *
  * @autor Luciano Massuelli
  */

@@ -17,7 +17,7 @@ public enum TokenType {
     //Operadores
     SUM, RESTA, DIV, PROD, MOD, INC, DEC,
     AND, OR, IGUAL, NOT, MAYOR, MENOR,
-    MAYORIGUAL, MENORIGUAL, DIF, ASSIGN,
+    MAYORIGUAL, MENORIGUAL, ASSIGN,
 
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
@@ -32,7 +32,7 @@ public enum TokenType {
     //Cadenas
     STRING, ID, STRUCTID,
     //Caracteres
-    CHAR, NEWLINE, TAB,
+    CHAR,
 
     //End of file
     EOF,

@@ -4,7 +4,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 /**
- * Clase que se encarga de leer un archivo de texto
+ * Clase que se encarga de leer caracter a caracter un archivo de texto
  *
  * @author Luciano Massuelli
  */

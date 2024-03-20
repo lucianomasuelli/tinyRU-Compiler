@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Clase que se encarga de reconocer los operadores de comparación
+ * Clase que se encarga de reconocer los identificadores y palabras reservadas
  *
  * @autor Luciano Massuelli
  */

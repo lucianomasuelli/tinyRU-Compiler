@@ -5,10 +5,12 @@ import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
+import tinyru.Exceptions.LexerError;
 /**
  * Clase que se encarga de ejecutar el analizador léxico
- *
- * @autor Luciano Massuelli
+ * y escribir los resultados en un archivo de salida o
+ * mostrarlos por consola
+ * @author Luciano Massuelli
  */
 
 public class Executor {
@@ -20,7 +22,12 @@ public class Executor {
 
     /**
      * Método que ejecuta el analizador léxico
+     * En caso de que se haya especificado un archivo de salida
+     * se escribe en el los resultados de la ejecución, caso contrario
+     * se muestra la salida por consola
      * @param filePath ruta del archivo a leer
+     * @throws RuntimeException
+     * @throws LexerError cuando se encuentra un error léxico
      */
     public void execute(String filePath) {
         Lexer lexer = null;
@@ -29,6 +36,7 @@ public class Executor {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
         try {
             int i = 0;
             ArrayList<Token> tokens = new ArrayList<Token>();
@@ -40,15 +48,6 @@ public class Executor {
                     tokens.add(token);
                 }
                 currChar = lexer.getCurrentChar();
-            }
-            System.out.println("""
-                    CORRECTO: ANÁLISIS LÉXICO\s
-                    | TOKEN | LEXEMA | NÚMERO DE LINEA  (NÚMERO DE COLUMNA) |
-                    """);
-            for (Token t : tokens) {
-                System.out.printf("""
-                        | %s | %s | %d (%d) |
-                        %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn());
             }
 
             if (outputFile != null) {
@@ -66,9 +65,29 @@ public class Executor {
                     }
                 }
             }
+            else {
+                System.out.println("""
+                    CORRECTO: ANÁLISIS LÉXICO\s
+                    | TOKEN | LEXEMA | NÚMERO DE LINEA  (NÚMERO DE COLUMNA) |
+                    """);
+                for (Token t : tokens) {
+                    System.out.printf("""
+                        | %s | %s | %d (%d) |
+                        %n""", t.getType(), t.getLexeme(), t.getLine(), t.getColumn());
+                }
+            }
 
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw new RuntimeException(e);
+        }
+        catch (LexerError e) { //Duda de si se muestra por pantalla
+            if (outputFile != null){
+                writer.write(e.getMessage());
+            }
+            else {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }
