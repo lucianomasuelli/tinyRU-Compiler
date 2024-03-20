@@ -13,7 +13,7 @@ class LexerStringTest {
     void tokenize() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/lexer_string_test.ru");
+            lexer = new Lexer("src/test/resources/stringTest.ru");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

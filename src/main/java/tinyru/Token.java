@@ -1,5 +1,14 @@
 package tinyru;
 
+/**
+ * Token class
+ * Esta clase representa los token en el programa
+ * Un token contiene un tipo, un lexema, una línea y una columna.
+ * El tipo de token es un TokenType, el lexema es una cadena de caracteres,
+ * la línea y columna son enteros que representan la ubicacion del token.
+ *
+ * @author Gabriel Mangione
+ */
 public class Token {
 
     private final TokenType type;

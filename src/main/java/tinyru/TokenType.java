@@ -1,6 +1,11 @@
 package tinyru;
 
-// Enumeración para tipos de token
+/**
+ * Enumeración de los tipos de tokens que
+ * se pueden encontrar en el código fuente
+ *
+ * @author Gabriel Mangione
+ */
 public enum TokenType {
     //Palabras reservadas
     PSTRUCT, PIMPL, PIF, PELSE, PRET, PWHILE, PNEW, PFN,
@@ -12,7 +17,7 @@ public enum TokenType {
     //Operadores
     SUM, RESTA, DIV, PROD, MOD, INC, DEC,
     AND, OR, IGUAL, NOT, MAYOR, MENOR,
-    MAYORIGUAL, MENORIGUAL, DIF, ASSIGN,
+    MAYORIGUAL, MENORIGUAL, ASSIGN, DIF,
 
     //Simbolos
     LPAREN, RPAREN, LBRACE, RBRACE,
@@ -26,6 +31,8 @@ public enum TokenType {
 
     //Cadenas
     STRING, ID, STRUCTID,
+    //Caracteres
+    CHAR,
 
     //End of file
     EOF,

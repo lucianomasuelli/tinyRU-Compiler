@@ -2,37 +2,31 @@ package tinyru;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        if (args.length != 1) {
-            //System.out.println("Uso: java -jar etapa1.jar archivo.ru");
-
-            TokenType tkType = TokenType.PSTRUCT;
-            Token token = new Token(tkType, "struct", 1, 1);
-            System.out.println(token.toString());
-            return;
-        }
-
-        String filePath = args[0];
-        try {
-            FileScanner scanner = new FileScanner(filePath, StandardCharsets.UTF_8);
-
-            // Leer y procesar caracteres del archivo
-            while (scanner.getCurrentChar() != -1) {
-                // Procesar el caracter actual
-                System.out.print((char) scanner.getCurrentChar());
-
-                System.out.println("Next char: " + (char) scanner.seeNextChar());
-
-                // Avanzar al siguiente caracter
-                scanner.advance();
+        if (args.length > 0) {
+            if (!args[0].endsWith(".ru")) {
+                throw new IllegalArgumentException("El archivo a analizar debe tener extensión .ru");
             }
-
-            // Cerrar el scanner al finalizar
-            scanner.close();
-        } catch (IOException e) {
-            System.err.println("Se produjo una excepción al leer el archivo: " + e.getMessage());
+            String filePath = args[0];
+            if (args.length == 1) {
+                Executor executor = new Executor(null);
+                executor.execute(filePath);
+            }
+            else {
+                if (args.length == 2) {
+                    Executor executor = new Executor(args[1]);
+                    executor.execute(filePath);
+                }
+                else {
+                    throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
+                }
+            }
+        }
+            else {
+                throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
+            }
         }
     }
-}
