@@ -1,11 +1,7 @@
 package tinyru.etapa1;
 
-import tinyru.AFR.*;
 import tinyru.etapa1.Exceptions.IllegalSymbolError;
 import tinyru.etapa1.AFR.*;
-import tinyru.etapa1.FileScanner;
-import tinyru.etapa1.Token;
-import tinyru.etapa1.TokenType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -39,7 +35,6 @@ public class Lexer {
         switch (currChar) {
 
             case ' ', '\t', '\n', '\r' -> {scanner.advance();}
-
             case '{'-> {token = new Token(TokenType.LBRACE, "{", scanner.getLine(), scanner.getColumn()); scanner.advance();}
             case '}'-> {token = new Token(TokenType.RBRACE, "}", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '('-> {token = new Token(TokenType.LPAREN, "(", scanner.getLine(), scanner.getColumn());scanner.advance();}

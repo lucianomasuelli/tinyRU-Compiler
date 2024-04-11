@@ -36,5 +36,7 @@ public enum TokenType {
 
     //End of file
     EOF,
+
+    PVOID
 }
 

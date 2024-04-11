@@ -1,6 +1,5 @@
 package tinyru.etapa1.AFR;
 
-import tinyru.Exceptions.*;
 import tinyru.etapa1.Exceptions.IllegalStringError;
 import tinyru.etapa1.Exceptions.StringTooLongError;
 import tinyru.etapa1.Exceptions.UnterminatedStringError;
@@ -96,11 +95,16 @@ public class AFRString {
                 currChar = scanner.getCurrentChar();
             }
         }
-        if (length <= 1024){
-            token = new Token(TokenType.STRING, str.toString(), initialLine, initialColumn);
-            scanner.advance();
-        } else{
-            throw new StringTooLongError( initialLine, initialColumn);
+        if (str.toString().equals("void")) {
+            token = new Token(TokenType.PVOID, str.toString(), initialLine, initialColumn);
+        }
+        else {
+            if (length <= 1024){
+                token = new Token(TokenType.STRING, str.toString(), initialLine, initialColumn);
+                scanner.advance();
+            } else{
+                throw new StringTooLongError( initialLine, initialColumn);
+            }
         }
 
         return token;

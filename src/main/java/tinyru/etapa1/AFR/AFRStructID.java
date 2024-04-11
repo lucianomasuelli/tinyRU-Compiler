@@ -1,6 +1,5 @@
 package tinyru.etapa1.AFR;
 
-import tinyru.Exceptions.*;
 import tinyru.etapa1.Exceptions.IllegalCharError;
 import tinyru.etapa1.Exceptions.IllegalStructIdError;
 import tinyru.etapa1.FileScanner;

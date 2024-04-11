@@ -1,6 +1,6 @@
 package tinyru.etapa1.AFR;
 
-import tinyru.Exceptions.*;
+import tinyru.etapa1.Exceptions.*;
 import tinyru.etapa1.Exceptions.CharTooLongError;
 import tinyru.etapa1.Exceptions.IllegalCharError;
 import tinyru.etapa1.Exceptions.UnterminatedCharError;

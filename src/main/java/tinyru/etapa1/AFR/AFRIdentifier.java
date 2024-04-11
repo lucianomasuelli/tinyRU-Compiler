@@ -2,7 +2,6 @@ package tinyru.etapa1.AFR;
 
 import tinyru.etapa1.Exceptions.IllegalCharError;
 import tinyru.etapa1.FileScanner;
-import tinyru.Exceptions.*;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 
