@@ -12,12 +12,12 @@ public class Main {
             }
             String filePath = args[0];
             if (args.length == 1) {
-                Executor executor = new Executor(null);
+                Executor executor = new LexerExecutor(null);
                 executor.execute(filePath);
             }
             else {
                 if (args.length == 2) {
-                    Executor executor = new Executor(args[1]);
+                    Executor executor = new LexerExecutor(args[1]);
                     executor.execute(filePath);
                 }
                 else {
