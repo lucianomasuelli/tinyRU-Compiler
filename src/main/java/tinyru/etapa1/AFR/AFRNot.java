@@ -1,9 +1,8 @@
-package tinyru.AFR;
+package tinyru.etapa1.AFR;
 
-import tinyru.Exceptions.InvalidOperatorError;
-import tinyru.FileScanner;
-import tinyru.Token;
-import tinyru.TokenType;
+import tinyru.etapa1.FileScanner;
+import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 
 import java.io.IOException;
 

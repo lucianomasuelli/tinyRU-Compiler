@@ -1,9 +1,9 @@
 package tinyru;
 
+import tinyru.etapa1.FileScanner;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class FileScannerTest {
     @org.junit.jupiter.api.Test

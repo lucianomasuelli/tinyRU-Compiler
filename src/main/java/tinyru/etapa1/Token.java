@@ -1,4 +1,4 @@
-package tinyru;
+package tinyru.etapa1;
 
 /**
  * Token class

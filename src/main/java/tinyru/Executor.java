@@ -5,7 +5,10 @@ import java.util.ArrayList;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-import tinyru.Exceptions.LexerError;
+import tinyru.etapa1.Exceptions.LexerError;
+import tinyru.etapa1.Lexer;
+import tinyru.etapa1.Token;
+
 /**
  * Clase que se encarga de ejecutar el analizador léxico
  * y escribir los resultados en un archivo de salida o

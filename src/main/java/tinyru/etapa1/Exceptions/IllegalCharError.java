@@ -1,4 +1,4 @@
-package tinyru.Exceptions;
+package tinyru.etapa1.Exceptions;
 
 /**
  * Clase que representa el error de un caracter que contiene un simbolo que

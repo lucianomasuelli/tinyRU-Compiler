@@ -1,7 +1,9 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
-import tinyru.Exceptions.CharTooLongError;
+import tinyru.etapa1.Exceptions.CharTooLongError;
+import tinyru.etapa1.Lexer;
+import tinyru.etapa1.Token;
 
 import java.io.IOException;
 

@@ -1,4 +1,4 @@
-package tinyru.Exceptions;
+package tinyru.etapa1.Exceptions;
 
 /**
  * Error que representa a un operador mal definido

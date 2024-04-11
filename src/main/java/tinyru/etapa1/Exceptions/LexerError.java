@@ -1,4 +1,4 @@
-package tinyru.Exceptions;
+package tinyru.etapa1.Exceptions;
 /**
  * Clase que representa un error en el analizador léxico
  *

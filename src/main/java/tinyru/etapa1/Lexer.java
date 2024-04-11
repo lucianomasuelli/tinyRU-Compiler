@@ -1,7 +1,11 @@
-package tinyru;
+package tinyru.etapa1;
 
 import tinyru.AFR.*;
-import tinyru.Exceptions.IllegalSymbolError;
+import tinyru.etapa1.Exceptions.IllegalSymbolError;
+import tinyru.etapa1.AFR.*;
+import tinyru.etapa1.FileScanner;
+import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

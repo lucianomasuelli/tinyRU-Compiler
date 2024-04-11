@@ -1,4 +1,4 @@
-package tinyru;
+package tinyru.etapa1;
 
 /**
  * Enumeración de los tipos de tokens que

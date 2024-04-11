@@ -1,4 +1,4 @@
-package tinyru.Exceptions;
+package tinyru.etapa1.Exceptions;
 
 /**
  * Clase que representa el error de los string que contienen un simbolo que no

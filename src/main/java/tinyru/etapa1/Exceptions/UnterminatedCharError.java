@@ -1,4 +1,4 @@
-package tinyru.Exceptions;
+package tinyru.etapa1.Exceptions;
 
 /**
  * Clase que representa la presencia de un char sin cerrar

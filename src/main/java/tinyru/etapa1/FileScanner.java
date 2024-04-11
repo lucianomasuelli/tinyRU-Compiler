@@ -1,4 +1,4 @@
-package tinyru;
+package tinyru.etapa1;
 
 import java.io.*;
 import java.nio.charset.Charset;

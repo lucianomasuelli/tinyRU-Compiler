@@ -1,11 +1,11 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
+import tinyru.etapa1.Lexer;
+import tinyru.etapa1.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class LexerGeneralTest {
 
