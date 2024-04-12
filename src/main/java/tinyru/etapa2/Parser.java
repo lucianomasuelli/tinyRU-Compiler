@@ -1,6 +1,8 @@
 package tinyru.etapa2;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa1.Token;
+import tinyru.etapa2.Exceptions.UnexpectedTokenError;
+
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,8 +32,8 @@ public class Parser {
         }
     }
 
-    private void first(String noTerminal) {
-        Set<String> firstSet;
+    private Set<String> first(String noTerminal) {
+        Set<String> firstSet = new HashSet<>();
         switch (noTerminal) {
             case "program" -> {
                 firstSet = new HashSet<>(Set.of("struct", "impl", "start"));
@@ -39,7 +41,7 @@ public class Parser {
             case "start" -> {
                 firstSet = new HashSet<>(Set.of("start"));
             }
-            case "lista_definiciones" -> {
+            case "lista_definiciones", "lista_definiciones'" -> {
                 firstSet = new HashSet<>(Set.of("struct", "impl"));
             }
             case "struct" -> {
@@ -51,6 +53,9 @@ public class Parser {
             case "struct''", "bloque_metodo" -> {
                 firstSet = new HashSet<>(Set.of("{"));
             }
+            case "struct'''" -> {
+                firstSet = new HashSet<>(Set.of("}","pri","Str","Bool","Int","Char","idStruct","Array"));
+            }
             case "N2", "atributo" -> {
                 firstSet = new HashSet<>(Set.of("pri","Str","Bool","Int","Char","idStruct","Array"));
             }
@@ -59,6 +64,9 @@ public class Parser {
             }
             case "impl" -> {
                 firstSet = new HashSet<>(Set.of("impl"));
+            }
+            case "impl'" -> {
+                firstSet = new HashSet<>(Set.of("}","st","fn","."));
             }
             case "N3", "miembro" -> {
                 firstSet = new HashSet<>(Set.of("st","fn","."));
@@ -74,6 +82,9 @@ public class Parser {
             }
             case "metodo" -> {
                 firstSet = new HashSet<>(Set.of("st","fn"));
+            }
+            case "metodo'" -> {
+                firstSet = new HashSet<>(Set.of("->","("));
             }
             case "N6", "decl_var_locales" -> {
                 firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
@@ -252,18 +263,22 @@ public class Parser {
             case "llamada_metodo_encadenado'" -> {
                 firstSet = new HashSet<>(Set.of("("));
             }
-               case "acceso_variable_encadenado'" -> {
-                    firstSet = new HashSet<>(Set.of("[",".", "lambda"));
-                }
-
+            case "acceso_variable_encadenado'" -> {
+                firstSet = new HashSet<>(Set.of("[",".", "lambda"));
+            }
         }
+        return firstSet;
+    }
 
+
+    private boolean onFirst(Token token, Set<String> firstSet) {
+        return firstSet.contains(token.getLexeme());
     }
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩ | ⟨Start⟩
     private void program(){
         if (onFirst(actual_token, first("lista_definiciones"))){
-            lista_definiciones();
+            listaDefiniciones();
             start();
         } else {
             start();
@@ -278,20 +293,191 @@ public class Parser {
     }
 
 
-    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | ⟨Lista-Definiciones⟩
+    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | ⟨Lista-Definiciones⟩'
+    private void listaDefiniciones() {
+        if (onFirst(actual_token, first("struct"))) {
+            struct();
+            listaDefiniciones();
+        } else if (onFirst(actual_token, first("impl"))) {
+            impl();
+            listaDefiniciones();
+        } else if (onFirst(actual_token, first("lista_definiciones'"))) {
+            listaDefinicionesPrima();
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
+    // ⟨Lista-Definiciones⟩' ::= ⟨Lista-Definiciones⟩
+    private void listaDefinicionesPrima() {
+        listaDefiniciones();
+    }
+
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
-    // ⟨Struct⟩’ ::= ⟨Herencia⟩ ⟨Struct⟩’’ | {N2} | { }
-    //⟨Struct⟩’’ ::= {N2} | { }
+    private void struct() {
+        match("struct");
+        match("idStruct");
+        structPrima();
+    }
+
+    // ⟨Struct⟩’ ::= ⟨Herencia⟩ ⟨Struct⟩’’ | ⟨Struct⟩’’
+    public void structPrima() {
+        if (onFirst(actual_token, first("herencia"))) {
+            herencia();
+            structPrimaPrima();
+        } else if (onFirst(actual_token, first("struct''"))) {
+            structPrimaPrima();
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
+    //⟨Struct⟩’’ ::= { ⟨Struct⟩’’’
+    private void structPrimaPrima() {
+        match("{");
+        structPrimaPrimaPrima();
+    }
+
+    //⟨Struct⟩’’’ ::= N2 } | }
+    private void structPrimaPrimaPrima() {
+        if (onFirst(actual_token, first("N2"))) {
+            N2();
+            match("}");
+        } else if (onFirst(actual_token, first("}"))) {
+            match("}");
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     //N2 ::= ⟨Atributo⟩ N2’
+    private void N2() {
+        atributo();
+        N2Prima();
+    }
+
     //N2’ ::=  N2 | λ
-    //⟨Impl⟩ ::= impl idStruct {N3} | impl idStruct { }
+    private void N2Prima() {
+        Set<String> followN2Prima = new HashSet<>(Set.of("}"));
+        if (onFirst(actual_token, first("N2"))) {
+            N2();
+        } else if (followN2Prima.contains(actual_token.getLexeme())) {
+            // lambda
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
+    //⟨Impl⟩ ::= impl idStruct { ⟨Impl⟩’
+    private void impl() {
+        match("impl");
+        match("idStruct");
+        match("{");
+        implPrima();
+    }
+
+    //⟨Impl⟩’ ::= N3 } | }
+    private void implPrima() {
+        if (onFirst(actual_token, first("N3"))) {
+            N3();
+            match("}");
+        } else if (onFirst(actual_token, first("}"))) {
+            match("}");
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     //N3 ::= ⟨Miembro⟩N3’
+    private void N3() {
+        miembro();
+        N3Prima();
+    }
+
     //N3’ ::= N3 | λ
+    private void N3Prima() {
+        Set<String> followN3Prima = new HashSet<>(Set.of("}"));
+        if (onFirst(actual_token, first("N3"))) {
+            N3();
+        } else if (followN3Prima.contains(actual_token.getLexeme())) {
+            // lambda
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     //⟨Herencia⟩ ::= : ⟨Tipo⟩
+    private void herencia() {
+        match(":");
+        tipo();
+    }
+
     // ⟨Miembro⟩ ::= ⟨Método⟩ | ⟨Constructor ⟩
+    private void miembro() {
+        if (onFirst(actual_token, first("metodo"))) {
+            metodo();
+        } else if (onFirst(actual_token, first("constructor"))) {
+            constructor();
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     // ⟨Constructor ⟩ ::= . ⟨Argumentos-Formales⟩ ⟨Bloque-Método⟩
+    private void constructor() {
+        match(".");
+        argumentosFormales();
+        bloqueMetodo();
+    }
+
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
-    // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩ | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩ | st fn idMetAt -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩ | fn idMetAt ->	 ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
+    private void atributo() {
+        if (actual_token.getLexeme().equals("pri")) {
+            match("pri");
+            tipo();
+            listaDeclaracionVariables();
+            match(";");
+        } else if (onFirst(actual_token, first("tipo"))) {
+            tipo();
+            listaDeclaracionVariables();
+            match(";");
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+    // ⟨Método⟩ ::= st fn idMetAt ⟨Método⟩’ | fn idMetAt ⟨Método⟩’
+    private void metodo() {
+        if (actual_token.getLexeme().equals("st")) {
+            match("st");
+            match("fn");
+            match("idMetAt");
+            metodoPrima();
+        } else if (actual_token.getLexeme().equals("fn")) {
+            match("fn");
+            match("idMetAt");
+            metodoPrima();
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+
+    }
+
+    // ⟨Método⟩’ ::= ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩ | -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
+    private void metodoPrima() {
+        if (onFirst(actual_token, first("argumentos_formales"))) {
+            argumentosFormales();
+            match("->");
+            tipoMetodo();
+            bloqueMetodo();
+        } else if (actual_token.getLexeme().equals("->")) {
+            match("->");
+            tipoMetodo();
+            bloqueMetodo();
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     // ⟨Bloque-Método⟩ ::= {N6 N7} | { N7 } | { N6 } | { }
     // N6 ::= ⟨Decl-Var-Locales⟩N6’
     // N6’ ::=  N6 | λ
