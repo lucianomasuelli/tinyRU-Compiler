@@ -86,6 +86,12 @@ public class Parser {
             case "metodo'" -> {
                 firstSet = new HashSet<>(Set.of("->","("));
             }
+            case "bloque_metodo'" -> {
+                firstSet = new HashSet<>(Set.of("}",";","if","while","ret","(","{","Str","Bool","Int","Char","idStruct","Array","id","self"));
+            }
+            case "bloque_metodo''" -> {
+                firstSet = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self"));
+            }
             case "N6", "decl_var_locales" -> {
                 firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
             }
@@ -478,12 +484,80 @@ public class Parser {
         }
     }
 
-    // ⟨Bloque-Método⟩ ::= {N6 N7} | { N7 } | { N6 } | { }
-    // N6 ::= ⟨Decl-Var-Locales⟩N6’
+    //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
+    private void bloqueMetodo() {
+        match("{");
+        bloqueMetodoPrima();
+    }
+
+    //⟨Bloque-Método⟩’ ::= N6 ⟨Bloque-Método⟩’’ | N7 } | }
+    private void bloqueMetodoPrima() {
+        if (onFirst(actual_token, first("N6"))) {
+            N6();
+            bloqueMetodoPrimaPrima();
+        } else if (onFirst(actual_token, first("N7"))) {
+            N7();
+            match("}");
+        } else if (actual_token.getLexeme().equals("}")) {
+            match("}");
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
+    //⟨Bloque-Método⟩’’ ::= N7 } | }
+    private void bloqueMetodoPrimaPrima() {
+        if (onFirst(actual_token, first("N7"))) {
+            N7();
+            match("}");
+        } else if (actual_token.getLexeme().equals("}")) {
+            match("}");
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+    // N6 ::= ⟨Decl-Var-Locales⟩ N6’
+    private void N6() {
+        declVarLocales();
+        N6Prima();
+    }
+
     // N6’ ::=  N6 | λ
+    private void N6Prima() {
+        Set<String> followN6Prima = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self"));
+        if (onFirst(actual_token, first("N6"))) {
+            N6();
+        } else if (followN6Prima.contains(actual_token.getLexeme())) {
+            // lambda
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     // N7 ::= ⟨Sentencia⟩N7’
+    private void N7() {
+        sentencia();
+        N7Prima();
+    }
+
     // N7’ ::= N7 | λ
+    private void N7Prima() {
+        Set<String> followN7Prima = new HashSet<>(Set.of("}"));
+        if (onFirst(actual_token, first("N7"))) {
+            N7();
+        } else if (followN7Prima.contains(actual_token.getLexeme())) {
+            // lambda
+        } else {
+            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+        }
+    }
+
     // ⟨Decl-Var-Locales⟩ ::= ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
+    private void declVarLocales() {
+        tipo();
+        listaDeclaracionVariables();
+        match(";");
+    }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’
     // ⟨Lista-Declaración-Variables⟩’ ::= , ⟨Lista-Declaración-Variables⟩ | λ
     // ⟨Argumentos-Formales⟩ ::= ( ⟨Argumentos-Formales⟩’
