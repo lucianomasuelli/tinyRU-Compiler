@@ -35,6 +35,7 @@ public class Lexer {
         switch (currChar) {
 
             case ' ', '\t', '\n', '\r' -> {scanner.advance();}
+            case -1 -> {token = new Token(TokenType.EOF, "", scanner.getLine(), scanner.getColumn()); scanner.close();}
             case '{'-> {token = new Token(TokenType.LBRACE, "{", scanner.getLine(), scanner.getColumn()); scanner.advance();}
             case '}'-> {token = new Token(TokenType.RBRACE, "}", scanner.getLine(), scanner.getColumn());scanner.advance();}
             case '('-> {token = new Token(TokenType.LPAREN, "(", scanner.getLine(), scanner.getColumn());scanner.advance();}
@@ -113,6 +114,7 @@ public class Lexer {
                 AFRBoolOp afrBoolOp = new AFRBoolOp();
                 token = afrBoolOp.recognize((char) currChar, scanner);
             }
+
             default -> {
                 throw new IllegalSymbolError((char) scanner.getCurrentChar(), scanner.getLine(), scanner.getColumn());
             }
@@ -121,7 +123,12 @@ public class Lexer {
             token = new Token(TokenType.EOF, "", scanner.getLine(), scanner.getColumn());
             scanner.close();
         }
-        return token;
+        if (token != null){
+            return token;
+        }
+        else {
+            return nextToken();
+        }
     }
 
     public int getCurrentChar() {

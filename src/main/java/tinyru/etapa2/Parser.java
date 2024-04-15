@@ -303,6 +303,8 @@ public class Parser {
             start();
         } else if(onFirst(actualToken, first("start"))) {
             start();
+        } else if (actualToken.getType() == TokenType.EOF) {
+            return;
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -327,6 +329,8 @@ public class Parser {
             listaDefiniciones();
         } else if (onFirst(actualToken, first("lista_definiciones'"))) {
             listaDefinicionesPrima();
+        } else if(actualToken.getType() == TokenType.EOF){
+            return;
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -689,7 +693,7 @@ public class Parser {
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
-private void sentencia() {
+    private void sentencia() {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))) {
@@ -839,12 +843,9 @@ private void sentencia() {
     }
 
 
-
-
-
     // ⟨AccesoSelf-Simple⟩ ::= self N11’
     private void accesoSelfSimple() {
-        match("self");
+        match(TokenType.PSELF);
         N11Prima();
     }
 
@@ -856,25 +857,25 @@ private void sentencia() {
     // N11’ ::= N11 | λ
     private void N11Prima(){
         Set<String> followN11Prima = new HashSet<>(Set.of("="));
-        if (onFirst(actual_token, first("N11"))) {
+        if (onFirst(actualToken, first("N11"))) {
             N11();
-        } else if (followN11Prima.contains(actual_token.getLexeme())) {
+        } else if (followN11Prima.contains(actualToken.getLexeme())) {
             // lambda
             return;
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Encadenado-Simple⟩ ::= . id
     private void encadenadoSimple(){
-        match(".");
-        match("id");
+        match(TokenType.DOT);
+        match(TokenType.ID);
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
     private void sentenciaSimple(){
-        match("(");
+        match(TokenType.LPAREN);
         expresion();
-        match(")");
+        match(TokenType.RPAREN);
     }
     // ⟨Expresión⟩ ::= ⟨ExpOr ⟩
     private void expresion(){
@@ -890,16 +891,16 @@ private void sentencia() {
     // ⟨ExpOr⟩’ ::= || ⟨ExpAnd⟩⟨ExpOr⟩’ | λ
     private void expOrPrima(){
         Set<String> followExpOrPrima = new HashSet<>(Set.of(")", ";", "]", ","));
-        if (actual_token.getLexeme().equals("||")){
-            match("||");
+        if (actualToken.getLexeme().equals("||")){
+            match(TokenType.OR);
             expAnd();
             expOrPrima();
         } else {
-            if (followExpOrPrima.contains(actual_token.getLexeme())){
+            if (followExpOrPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
     }
@@ -911,16 +912,16 @@ private void sentencia() {
     // ⟨ExpAnd⟩’ ::= && ⟨ExpIgual⟩⟨ExpAnd⟩’ | λ
     private void expAndPrima() {
         Set<String> followExpAndPrima = new HashSet<>(Set.of("||", ")", ";", "]", ","));
-        if (actual_token.getLexeme().equals("&&")){
-            match("&&");
+        if (actualToken.getLexeme().equals("&&")){
+            match(TokenType.AND);
             expIgual();
             expAndPrima();
         } else {
-            if (followExpAndPrima.contains(actual_token.getLexeme())){
+            if (followExpAndPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
     }
@@ -932,16 +933,16 @@ private void sentencia() {
     // ⟨ExpIgual⟩’::= ⟨OpIgual⟩⟨ExpCompuesta⟩⟨ExpIgual⟩’ | λ
     private void expIgualPrima() {
         Set<String> followExpIgualPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", ","));
-        if ( onFirst(actual_token, first("op_igual"))){
+        if ( onFirst(actualToken, first("op_igual"))){
             opIgual();
             expCompuesta();
             expIgualPrima();
         } else {
-            if (followExpIgualPrima.contains(actual_token.getLexeme())){
+            if (followExpIgualPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
     }
@@ -953,15 +954,15 @@ private void sentencia() {
     // ⟨ExpCompuesta⟩’::= ⟨OpCompuesto⟩ ⟨ExpAd ⟩ | λ
     private void expCompuestaPrima() {
         Set<String> followExpCompuestaPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", ","));
-        if (onFirst(actual_token, first("op_compuesto"))){
+        if (onFirst(actualToken, first("op_compuesto"))){
             opCompuesto();
             expAd();
         } else {
-            if (followExpCompuestaPrima.contains(actual_token.getLexeme())){
+            if (followExpCompuestaPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
 
@@ -975,16 +976,16 @@ private void sentencia() {
     // follow = {&&,||,),;,],==,!=,<,>,<=,>=,,}
     private void expAdPrima() {
         Set<String> followExpAdPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", ","));
-        if (onFirst(actual_token, first("op_ad"))){
+        if (onFirst(actualToken, first("op_ad"))){
             opAd();
             expMul();
             expAdPrima();
         } else {
-            if (followExpAdPrima.contains(actual_token.getLexeme())){
+            if (followExpAdPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
     }
@@ -996,212 +997,212 @@ private void sentencia() {
     // ⟨ExpMul⟩’ ::= ⟨OpMul⟩⟨ExpUn⟩⟨ExpMul⟩’ | λ
     private void expMulPrima() {
         Set<String> followExpMulPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", ","));
-        if (onFirst(actual_token, first("op_mul"))){
+        if (onFirst(actualToken, first("op_mul"))){
             opMul();
             expUn();
             expMulPrima();
         } else {
-            if (followExpMulPrima.contains(actual_token.getLexeme())){
+            if (followExpMulPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
     }
     // ⟨ExpUn⟩ ::= ⟨OpUnario⟩ ⟨ExpUn⟩ | ⟨Operando⟩
     private void expUn(){
-        if (onFirst(actual_token, first("opUnario"))){
+        if (onFirst(actualToken, first("opUnario"))){
             opUnario();
             expUn();
-        } else if (onFirst(actual_token, first("operando"))){
+        } else if (onFirst(actualToken, first("operando"))){
             operando();
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨OpIgual ⟩ ::= == | !=
     private void opIgual(){
-        if (actual_token.getLexeme().equals("==")){
-            match("==");
-        } else if (actual_token.getLexeme().equals("!=")){
-            match("!=");
+        if (actualToken.getLexeme().equals("==")){
+            match(TokenType.IGUAL);
+        } else if (actualToken.getLexeme().equals("!=")){
+            match(TokenType.DIF);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨OpCompuesto⟩ ::= < | > | <= | >=
     private void opCompuesto(){
-        if (actual_token.getLexeme().equals("<")){
-            match("<")
-        } else if (actual_token.getLexeme().equals(">")){
-            match(">");
-        } else if (actual_token.getLexeme().equals("<=")){
-            match("<=");
-        } else if (actual_token.getLexeme().equals(">=")){
-            match(">=");
+        if (actualToken.getLexeme().equals("<")){
+            match(TokenType.MENOR);
+        } else if (actualToken.getLexeme().equals(">")){
+            match(TokenType.MAYOR);
+        } else if (actualToken.getLexeme().equals("<=")){
+            match(TokenType.MENORIGUAL);
+        } else if (actualToken.getLexeme().equals(">=")){
+            match(TokenType.MAYORIGUAL);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨OpAd ⟩ ::= + | -
     private void opAd(){
-        if (actual_token.getLexeme().equals("+")){
-            match("+");
-        } else if (actual_token.getLexeme().equals("-")){
-            match("-");
+        if (actualToken.getLexeme().equals("+")){
+            match(TokenType.SUM);
+        } else if (actualToken.getLexeme().equals("-")){
+            match(TokenType.RESTA);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨OpUnario⟩ ::= + | - | ! | ++ |--
     private void opUnario(){
-        if (actual_token.getLexeme().equals("+")){
-            match("+");
-        } else if (actual_token.getLexeme().equals("-")){
-            match("-");
-        } else if (actual_token.getLexeme().equals("!")){
-            match("!");
-        } else if (actual_token.getLexeme().equals("++")){
-            match("++");
-        } else if (actual_token.getLexeme().equals("--")){
-            match("--");
+        if (actualToken.getLexeme().equals("+")){
+            match(TokenType.SUM);
+        } else if (actualToken.getLexeme().equals("-")){
+            match(TokenType.RESTA);
+        } else if (actualToken.getLexeme().equals("!")){
+            match(TokenType.NOT);
+        } else if (actualToken.getLexeme().equals("++")){
+            match(TokenType.INC);
+        } else if (actualToken.getLexeme().equals("--")){
+            match(TokenType.DEC);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨OpMul ⟩ ::= * | / | %
     private void opMul(){
-        if (actual_token.getLexeme().equals("*")){
-            match("*");
-        } else if (actual_token.getLexeme().equals("/")){
-            match("/");
-        } else if (actual_token.getLexeme().equals("%")){
-            match("%");
+        if (actualToken.getLexeme().equals("*")){
+            match(TokenType.PROD);
+        } else if (actualToken.getLexeme().equals("/")){
+            match(TokenType.DIV);
+        } else if (actualToken.getLexeme().equals("%")){
+            match(TokenType.MOD);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Operando⟩ ::= ⟨Literal⟩ | ⟨Primario⟩ N12’
     private void operando(){
-        if (onFirst(actual_token, first("literal"))){
+        if (onFirst(actualToken, first("literal"))){
             literal();
-        } else if (onFirst(actual_token, first("primario"))){
+        } else if (onFirst(actualToken, first("primario"))){
             primario();
             N12Prima();
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // N12 ::= . ⟨Llamada-Método-Encadenado⟩ | . ⟨Acceso-Variable-Encadenado⟩
     private void N12(){
-        if (actual_token.getLexeme().equals(".")){
-            match(".");
-            if (onFirst(actual_token, first("llamada_metodo_encadenado"))){
+        if (actualToken.getLexeme().equals(".")){
+            match(TokenType.DOT);
+            if (onFirst(actualToken, first("llamada_metodo_encadenado"))){
                 llamadaMetodoEncadenado();
-            } else if (onFirst(actual_token, first("acceso_variable_encadenado"))){
+            } else if (onFirst(actualToken, first("acceso_variable_encadenado"))){
                 accesoVariableEncadenado();
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // N12’ ::= N12 | λ
     // follow = {&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
     private void N12Prima(){
         Set<String> followN12Prima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "%", ".", ","));
-        if (onFirst(actual_token, first("N12"))){
+        if (onFirst(actualToken, first("N12"))){
             N12();
-        } else if (followN12Prima.contains(actual_token.getLexeme())){
+        } else if (followN12Prima.contains(actualToken.getLexeme())){
             // lambda
             return;
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
     private void literal(){
-        if (actual_token.getLexeme().equals("nil")){
-            match("nil");
-        } else if (actual_token.getLexeme().equals("true")){
-            match("true");
-        } else if (actual_token.getLexeme().equals("false")){
-            match("false");
-        } else if (actual_token.getType().equals("NUM")){
-            match("intLiteral");
-        } else if (actual_token.getType().equals("STRING")){
-            match("StrLiteral");
-        } else if (actual_token.getType().equals("CHAR")){
-            match("charLiteral");
+        if (actualToken.getType() == TokenType.PNIL){
+            match(TokenType.PNIL);
+        } else if (actualToken.getType() == TokenType.PTRUE){
+            match(TokenType.PTRUE);
+        } else if (actualToken.getType() == TokenType.PFALSE){
+            match(TokenType.PFALSE);
+        } else if (actualToken.getType() == TokenType.NUM){
+            match(TokenType.NUM);
+        } else if (actualToken.getType() == TokenType.STRING){
+            match(TokenType.STRING);
+        } else if (actualToken.getType() == TokenType.CHAR){
+            match(TokenType.CHAR);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Primario⟩ ::= ⟨ExpresionParentizada⟩ | ⟨AccesoSelf ⟩ | ⟨AccesoVar ⟩ | ⟨Llamada-Método⟩ | ⟨Llamada-Método-Estático⟩ | ⟨Llamada-Constructor ⟩
     private void primario(){
-        if (onFirst(actual_token, first("expresion_parentizada"))){
+        if (onFirst(actualToken, first("expresion_parentizada"))){
             expresionParentizada();
-        } else if (onFirst(actual_token, first("acceso_self"))){
+        } else if (onFirst(actualToken, first("acceso_self"))){
             accesoSelf();
-        } else if (onFirst(actual_token, first("acceso_var"))){
+        } else if (onFirst(actualToken, first("acceso_var"))){
             accesoVar();
-        } else if (onFirst(actual_token, first("llamada_metodo"))){
+        } else if (onFirst(actualToken, first("llamada_metodo"))){
             llamadaMetodo();
-        } else if (onFirst(actual_token, first("llamada_metodo_estatico"))){
+        } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
             llamadaMetodoEstatico();
-        } else if (onFirst(actual_token, first("llamada_constructor"))){
+        } else if (onFirst(actualToken, first("llamada_constructor"))){
             llamadaConstructor();
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨ExpresionParentizada⟩ ::= ( ⟨Expresion⟩ ) N12’
     private void expresionParentizada(){
-        match("(");
+        match(TokenType.LPAREN);
         expresion();
-        match(")");
+        match(TokenType.RPAREN);
         N12Prima();
     }
     // ⟨AccesoSelf ⟩ ::= self N12’
     private void accesoSelf(){
-        match("self");
+        match(TokenType.PSELF);
         N12Prima();
     }
     // ⟨AccesoVar ⟩ ::= id ⟨AccesoVar⟩’
     private void accesoVar(){
-        match("id");
+        match(TokenType.ID);
         accesoVarPrima();
     }
     // ⟨AccesoVar ⟩’ ::= N12 | [ ⟨Expresión⟩ ] N12 | λ | [ ⟨Expresión⟩ ]
     // follow  = {.,&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,,}
     private void accesoVarPrima(){
         Set<String> followAccesoVarPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "%", ",", "."));
-        if (actual_token.getLexeme().equals("[")){
-            match("[");
+        if (actualToken.getLexeme().equals("[")){
+            match(TokenType.LBRACE);
             expresion();
-            match("]");
-            if (onFirst(actual_token, first("N12"))){
+            match(TokenType.RBRACE);
+            if (onFirst(actualToken, first("N12"))){
                 N12();
-            } else if (followAccesoVarPrima.contains(actual_token.getLexeme())){
+            } else if (followAccesoVarPrima.contains(actualToken.getLexeme())){
                 // lambda
                 return;
             } else {
-                throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
-        } else if (onFirst(actual_token, first("N12"))){
+        } else if (onFirst(actualToken, first("N12"))){
             N12();
-        } else if (followAccesoVarPrima.contains(actual_token.getLexeme())){
+        } else if (followAccesoVarPrima.contains(actualToken.getLexeme())){
             // lambda
             return;
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Llamada-Método⟩ ::= id ⟨Llamada-Método⟩’
     private void llamadaMetodo(){
-        match("id");
+        match(TokenType.ID);
         llamadaMetodoPrima();
     }
     // ⟨Llamada-Método⟩’ ::= ⟨Argumentos-Actuales⟩ N12’
@@ -1211,45 +1212,45 @@ private void sentencia() {
     }
     // ⟨Llamada-Método-Estático⟩ ::= idStruct . ⟨Llamada-Método⟩N12’
     private void llamadaMetodoEstatico(){
-        match("idStruct");
-        match(".");
+        match(TokenType.STRUCTID);
+        match(TokenType.DOT);
         llamadaMetodo();
         N12Prima();
     }
     // ⟨Llamada-Constructor ⟩ ::= new ⟨Llamada-Constructor ⟩’
     private void llamadaConstructor(){
-        match("new");
+        match(TokenType.PNEW);
         llamadaConstructorPrima();
     }
     // ⟨Llamada-Constructor ⟩’ ::= idStruct ⟨Argumentos-Actuales⟩ N12’| ⟨Tipo-Primitivo⟩ [ ⟨Expresion⟩ ]
     private void llamadaConstructorPrima(){
-        if (actual_token.getLexeme().equals("idStruct")){
-            match("idStruct");
+        if (actualToken.getType() == TokenType.STRUCTID){
+            match(TokenType.STRUCTID);
             argumentosActuales();
             N12Prima();
-        } else if (onFirst(actual_token, first("tipoPrimitivo"))){
+        } else if (onFirst(actualToken, first("tipoPrimitivo"))){
             tipoPrimitivo();
-            match("[");
+            match(TokenType.LBRACE);
             expresion();
-            match("]");
+            match(TokenType.RBRACE);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Argumentos-Actuales⟩ ::= ( ⟨Argumentos-Actuales⟩’
     private void argumentosActuales(){
-        match("(");
+        match(TokenType.LPAREN);
         argumentosActualesPrima();
     }
     // ⟨Argumentos-Actuales⟩’ ::= ⟨Lista-Expresiones⟩ ) | )
-    private void argumentosActualesPrimaa(){
-        if (onFirst(actual_token, first("lista_expresiones"))){
+    private void argumentosActualesPrima(){
+        if (onFirst(actualToken, first("lista_expresiones"))){
             listaExpresiones();
-            match(")");
-        } else if (actual_token.getLexeme().equals(")")){
-            match(")");
+            match(TokenType.RPAREN);
+        } else if (actualToken.getLexeme().equals(")")){
+            match(TokenType.RPAREN);
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Lista-Expresiones⟩ ::= ⟨Expresión⟩ ⟨Lista-Expresiones⟩’
@@ -1261,19 +1262,19 @@ private void sentencia() {
     // follow = {)}
     private void listaExpresionesPrima(){
         Set<String> followListaExpresionesPrima = new HashSet<>(Set.of(")"));
-        if (actual_token.getLexeme().equals(",")){
-            match(",");
+        if (actualToken.getLexeme().equals(",")){
+            match(TokenType.COMMA);
             listaExpresiones();
-        } else if (followListaExpresionesPrima.contains(actual_token.getLexeme())){
+        } else if (followListaExpresionesPrima.contains(actualToken.getLexeme())){
             // lambda
             return;
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Llamada-Método-Encadenado⟩ ::= id ⟨Llamada-Método-Encadenado⟩’
     private void llamadaMetodoEncadenado(){
-        match("id");
+        match(TokenType.ID);
         llamadaMetodoEncadenadoPrima();
     }
     // ⟨Llamada-Método-Encadenado⟩’ ::= ⟨Argumentos-Actuales⟩ N12 | ⟨Argumentos-Actuales⟩
@@ -1283,20 +1284,20 @@ private void sentencia() {
     }
     // ⟨Acceso-Variable-Encadenado⟩ ::= id ⟨Acceso-Variable-Encadenado⟩’
     private void accesoVariableEncadenado(){
-        match("id");
+        match(TokenType.ID);
         accesoVariableEncadenadoPrima();
     }
     // ⟨Acceso-Variable-Encadenado⟩’ ::=  [⟨Expresion⟩] N12’ | N12’
     private void accesoVariableEncadenadoPrima(){
-        if (actual_token.getLexeme().equals("[")){
-            match("[");
+        if (actualToken.getLexeme().equals("[")){
+            match(TokenType.LBRACE);
             expresion();
-            match("]");
+            match(TokenType.RBRACE);
             N12Prima();
-        } else if (onFirst(actual_token, first("N12Prima"))){
+        } else if (onFirst(actualToken, first("N12Prima"))){
             N12Prima();
         } else {
-            throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
 

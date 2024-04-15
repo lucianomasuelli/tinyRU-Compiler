@@ -7,6 +7,8 @@ import tinyru.etapa1.Token;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static org.junit.jupiter.api.Assertions.fail;
+
 class LexerStringTest {
 
     @Test
