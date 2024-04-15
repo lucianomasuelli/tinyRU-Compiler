@@ -1,6 +1,7 @@
 package tinyru.etapa2;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 
 import java.io.IOException;
@@ -24,8 +25,8 @@ public class Parser {
         }
     }
 
-    private void match(String expected) {
-        if (actualToken.getLexeme().equals(expected)) {
+    private void match(TokenType expected) {
+        if (actualToken.getType() == expected) {
             try {
                 actualToken = lexer.nextToken();
             } catch (IOException e) {
@@ -310,7 +311,7 @@ public class Parser {
 
     //⟨Start⟩ ::= start ⟨Bloque-Método⟩
     private void start() {
-        match("start");
+        match(TokenType.PSTART);
         bloqueMetodo();
     }
 
@@ -337,8 +338,8 @@ public class Parser {
 
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
     private void struct() {
-        match("struct");
-        match("idStruct");
+        match(TokenType.PSTRUCT);
+        match(TokenType.STRUCTID);
         structPrima();
     }
 
@@ -356,7 +357,7 @@ public class Parser {
 
     //⟨Struct⟩’’ ::= { ⟨Struct⟩’’’
     private void structPrimaPrima() {
-        match("{");
+        match(TokenType.LBRACE);
         structPrimaPrimaPrima();
     }
 
@@ -364,9 +365,9 @@ public class Parser {
     private void structPrimaPrimaPrima() {
         if (onFirst(actualToken, first("N2"))) {
             N2();
-            match("}");
+            match(TokenType.RBRACE);
         } else if (onFirst(actualToken, first("}"))) {
-            match("}");
+            match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -392,9 +393,9 @@ public class Parser {
 
     //⟨Impl⟩ ::= impl idStruct { ⟨Impl⟩’
     private void impl() {
-        match("impl");
-        match("idStruct");
-        match("{");
+        match(TokenType.PIMPL);
+        match(TokenType.STRUCTID);
+        match(TokenType.LBRACE);
         implPrima();
     }
 
@@ -402,9 +403,9 @@ public class Parser {
     private void implPrima() {
         if (onFirst(actualToken, first("N3"))) {
             N3();
-            match("}");
+            match(TokenType.RBRACE);
         } else if (onFirst(actualToken, first("}"))) {
-            match("}");
+            match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -430,7 +431,7 @@ public class Parser {
 
     //⟨Herencia⟩ ::= : ⟨Tipo⟩
     private void herencia() {
-        match(":");
+        match(TokenType.COLON);
         tipo();
     }
 
@@ -447,7 +448,7 @@ public class Parser {
 
     // ⟨Constructor ⟩ ::= . ⟨Argumentos-Formales⟩ ⟨Bloque-Método⟩
     private void constructor() {
-        match(".");
+        match(TokenType.CONSTRUCT);
         argumentosFormales();
         bloqueMetodo();
     }
@@ -455,14 +456,14 @@ public class Parser {
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
     private void atributo() {
         if (actualToken.getLexeme().equals("pri")) {
-            match("pri");
+            match(TokenType.PPRI);
             tipo();
             listaDeclaracionVariables();
-            match(";");
+            match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("tipo"))) {
             tipo();
             listaDeclaracionVariables();
-            match(";");
+            match(TokenType.SEMICOLON);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -470,13 +471,13 @@ public class Parser {
     // ⟨Método⟩ ::= st fn idMetAt ⟨Método⟩’ | fn idMetAt ⟨Método⟩’
     private void metodo() {
         if (actualToken.getLexeme().equals("st")) {
-            match("st");
-            match("fn");
-            match("idMetAt");
+            match(TokenType.PST);
+            match(TokenType.PFN);
+            match(TokenType.ID);
             metodoPrima();
         } else if (actualToken.getLexeme().equals("fn")) {
-            match("fn");
-            match("idMetAt");
+            match(TokenType.PFN);
+            match(TokenType.ID);
             metodoPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -488,11 +489,11 @@ public class Parser {
     private void metodoPrima() {
         if (onFirst(actualToken, first("argumentos_formales"))) {
             argumentosFormales();
-            match("->");
+            match(TokenType.RETURN_TYPE);
             tipoMetodo();
             bloqueMetodo();
         } else if (actualToken.getLexeme().equals("->")) {
-            match("->");
+            match(TokenType.RETURN_TYPE);
             tipoMetodo();
             bloqueMetodo();
         } else {
@@ -502,7 +503,7 @@ public class Parser {
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
     private void bloqueMetodo() {
-        match("{");
+        match(TokenType.LBRACE);
         bloqueMetodoPrima();
     }
 
@@ -513,9 +514,9 @@ public class Parser {
             bloqueMetodoPrimaPrima();
         } else if (onFirst(actualToken, first("N7"))) {
             N7();
-            match("}");
+            match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
-            match("}");
+            match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -525,9 +526,9 @@ public class Parser {
     private void bloqueMetodoPrimaPrima() {
         if (onFirst(actualToken, first("N7"))) {
             N7();
-            match("}");
+            match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
-            match("}");
+            match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -572,11 +573,11 @@ public class Parser {
     private void declVarLocales() {
         tipo();
         listaDeclaracionVariables();
-        match(";");
+        match(TokenType.SEMICOLON);
     }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’
     private void listaDeclaracionVariables() {
-        match("idMetAt");
+        match(TokenType.ID);
         listaDeclaracionVariablesPrima();
     }
 
@@ -584,7 +585,7 @@ public class Parser {
     private void listaDeclaracionVariablesPrima() {
         Set<String> followListaDeclaracionVariablesPrima = new HashSet<>(Set.of(";"));
         if (actualToken.getLexeme().equals(",")) {
-            match(",");
+            match(TokenType.COMMA);
             listaDeclaracionVariables();
         } else if (followListaDeclaracionVariablesPrima.contains(actualToken.getLexeme())) {
             // lambda
@@ -595,7 +596,7 @@ public class Parser {
 
     // ⟨Argumentos-Formales⟩ ::= ( ⟨Argumentos-Formales⟩’
     private void argumentosFormales() {
-        match("(");
+        match(TokenType.LPAREN);
         argumentosFormalesPrima();
     }
 
@@ -603,9 +604,9 @@ public class Parser {
     private void argumentosFormalesPrima() {
         if (onFirst(actualToken, first("lista_argumentos_formales"))) {
             listaArgumentosFormales();
-            match(")");
+            match(TokenType.RPAREN);
         } else if (actualToken.getLexeme().equals(")")) {
-            match(")");
+            match(TokenType.RPAREN);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -621,7 +622,7 @@ public class Parser {
     private void listaArgumentosFormalesPrima() {
         Set<String> followListaArgumentosFormalesPrima = new HashSet<>(Set.of(")"));
         if (actualToken.getLexeme().equals(",")) {
-            match(",");
+            match(TokenType.COMMA);
             listaArgumentosFormales();
         } else if (followListaArgumentosFormalesPrima.contains(actualToken.getLexeme())) {
             // lambda
@@ -633,7 +634,7 @@ public class Parser {
     // ⟨Argumento-Formal ⟩ ::= ⟨Tipo⟩ idMetAt
     private void argumentoFormal() {
         tipo();
-        match("idMetAt");
+        match(TokenType.ID);
     }
 
     // ⟨Tipo-Método⟩ ::= ⟨Tipo⟩ | void
@@ -641,7 +642,7 @@ public class Parser {
         if (onFirst(actualToken, first("tipo"))) {
             tipo();
         } else if (actualToken.getLexeme().equals("void")) {
-            match("void");
+            match(TokenType.PVOID);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -663,13 +664,13 @@ public class Parser {
     // ⟨Tipo-Primitivo⟩ ::= Str | Bool |Int | Char
     private void tipoPrimitivo() {
         if (actualToken.getLexeme().equals("Str")) {
-            match("Str");
+            match(TokenType.PSTR);
         } else if (actualToken.getLexeme().equals("Bool")) {
-            match("Bool");
+            match(TokenType.PBOOL);
         } else if (actualToken.getLexeme().equals("Int")) {
-            match("Int");
+            match(TokenType.PINT);
         } else if (actualToken.getLexeme().equals("Char")) {
-            match("Char");
+            match(TokenType.PCHAR);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -677,42 +678,42 @@ public class Parser {
 
     // ⟨Tipo-Referencia⟩ ::= idStruct
     private void tipoReferencia() {
-        match("idStruct");
+        match(TokenType.STRUCTID);
     }
 
     // ⟨Tipo-Arreglo⟩ ::= Array ⟨Tipo-Primitivo⟩
     private void tipoArreglo() {
-        match("Array");
+        match(TokenType.PARRAY);
         tipoPrimitivo();
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
 private void sentencia() {
         if (actualToken.getLexeme().equals(";")) {
-            match(";");
+            match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))) {
             asignacion();
-            match(";");
+            match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
             sentenciaSimple();
-            match(";");
+            match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals("if")) {
-            match("if");
-            match("(");
+            match(TokenType.PIF);
+            match(TokenType.LPAREN);
             expresion();
-            match(")");
+            match(TokenType.RPAREN);
             sentencia();
             sentenciaPrima();
         } else if (actualToken.getLexeme().equals("while")) {
-            match("while");
-            match("(");
+            match(TokenType.PWHILE);
+            match(TokenType.LPAREN);
             expresion();
-            match(")");
+            match(TokenType.RPAREN);
             sentencia();
         } else if (onFirst(actualToken, first("bloque"))) {
             bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
-            match("ret");
+            match(TokenType.PRET);
             sentenciaPrimaPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -723,7 +724,7 @@ private void sentencia() {
      private void sentenciaPrima() {
         Set<String> followSentenciaPrima = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self","else"));
         if (actualToken.getLexeme().equals("else")) {
-            match("else");
+            match(TokenType.PELSE);
             sentencia();
         } else if(followSentenciaPrima.contains(actualToken.getLexeme())) {
             // lambda
@@ -737,16 +738,16 @@ private void sentencia() {
     private void sentenciaPrimaPrima() {
         if (onFirst(actualToken, first("expresion"))) {
             expresion();
-            match(";");
+            match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals(";")) {
-            match(";");
+            match(TokenType.SEMICOLON);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
     // ⟨Bloque⟩ ::= { ⟨Bloque⟩’
     private void bloque() {
-        match("{");
+        match(TokenType.LBRACE);
         bloquePrima();
     }
 
@@ -754,9 +755,9 @@ private void sentencia() {
     private void bloquePrima() {
         if (onFirst(actualToken, first("N9"))) {
             N9();
-            match("}");
+            match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
-            match("}");
+            match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -766,11 +767,11 @@ private void sentencia() {
     private void asignacion() {
         if (onFirst(actualToken, first("acceso_var_simple"))) {
             accesoVarSimple();
-            match("=");
+            match(TokenType.ASSIGN);
             expresion();
         } else if (onFirst(actualToken, first("acceso_self_simple"))) {
             accesoSelfSimple();
-            match("=");
+            match(TokenType.ASSIGN);
             expresion();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -797,7 +798,7 @@ private void sentencia() {
 
     // ⟨AccesoVar-Simple⟩ ::= id ⟨AccesoVar-Simple⟩’
     private void accesoVarSimple() {
-        match("id");
+        match(TokenType.ID);
         accesoVarSimplePrima();
     }
 
@@ -807,9 +808,9 @@ private void sentencia() {
         if (onFirst(actualToken, first("N10"))) {
             N10();
         } else if (actualToken.getLexeme().equals("[")) {
-            match("[");
+            match(TokenType.LBRACKET);
             expresion();
-            match("]");
+            match(TokenType.RBRACKET);
         } else if(followAccesoVarSimplePrima.contains(actualToken.getLexeme())) {
             // lambda
         }
