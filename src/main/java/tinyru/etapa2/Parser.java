@@ -18,7 +18,7 @@ public class Parser {
     public void analize() {
 
     }
-
+    //Debe matchear por tipo de token no por lexema
     private void match(String expected) {
         if (actual_token.getLexeme().equals(expected)) {
             try {
@@ -868,11 +868,11 @@ public class Parser {
             match("true");
         } else if (actual_token.getLexeme().equals("false")){
             match("false");
-        } else if (actual_token.getType().equals("intLiteral")){
+        } else if (actual_token.getType().equals("NUM")){
             match("intLiteral");
-        } else if (actual_token.getType().equals("StrLiteral")){
+        } else if (actual_token.getType().equals("STRING")){
             match("StrLiteral");
-        } else if (actual_token.getType().equals("charLiteral")){
+        } else if (actual_token.getType().equals("CHAR")){
             match("charLiteral");
         } else {
             throw new UnexpectedTokenError(actual_token.getLexeme(), actual_token.getLine(), actual_token.getColumn());
