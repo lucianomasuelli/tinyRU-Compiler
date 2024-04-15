@@ -19,6 +19,6 @@ public class ParserExecutor extends Executor{
             }
 
             Parser parser = new Parser(lexer);
-            parser.analize();
+            parser.analyze();
         }
 }
