@@ -335,7 +335,7 @@ public class Parser {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
-
+    //esto me hace ruido?
     // ⟨Lista-Definiciones⟩' ::= ⟨Lista-Definiciones⟩
     private void listaDefinicionesPrima() {
         listaDefiniciones();
