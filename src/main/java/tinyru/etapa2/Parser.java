@@ -475,7 +475,7 @@ public class Parser {
                 firstSet = new HashSet<>(Set.of(TokenType.PROD, TokenType.DIV, TokenType.MOD));
             }
             case "operando" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.PNIL, TokenType.PTRUE, TokenType.PFALSE, TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.PNEW));
+                firstSet = new HashSet<>(Set.of(TokenType.PNIL, TokenType.PTRUE, TokenType.PFALSE, TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.PNEW, TokenType.STRUCTID));
             }
             case "N12" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.DOT));
@@ -711,7 +711,7 @@ public class Parser {
 
     //N3’ ::= N3 | λ
     private void N3Prima() {
-        Set<String> followN3Prima = new HashSet<>(Set.of("}"));
+        Set<TokenType> followN3Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N3"))) {
             N3();
         } else if (followN3Prima.contains(actualToken.getLexeme())) {
@@ -832,11 +832,12 @@ public class Parser {
     }
 
     // N6’ ::=  N6 | λ
+    // follow = { },;,if,while,ret,(,{,id,self }
     private void N6Prima() {
-        Set<String> followN6Prima = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self"));
+        Set<TokenType> followN6Prima = new HashSet<>(Set.of(TokenType.RBRACE,TokenType.SEMICOLON, TokenType.PIF, TokenType.PWHILE, TokenType.PRET, TokenType.LPAREN, TokenType.LBRACE, TokenType.ID, TokenType.PSELF));
         if (onFirst(actualToken, first("N6"))) {
             N6();
-        } else if (followN6Prima.contains(actualToken.getLexeme())) {
+        } else if (followN6Prima.contains(actualToken.getType())) {
             // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -851,7 +852,7 @@ public class Parser {
 
     // N7’ ::= N7 | λ
     private void N7Prima() {
-        Set<String> followN7Prima = new HashSet<>(Set.of("}"));
+        Set<TokenType> followN7Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N7"))) {
             N7();
         } else if (followN7Prima.contains(actualToken.getLexeme())) {
@@ -1013,12 +1014,14 @@ public class Parser {
     }
 
     // ⟨Sentencia⟩’ ::= else ⟨Sentencia⟩ | λ
+    // follow = "}",";","if","while","ret","(","{","id","self","else"
      private void sentenciaPrima() {
-        Set<String> followSentenciaPrima = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self","else"));
+        Set<TokenType> followSentenciaPrima = new HashSet<>(Set.of(TokenType.RBRACE,TokenType.SEMICOLON, TokenType.PIF,
+                TokenType.PWHILE, TokenType.PRET, TokenType.LPAREN, TokenType.LBRACE, TokenType.ID, TokenType.PSELF, TokenType.PELSE));
         if (actualToken.getLexeme().equals("else")) {
             match(TokenType.PELSE);
             sentencia();
-        } else if(followSentenciaPrima.contains(actualToken.getLexeme())) {
+        } else if(followSentenciaPrima.contains(actualToken.getType())) {
             // lambda
         }
         else {
