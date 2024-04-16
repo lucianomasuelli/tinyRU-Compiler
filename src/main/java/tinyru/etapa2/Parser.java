@@ -291,9 +291,41 @@ public class Parser {
         return firstSet;
     }
 
+    private Set<TokenType> firstToken(String noTerminal){
+        Set<TokenType> firstSet = new HashSet<>();
+        switch (noTerminal) {
+            case "llamada_constructor'","llamada_metodo_estatico","primario","tipo_referencia","tipo","tipo_metodo","argumento_formal","lista_argumentos_formales","argumentos_formales'","N2","N2'", "atributo","struct'''","N6","N6'", "decl_var_locales" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.STRUCTID));
+            }
+            case "bloque_metodo'" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.STRUCTID,TokenType.ID));
+            }
+            case "llamada_metodo_encadenado", "acceso_variable_encadenado","llamada_metodo","acceso_var","acceso_var_simple","N9'","N9","asignacion","bloque'","N7","N7'", "sentencia","bloque_metodo''","lista_declaracion_variables" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.ID));
+            }
+            //Podriamos usar id de metodo?
+            //case "lista_declaracion_variables" -> {
+            //    firstSet = new HashSet<>(Set.of(TokenType.IDMET));
+            //}
+            case "lista_expresiones","argumentos_actuales'","expresion", "exp_or", "exp_and", "exp_igual", "exp_compuesta", "exp_ad", "exp_mul", "exp_un","sentencia''" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.NUM,TokenType.STRING,TokenType.CHAR,TokenType.ID,TokenType.STRUCTID));
+            }
+            case "operando" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.NUM,TokenType.STRING,TokenType.CHAR,TokenType.ID));
+            }
+            case "literal" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.NUM,TokenType.STRING,TokenType.CHAR));
+            }
+        }
+        return firstSet;
+    }
 
     private boolean onFirst(Token token, Set<String> firstSet) {
         return firstSet.contains(token.getLexeme());
+    }
+
+    private boolean onFirstToken(Token token, Set<TokenType> firstSet) {
+        return firstSet.contains(token.getType());
     }
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩ | ⟨Start⟩
@@ -517,7 +549,7 @@ public class Parser {
         if (onFirst(actualToken, first("N6"))) {
             N6();
             bloqueMetodoPrimaPrima();
-        } else if (onFirst(actualToken, first("N7"))) {
+        } else if (onFirst(actualToken, first("N7")) || onFirstToken(actualToken,firstToken("N7"))) {
             N7();
             match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
@@ -696,7 +728,7 @@ public class Parser {
     private void sentencia() {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
-        } else if (onFirst(actualToken, first("asignacion"))) {
+        } else if (onFirst(actualToken, first("asignacion"))|| onFirstToken(actualToken,firstToken("asignacion")) ){
             asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
@@ -770,7 +802,7 @@ public class Parser {
 
     // ⟨Asignación⟩ ::= ⟨AccesoVar-Simple⟩ = ⟨Expresión⟩ | ⟨AccesoSelf-Simple⟩ = ⟨Expresión⟩
     private void asignacion() {
-        if (onFirst(actualToken, first("acceso_var_simple"))) {
+        if (onFirst(actualToken, first("acceso_var_simple"))||onFirstToken(actualToken,firstToken("acceso_var_simple"))){
             accesoVarSimple();
             match(TokenType.ASSIGN);
             expresion();
