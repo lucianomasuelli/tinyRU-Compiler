@@ -300,7 +300,7 @@ public class Parser {
             case "start" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.PSTART));
             }
-            case "lista_definiciones", "lista_definiciones'" -> {
+            case "lista_definiciones" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.PSTRUCT, TokenType.PIMPL));
             }
             case "struct" -> {
@@ -321,11 +321,17 @@ public class Parser {
             case "N2'" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.PPRI, TokenType.PSTR, TokenType.PBOOL, TokenType.PINT, TokenType.PCHAR, TokenType.STRUCTID, TokenType.PARRAY));
             }
+            case "impl" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.PIMPL));
+            }
+            case "impl'" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.RBRACE, TokenType.PST, TokenType.PFN, TokenType.DOT));
+            }
             case "N3", "miembro" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.PSTRUCT, TokenType.PFN, TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.PST, TokenType.PFN, TokenType.DOT));
             }
             case "N3'" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.PSTRUCT, TokenType.PFN, TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.PST, TokenType.PFN, TokenType.DOT));
             }
             case "herencia" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.COLON));
@@ -334,7 +340,7 @@ public class Parser {
                 firstSet = new HashSet<>(Set.of(TokenType.DOT));
             }
             case "metodo" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.PSTRUCT, TokenType.PFN));
+                firstSet = new HashSet<>(Set.of(TokenType.PST, TokenType.PFN));
             }
             case "metodo'" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.RETURN_TYPE, TokenType.LPAREN));
@@ -480,6 +486,9 @@ public class Parser {
             case "N12" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.DOT));
             }
+            case "llamada_metodo_enc_acceso_var_enc" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.LPAREN, TokenType.LBRACKET, TokenType.DOT, TokenType.LAMBDA));
+            }
             case "N12'" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.DOT));
             }
@@ -488,6 +497,12 @@ public class Parser {
             }
             case "primario" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.STRUCTID, TokenType.PNEW));
+            }
+            case "primario'" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.ID));
+            }
+            case "primario''" -> {
+                firstSet = new HashSet<>(Set.of(TokenType.DOT, TokenType.LBRACKET, TokenType.LAMBDA, TokenType.LPAREN));
             }
             case "expresion_parentizada" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.LPAREN));
@@ -589,10 +604,11 @@ public class Parser {
             start();
         } else if(onFirst(actualToken, first("start"))) {
             start();
-        } else if (actualToken.getType() == TokenType.EOF) {
-            return;
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+        }
+        if (actualToken.getType() == TokenType.EOF) {
+            return;
         }
         //Hacer que matchee con EOF
     }
@@ -605,27 +621,17 @@ public class Parser {
     }
 
 
-    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | ⟨Lista-Definiciones⟩'
+    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩
     private void listaDefiniciones() {
-        Set<TokenType> followListaDefiniciones = new HashSet<>(Set.of(TokenType.PSTART));
         if (onFirst(actualToken, first("struct"))) {
             struct();
             listaDefiniciones();
         } else if (onFirst(actualToken, first("impl"))) {
             impl();
             listaDefiniciones();
-        } else if (onFirst(actualToken, first("lista_definiciones'"))) {
-            listaDefinicionesPrima();
-        } else if (onFirst(actualToken, followListaDefiniciones)) {
-            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-    }
-    //esto me hace ruido?
-    // ⟨Lista-Definiciones⟩' ::= ⟨Lista-Definiciones⟩
-    private void listaDefinicionesPrima() {
-        listaDefiniciones();
     }
 
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
@@ -1384,17 +1390,18 @@ public class Parser {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
-    // N12 ::= . ⟨Llamada-Método-Encadenado⟩ | . ⟨Acceso-Variable-Encadenado⟩
+    // N12 ::= . id ⟨Llamada-Método-Enc-Acceso-Var-Enc⟩
     private void N12(){
-        if (actualToken.getLexeme().equals(".")){
-            match(TokenType.DOT);
-            if (onFirst(actualToken, first("llamada_metodo_encadenado"))){
-                llamadaMetodoEncadenado();
-            } else if (onFirst(actualToken, first("acceso_variable_encadenado"))){
-                accesoVariableEncadenado();
-            } else {
-                throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
-            }
+        match(TokenType.DOT);
+        match(TokenType.ID);
+        llamadaMetodoEncadenado_accVarEnc();
+    }
+    //⟨Llamada-Método-Enc-Acceso-Var-Enc⟩ ::= ⟨Llamada-Método-Encadenado⟩’ | ⟨Acceso-Variable-Encadenado⟩’
+    private void llamadaMetodoEncadenado_accVarEnc(){
+        if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
+            llamadaMetodoEncadenadoPrima();
+        } else if (onFirst(actualToken, first("acceso_variable_encadenado'"))){
+            accesoVariableEncadenadoPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1430,20 +1437,33 @@ public class Parser {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
-    // ⟨Primario⟩ ::= ⟨ExpresionParentizada⟩ | ⟨AccesoSelf ⟩ | ⟨AccesoVar ⟩ | ⟨Llamada-Método⟩ | ⟨Llamada-Método-Estático⟩ | ⟨Llamada-Constructor ⟩
+    //⟨Primario⟩ ::= ⟨ExpresionParentizada⟩ | ⟨AccesoSelf ⟩ | ⟨Primario⟩’ | ⟨Llamada-Método-Estático⟩ | ⟨Llamada-Constructor ⟩
     private void primario(){
         if (onFirst(actualToken, first("expresion_parentizada"))){
             expresionParentizada();
         } else if (onFirst(actualToken, first("acceso_self"))){
             accesoSelf();
-        } else if (onFirst(actualToken, first("acceso_var"))){
-            accesoVar();
-        } else if (onFirst(actualToken, first("llamada_metodo"))){
-            llamadaMetodo();
+        } else if (onFirst(actualToken, first("primario'"))){
+            primarioPrima();
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
             llamadaMetodoEstatico();
         } else if (onFirst(actualToken, first("llamada_constructor"))){
             llamadaConstructor();
+        } else {
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+        }
+    }
+    //⟨Primario⟩’ ::= id ⟨Primario⟩’’
+    private void primarioPrima(){
+        match(TokenType.ID);
+        primarioPrimaPrima();
+    }
+    //⟨Primario⟩’’ ::= ⟨AccesoVar⟩’ | ⟨Llamada-Método⟩’
+    private void primarioPrimaPrima(){
+        if (onFirst(actualToken, first("acceso_var'"))){
+            accesoVarPrima();
+        } else if (onFirst(actualToken, first("llamada_metodo'"))){
+            llamadaMetodoPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
