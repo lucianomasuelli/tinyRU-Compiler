@@ -607,6 +607,7 @@ public class Parser {
 
     // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | ⟨Lista-Definiciones⟩'
     private void listaDefiniciones() {
+        Set<TokenType> followListaDefiniciones = new HashSet<>(Set.of(TokenType.PSTART));
         if (onFirst(actualToken, first("struct"))) {
             struct();
             listaDefiniciones();
@@ -615,6 +616,8 @@ public class Parser {
             listaDefiniciones();
         } else if (onFirst(actualToken, first("lista_definiciones'"))) {
             listaDefinicionesPrima();
+        } else if (onFirst(actualToken, followListaDefiniciones)) {
+            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
