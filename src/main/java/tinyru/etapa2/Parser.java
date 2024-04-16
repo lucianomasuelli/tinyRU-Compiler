@@ -855,7 +855,7 @@ public class Parser {
         Set<TokenType> followN7Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N7"))) {
             N7();
-        } else if (followN7Prima.contains(actualToken.getLexeme())) {
+        } else if (followN7Prima.contains(actualToken.getType())) {
             // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -1569,8 +1569,16 @@ public class Parser {
     }
     // ⟨Llamada-Método-Encadenado⟩’ ::= ⟨Argumentos-Actuales⟩ N12 | ⟨Argumentos-Actuales⟩
     private void llamadaMetodoEncadenadoPrima(){
-        argumentosActuales();
-        N12();
+        if (onFirst(actualToken, first("argumentos_actuales"))){
+            argumentosActuales();
+            if(onFirst(actualToken, first("N12"))){
+                N12();
+            } else {
+                return;
+            }
+        } else {
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+        }
     }
     // ⟨Acceso-Variable-Encadenado⟩ ::= id ⟨Acceso-Variable-Encadenado⟩’
     private void accesoVariableEncadenado(){
