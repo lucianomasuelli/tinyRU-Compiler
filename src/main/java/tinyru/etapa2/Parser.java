@@ -33,8 +33,7 @@ public class Parser {
                 throw new RuntimeException(e);
             }
         } else {
-            System.out.println("Syntax error: expected " + expected + " but found " + actualToken.getLexeme());
-            System.exit(1);
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
 
