@@ -9,16 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="Arreglo bugs, agrego tests.">
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/tinyRU_Compiler_jar2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/tinyRU_Compiler_jar2.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tinyru/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tinyru/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/tinyru/ParserExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tinyru/ParserExecutor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" afterDir="false" />
-    </list>
+    <list default="true" id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="Creo ejecutable." />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -183,19 +174,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="etapa2" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="etapa2" />
-      <option name="filePath" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="JUnit.ParserTest" />
@@ -263,7 +241,7 @@
       <workItem from="1713301685395" duration="4843000" />
       <workItem from="1713310826636" duration="11574000" />
       <workItem from="1713349336150" duration="4534000" />
-      <workItem from="1713354267238" duration="4262000" />
+      <workItem from="1713354267238" duration="5115000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -529,7 +507,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713356771274</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="Creo ejecutable.">
+      <option name="closed" value="true" />
+      <created>1713358750308</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1713358750308</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -571,7 +557,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat: add test for string and number afr" />
     <MESSAGE value="actualización lexer" />
     <MESSAGE value="feat: add AFRNumber implementation and LexerError class" />
     <MESSAGE value="feat: add AFRIdentifier and AFRStructID" />
@@ -596,7 +581,8 @@
     <MESSAGE value="Agrego lambda en Primario'' y en Lista-Definiciones" />
     <MESSAGE value="Arreglo bugs" />
     <MESSAGE value="Arreglo bugs, agrego tests." />
-    <option name="LAST_COMMIT_MESSAGE" value="Arreglo bugs, agrego tests." />
+    <MESSAGE value="Creo ejecutable." />
+    <option name="LAST_COMMIT_MESSAGE" value="Creo ejecutable." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
