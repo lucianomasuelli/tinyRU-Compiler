@@ -1197,9 +1197,9 @@ public class Parser {
     private void accesoVarPrima(){
         Set<String> followAccesoVarPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "%", ",", "."));
         if (actualToken.getLexeme().equals("[")){
-            match(TokenType.LBRACE);
+            match(TokenType.LBRACKET);
             expresion();
-            match(TokenType.RBRACE);
+            match(TokenType.RBRACKET);
             if (onFirst(actualToken, first("N12"))){
                 N12();
             } else if (followAccesoVarPrima.contains(actualToken.getLexeme())){
