@@ -30,21 +30,16 @@ public class AFRDot {
         int currentState = 0;
         scanner.advance();
         int currChar = scanner.getCurrentChar();
-        if (currChar == ' ') {
+        while (currChar == ' ' || currChar == '\t' || currChar == '\n'){
             scanner.advance();
             currChar = scanner.getCurrentChar();
-            if (currChar == '(') {
-                token = new Token(TokenType.CONSTRUCT, "constructor", scanner.getLine(), initialColumn);
-            } else {
-                throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
-            }
-        } else {
-            if (currChar == '(') {
-                token = new Token(TokenType.CONSTRUCT, "(", scanner.getLine(), initialColumn);
-            } else {
-                token = new Token(TokenType.DOT, ".", scanner.getLine(), initialColumn);
-            }
         }
+        if (currChar == '(') {
+            token = new Token(TokenType.CONSTRUCT, "(", scanner.getLine(), initialColumn);
+        } else {
+            token = new Token(TokenType.DOT, ".", scanner.getLine(), initialColumn);
+        }
+
         return token;
     }
 }
