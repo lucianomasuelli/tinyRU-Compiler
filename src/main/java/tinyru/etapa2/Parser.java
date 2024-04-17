@@ -598,20 +598,26 @@ public class Parser {
 //    }
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩ | ⟨Start⟩
-    private void program(){
-        if (onFirst(actualToken, first("lista_definiciones"))){
-            listaDefiniciones();
-            start();
-        }
+//    private void program(){
+//        if (onFirst(actualToken, first("lista_definiciones"))){
+//            listaDefiniciones();
+//            start();
+//        }
 //        else if(onFirst(actualToken, first("start"))) {
 //            start();
 //        } else {
 //            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
 //        }
-        if (actualToken.getType() == TokenType.EOF) {
-            return;
-        }
-        //Hacer que matchee con EOF
+//        if (actualToken.getType() == TokenType.EOF) {
+//            return;
+//        }
+//        //Hacer que matchee con EOF
+//    }
+
+    //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩
+    private void program(){
+        listaDefiniciones();
+        start();
     }
 
 
@@ -619,6 +625,9 @@ public class Parser {
     private void start() {
         match(TokenType.PSTART);
         bloqueMetodo();
+        if (actualToken.getType() != TokenType.EOF) {
+            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+        }
     }
 
 

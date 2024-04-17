@@ -1,5 +1,6 @@
 package tinyru.etapa1.AFR;
 
+import tinyru.etapa1.Exceptions.IllegalCharError;
 import tinyru.etapa1.FileScanner;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
@@ -15,8 +16,9 @@ import java.util.Set;
  */
 public class AFRDot {
     /**
-     *  Reconoce si se trata de un constructor o de un punto
-      * @param op
+     * Reconoce si se trata de un constructor o de un punto
+     *
+     * @param op
      * @param scanner
      * @return
      * @throws IOException
@@ -25,15 +27,24 @@ public class AFRDot {
         int initialColumn = scanner.getColumn();
         int nextChar = scanner.seeNextChar();
         Token token = null;
-
-        if (nextChar == '('){
-            token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), initialColumn);
-        }
-        else {
-            token = new Token(TokenType.DOT, ".", scanner.getLine(), initialColumn);
-        }
+        int currentState = 0;
         scanner.advance();
+        int currChar = scanner.getCurrentChar();
+        if (currChar == ' ') {
+            scanner.advance();
+            currChar = scanner.getCurrentChar();
+            if (currChar == '(') {
+                token = new Token(TokenType.CONSTRUCT, "constructor", scanner.getLine(), initialColumn);
+            } else {
+                throw new IllegalCharError((char) currChar, scanner.getLine(), scanner.getColumn());
+            }
+        } else {
+            if (currChar == '(') {
+                token = new Token(TokenType.CONSTRUCT, "(", scanner.getLine(), initialColumn);
+            } else {
+                token = new Token(TokenType.DOT, ".", scanner.getLine(), initialColumn);
+            }
+        }
         return token;
     }
-
 }
