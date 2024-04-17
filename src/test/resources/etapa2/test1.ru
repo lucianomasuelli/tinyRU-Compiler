@@ -1,11 +1,6 @@
-struct Hola {
-    Int a, b;
-}
-impl Hola {
-    pri .(Int a, Int b) {
-        a = 1;
-        b = 2;
-    }
-}
+/? Descripción: caso de prueba que se fija si se ha lidiado con la regla Encadenado
+/? que tiene dos id en primeros probando la opción de Acceso-Variable-Encadenado
+/? Salida esperada:
+/? CORRECTO: ANALISIS SINTACTICO
 
-start {}
+start { ret self.xdid ; }

@@ -1091,11 +1091,17 @@ public class Parser {
         llamadaMetodoEncadenado_accVarEnc();
     }
     //⟨Llamada-Método-Enc-Acceso-Var-Enc⟩ ::= ⟨Llamada-Método-Encadenado⟩’ | ⟨Acceso-Variable-Encadenado⟩’
+    //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
     private void llamadaMetodoEncadenado_accVarEnc(){
+        Set<TokenType> followLlamadaMetodoEncadenado_accVarEnc = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,
+                TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
+                TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
         if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
             llamadaMetodoEncadenadoPrima();
         } else if (onFirst(actualToken, first("acceso_variable_encadenado'"))){
             accesoVariableEncadenadoPrima();
+        } else if(followLlamadaMetodoEncadenado_accVarEnc.contains(actualToken.getType())){
+            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1308,7 +1314,11 @@ public class Parser {
         accesoVariableEncadenadoPrima();
     }
     // ⟨Acceso-Variable-Encadenado⟩’ ::=  [⟨Expresion⟩] N12’ | N12’
+    //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
     private void accesoVariableEncadenadoPrima(){
+        Set<TokenType> followAccesoVariableEncadenadoPrima = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,
+                TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
+                TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
         if (actualToken.getLexeme().equals("[")){
             match(TokenType.LBRACE);
             expresion();
@@ -1316,10 +1326,10 @@ public class Parser {
             N12Prima();
         } else if (onFirst(actualToken, first("N12'"))){
             N12Prima();
+        } else if (followAccesoVariableEncadenadoPrima.contains(actualToken.getType())){
+            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
-
-
 }
