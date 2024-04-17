@@ -325,19 +325,19 @@ public class Parser {
                 firstSet = new HashSet<>(Set.of(TokenType.PIMPL));
             }
             case "impl'" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.RBRACE, TokenType.PST, TokenType.PFN, TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.RBRACE, TokenType.PST, TokenType.PFN, TokenType.CONSTRUCT));
             }
             case "N3", "miembro" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.PST, TokenType.PFN, TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.PST, TokenType.PFN, TokenType.CONSTRUCT));
             }
             case "N3'" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.PST, TokenType.PFN, TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.LAMBDA, TokenType.PST, TokenType.PFN, TokenType.CONSTRUCT));
             }
             case "herencia" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.COLON));
             }
             case "constructor" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.DOT));
+                firstSet = new HashSet<>(Set.of(TokenType.CONSTRUCT));
             }
             case "metodo" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.PST, TokenType.PFN));
@@ -724,7 +724,7 @@ public class Parser {
         Set<TokenType> followN3Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N3"))) {
             N3();
-        } else if (followN3Prima.contains(actualToken.getLexeme())) {
+        } else if (followN3Prima.contains(actualToken.getType())) {
             // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
