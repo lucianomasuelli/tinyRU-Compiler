@@ -9,7 +9,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="Creo ejecutable." />
+    <list default="true" id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="Creo ejecutable.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tinyru/etapa2/Parser.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tinyru/etapa2/Parser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -43,46 +47,50 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.Executor.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.CharTooLongTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.FileScannerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IllegalCharTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IllegalStructIdTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.IllegalSymbolTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerGeneralTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerGeneralTest.nextToken.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerNumberErrorTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerNumberTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerNumberTest.nextToken.executor&quot;: &quot;Debug&quot;,
-    &quot;JUnit.LexerNumberTest.tokenize.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerStringTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.LexerTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.ParserTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UnterminatedCharTest.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.UnterminatedStringTest.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
-    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;test-debug&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;onboarding.tips.debug.path&quot;: &quot;/home/luciano/Documentos/Facultad/4to/1_semestre/compiladores/tinyRU-Compiler/src/main/java/org/example/Main.java&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Executor.executor": "Run",
+    "Application.Main.executor": "Run",
+    "JUnit.CharTooLongTest.executor": "Run",
+    "JUnit.FileScannerTest.executor": "Run",
+    "JUnit.IllegalCharTest.executor": "Run",
+    "JUnit.IllegalStructIdTest.executor": "Run",
+    "JUnit.IllegalSymbolTest.executor": "Run",
+    "JUnit.LexerGeneralTest.executor": "Run",
+    "JUnit.LexerGeneralTest.nextToken.executor": "Run",
+    "JUnit.LexerNumberErrorTest.executor": "Run",
+    "JUnit.LexerNumberTest.executor": "Run",
+    "JUnit.LexerNumberTest.nextToken.executor": "Debug",
+    "JUnit.LexerNumberTest.tokenize.executor": "Run",
+    "JUnit.LexerStringTest.executor": "Run",
+    "JUnit.LexerTest.executor": "Run",
+    "JUnit.ParserTest.executor": "Run",
+    "JUnit.UnterminatedCharTest.executor": "Run",
+    "JUnit.UnterminatedStringTest.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary": "JUnit5",
+    "com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5": "",
+    "git-widget-placeholder": "test-debug",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "/home/luciano/Documentos/Facultad/4to/1_semestre/compiladores/tinyRU-Compiler/src/test/resources/etapa2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "/home/luciano/Documentos/Facultad/4to/1_semestre/compiladores/tinyRU-Compiler/src/main/java/org/example/Main.java",
+    "project.structure.last.edited": "Artifacts",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.uml",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources/etapa2" />
+    </key>
     <key name="CreateTestDialog.Recents.Supers">
       <recent name="" />
     </key>
@@ -242,6 +250,8 @@
       <workItem from="1713310826636" duration="11574000" />
       <workItem from="1713349336150" duration="4534000" />
       <workItem from="1713354267238" duration="5115000" />
+      <workItem from="1713360149697" duration="4171000" />
+      <workItem from="1713378066448" duration="1821000" />
     </task>
     <task id="LOCAL-00001" summary="Initial commit">
       <option name="closed" value="true" />
@@ -515,7 +525,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713358750308</updated>
     </task>
-    <option name="localTasksCounter" value="35" />
+    <task id="LOCAL-00035" summary="Creo ejecutable.">
+      <option name="closed" value="true" />
+      <created>1713360201898</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1713360201898</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
