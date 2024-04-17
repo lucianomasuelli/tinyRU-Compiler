@@ -602,11 +602,12 @@ public class Parser {
         if (onFirst(actualToken, first("lista_definiciones"))){
             listaDefiniciones();
             start();
-        } else if(onFirst(actualToken, first("start"))) {
-            start();
-        } else {
-            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+//        else if(onFirst(actualToken, first("start"))) {
+//            start();
+//        } else {
+//            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+//        }
         if (actualToken.getType() == TokenType.EOF) {
             return;
         }
@@ -621,14 +622,17 @@ public class Parser {
     }
 
 
-    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩
+    // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | lambda
     private void listaDefiniciones() {
+        Set<TokenType> followListaDefiniciones = new HashSet<>(Set.of(TokenType.PSTART));
         if (onFirst(actualToken, first("struct"))) {
             struct();
             listaDefiniciones();
         } else if (onFirst(actualToken, first("impl"))) {
             impl();
             listaDefiniciones();
+        } else if (followListaDefiniciones.contains(actualToken.getType())) {
+            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1454,16 +1458,24 @@ public class Parser {
         }
     }
     //⟨Primario⟩’ ::= id ⟨Primario⟩’’
+    // {.,&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,,}
     private void primarioPrima(){
         match(TokenType.ID);
         primarioPrimaPrima();
     }
-    //⟨Primario⟩’’ ::= ⟨AccesoVar⟩’ | ⟨Llamada-Método⟩’
+    //TODO: agregué lambda acá
+    //⟨Primario⟩’’ ::= ⟨AccesoVar⟩’ | ⟨Llamada-Método⟩’ | lambda
     private void primarioPrimaPrima(){
+        Set<TokenType> followPrimarioPrimaPrima = new HashSet<>(Set.of(TokenType.DOT, TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,
+                TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
+                TokenType.DIV, TokenType.MOD, TokenType.COMMA));
+
         if (onFirst(actualToken, first("acceso_var'"))){
             accesoVarPrima();
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
             llamadaMetodoPrima();
+        } else if (followPrimarioPrimaPrima.contains(actualToken.getType())){
+            // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
