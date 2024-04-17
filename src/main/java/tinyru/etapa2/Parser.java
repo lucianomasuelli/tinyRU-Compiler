@@ -38,259 +38,6 @@ public class Parser {
         }
     }
 
-//    private Set<String> first(String noTerminal) {
-//        Set<String> firstSet = new HashSet<>();
-//        switch (noTerminal) {
-//            case "program" -> {
-//                firstSet = new HashSet<>(Set.of("struct", "impl", "start"));
-//            }
-//            case "start" -> {
-//                firstSet = new HashSet<>(Set.of("start"));
-//            }
-//            case "lista_definiciones", "lista_definiciones'" -> {
-//                firstSet = new HashSet<>(Set.of("struct", "impl"));
-//            }
-//            case "struct" -> {
-//                firstSet = new HashSet<>(Set.of("struct"));
-//            }
-//            case "struct'" -> {
-//                firstSet = new HashSet<>(Set.of(":", "{"));
-//            }
-//            case "struct''", "bloque_metodo" -> {
-//                firstSet = new HashSet<>(Set.of("{"));
-//            }
-//            case "struct'''" -> {
-//                firstSet = new HashSet<>(Set.of("}","pri","Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "N2", "atributo" -> {
-//                firstSet = new HashSet<>(Set.of("pri","Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "N2'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","pri","Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "impl" -> {
-//                firstSet = new HashSet<>(Set.of("impl"));
-//            }
-//            case "impl'" -> {
-//                firstSet = new HashSet<>(Set.of("}","st","fn","."));
-//            }
-//            case "N3", "miembro" -> {
-//                firstSet = new HashSet<>(Set.of("st","fn","."));
-//            }
-//            case "N3'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","st","fn","."));
-//            }
-//            case "herencia" -> {
-//                firstSet = new HashSet<>(Set.of(":"));
-//            }
-//            case "constructor" -> {
-//                firstSet = new HashSet<>(Set.of("."));
-//            }
-//            case "metodo" -> {
-//                firstSet = new HashSet<>(Set.of("st","fn"));
-//            }
-//            case "metodo'" -> {
-//                firstSet = new HashSet<>(Set.of("->","("));
-//            }
-//            case "bloque_metodo'" -> {
-//                firstSet = new HashSet<>(Set.of("}",";","if","while","ret","(","{","Str","Bool","Int","Char","idStruct","Array","id","self"));
-//            }
-//            case "bloque_metodo''" -> {
-//                firstSet = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self"));
-//            }
-//            case "N6", "decl_var_locales" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "N6'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "N7", "sentencia" -> {
-//                firstSet = new HashSet<>(Set.of(";","if","while","ret","(","{","id","self"));
-//            }
-//            case "N7'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda",";","if","while","ret","(","{","id","self"));
-//            }
-//            case "lista_declaracion_variables" -> {
-//                firstSet = new HashSet<>(Set.of("idMetAt"));
-//            }
-//            case "lista_declaracion_variables'" -> {
-//                firstSet = new HashSet<>(Set.of(",","lambda"));
-//            }
-//            case "argumentos_formales" -> {
-//                firstSet = new HashSet<>(Set.of("("));
-//            }
-//            case "argumentos_formales'" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array",")"));
-//            }
-//            case "lista_argumentos_formales" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "lista_argumentos_formales'" -> {
-//                firstSet = new HashSet<>(Set.of(",","lambda"));
-//            }
-//            case "argumento_formal" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "tipo_metodo" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array","void"));
-//            }
-//            case "tipo" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char","idStruct","Array"));
-//            }
-//            case "tipo_primitivo" -> {
-//                firstSet = new HashSet<>(Set.of("Str","Bool","Int","Char"));
-//            }
-//            case "tipo_referencia" -> {
-//                firstSet = new HashSet<>(Set.of("idStruct"));
-//            }
-//            case "tipo_arreglo" -> {
-//                firstSet = new HashSet<>(Set.of("Array"));
-//            }
-//            case "sentencia'" -> {
-//                firstSet = new HashSet<>(Set.of("else","lambda"));
-//            }
-//            case "sentencia''" -> {
-//                firstSet = new HashSet<>(Set.of(";","+","-","!","++","--","nil","true","false","intLiteral","StrLiteral","charLiteral","(","self","id","idStruct","new"));
-//            }
-//            case "bloque" -> {
-//                firstSet = new HashSet<>(Set.of("{"));
-//            }
-//            case "bloque'" -> {
-//                firstSet = new HashSet<>(Set.of("}",";","if","while","ret","(","{","id","self"));
-//            }
-//            case "asignacion" -> {
-//                firstSet = new HashSet<>(Set.of("id","self"));
-//            }
-//            case "N9" -> {
-//                firstSet = new HashSet<>(Set.of(";","if","while","ret","(","{","id","self"));
-//            }
-//            case "N9'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda",";","if","while","ret","(","{","id","self"));
-//            }
-//            case "acceso_var_simple" -> {
-//                firstSet = new HashSet<>(Set.of("id"));
-//            }
-//            case "N10" -> {
-//                firstSet = new HashSet<>(Set.of("."));
-//            }
-//            case "N10'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","."));
-//            }
-//            case "acceso_self_simple" -> {
-//                firstSet = new HashSet<>(Set.of("self"));
-//            }
-//            case "N11" -> {
-//                firstSet = new HashSet<>(Set.of("."));
-//            }
-//            case "N11'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","."));
-//            }
-//            case "encadenado_simple" -> {
-//                firstSet = new HashSet<>(Set.of("."));
-//            }
-//            case "sentencia_simple" -> {
-//                firstSet = new HashSet<>(Set.of("("));
-//            }
-//            case "expresion", "exp_or", "exp_and", "exp_igual", "exp_compuesta", "exp_ad", "exp_mul", "exp_un" -> {
-//                firstSet = new HashSet<>(Set.of("+","-","!","++","--","nil","true","false","intLiteral","StrLiteral","charLiteral","(","self","id","idStruct","new"));
-//            }
-//            case "exp_or'" -> {
-//                firstSet = new HashSet<>(Set.of("||","lambda"));
-//            }
-//            case "exp_and'" -> {
-//                firstSet = new HashSet<>(Set.of("&&","lambda"));
-//            }
-//            case "exp_igual'" -> {
-//                firstSet = new HashSet<>(Set.of("==","!=","lambda"));
-//            }
-//            case "exp_compuesta'" -> {
-//                firstSet = new HashSet<>(Set.of("<",">","<=",">=","lambda"));
-//            }
-//            case "exp_ad'" -> {
-//                firstSet = new HashSet<>(Set.of("+","-","lambda"));
-//            }
-//            case "exp_mul'" -> {
-//                firstSet = new HashSet<>(Set.of("*","/","%","lambda"));
-//            }
-//            case "op_igual" -> {
-//                firstSet = new HashSet<>(Set.of("==","!="));
-//            }
-//            case "op_compuesto" -> {
-//                firstSet = new HashSet<>(Set.of("<",">","<=",">="));
-//            }
-//            case "op_ad" -> {
-//                firstSet = new HashSet<>(Set.of("+","-"));
-//            }
-//            case "op_unario" -> {
-//                firstSet = new HashSet<>(Set.of("+","-","!","++","--"));
-//            }
-//            case "op_mul" -> {
-//                firstSet = new HashSet<>(Set.of("*","/","%"));
-//            }
-//            case "operando" -> {
-//                firstSet = new HashSet<>(Set.of("nil","true","false","intLiteral","StrLiteral","charLiteral","(","self","id","new"));
-//            }
-//            case "N12" -> {
-//                firstSet = new HashSet<>(Set.of("."));
-//            }
-//            case "N12'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","."));
-//            }
-//            case "literal" -> {
-//                firstSet = new HashSet<>(Set.of("nil","true","false","intLiteral","StrLiteral","charLiteral"));
-//            }
-//            case "primario" -> {
-//                firstSet = new HashSet<>(Set.of("(","self","id","idStruct","new"));
-//            }
-//            case "expresion_parentizada" -> {
-//                firstSet = new HashSet<>(Set.of("("));
-//            }
-//            case "acceso_self" -> {
-//                firstSet = new HashSet<>(Set.of("self"));
-//            }
-//            case "acceso_var" -> {
-//                firstSet = new HashSet<>(Set.of("id"));
-//            }
-//            case "acceso_var'" -> {
-//                firstSet = new HashSet<>(Set.of("lambda","[", "."));
-//            }
-//            case "llamada_metodo" -> {
-//                firstSet = new HashSet<>(Set.of("id"));
-//            }
-//            case "llamada_metodo'", "argumentos_actuales" -> {
-//                firstSet = new HashSet<>(Set.of("("));
-//            }
-//            case "llamada_metodo_estatico" -> {
-//                firstSet = new HashSet<>(Set.of("idStruct"));
-//            }
-//            case "llamada_constructor" -> {
-//                firstSet = new HashSet<>(Set.of("new"));
-//            }
-//            case "llamada_constructor'" -> {
-//                firstSet = new HashSet<>(Set.of("idStruct","Str","Bool","Int","Char"));
-//            }
-//            case "argumentos_actuales'" -> {
-//                firstSet = new HashSet<>(Set.of(")","+","-","!","++","--","nil","true","false","intLiteral","StrLiteral","charLiteral","(","self","id","idStruct","new"));
-//            }
-//            case "lista_expresiones" -> {
-//                firstSet = new HashSet<>(Set.of("+","-","!","++","--","nil","true","false","intLiteral","StrLiteral","charLiteral","(","self","id","idStruct","new"));
-//            }
-//            case "lista_expresiones'" -> {
-//                firstSet = new HashSet<>(Set.of(",","lambda"));
-//            }
-//            case "llamada_metodo_encadenado", "acceso_variable_encadenado" -> {
-//                firstSet = new HashSet<>(Set.of("id"));
-//            }
-//            case "llamada_metodo_encadenado'" -> {
-//                firstSet = new HashSet<>(Set.of("("));
-//            }
-//            case "acceso_variable_encadenado'" -> {
-//                firstSet = new HashSet<>(Set.of("[",".", "lambda"));
-//            }
-//        }
-//        return firstSet;
-//    }
-
     private Set<TokenType> first(String noTerminal) {
         Set<TokenType> firstSet = new HashSet<>();
         switch (noTerminal) {
@@ -554,65 +301,10 @@ public class Parser {
     }
 
 
-
-//        private Set<TokenType> firstToken (String noTerminal){
-//            Set<TokenType> firstSet = new HashSet<>();
-//            switch (noTerminal) {
-//                case "llamada_constructor'", "llamada_metodo_estatico", "primario", "tipo_referencia", "tipo",
-//                     "tipo_metodo", "argumento_formal", "lista_argumentos_formales", "argumentos_formales'", "N2",
-//                     "N2'", "atributo", "struct'''", "N6", "N6'", "decl_var_locales" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.STRUCTID));
-//                }
-//                case "bloque_metodo'" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.STRUCTID, TokenType.ID));
-//                }
-//                case "llamada_metodo_encadenado", "acceso_variable_encadenado", "llamada_metodo", "acceso_var",
-//                     "acceso_var_simple", "N9'", "N9", "asignacion", "bloque'", "N7", "N7'", "sentencia",
-//                     "bloque_metodo''", "lista_declaracion_variables" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.ID));
-//                }
-//                //Podriamos usar id de metodo?
-//                //case "lista_declaracion_variables" -> {
-//                //    firstSet = new HashSet<>(Set.of(TokenType.IDMET));
-//                //}
-//                case "lista_expresiones", "argumentos_actuales'", "expresion", "exp_or", "exp_and", "exp_igual",
-//                     "exp_compuesta", "exp_ad", "exp_mul", "exp_un", "sentencia''" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.ID, TokenType.STRUCTID));
-//                }
-//                case "operando" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.ID));
-//                }
-//                case "literal" -> {
-//                    firstSet = new HashSet<>(Set.of(TokenType.NUM, TokenType.STRING, TokenType.CHAR));
-//                }
-//            }
-//            return firstSet;
-//        }
-
     private boolean onFirst(Token token, Set<TokenType> firstSet) {
         return firstSet.contains(token.getType());
     }
 
-//    private boolean onFirstToken(Token token, Set<TokenType> firstSet) {
-//        return firstSet.contains(token.getType());
-//    }
-
-    //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩ | ⟨Start⟩
-//    private void program(){
-//        if (onFirst(actualToken, first("lista_definiciones"))){
-//            listaDefiniciones();
-//            start();
-//        }
-//        else if(onFirst(actualToken, first("start"))) {
-//            start();
-//        } else {
-//            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
-//        }
-//        if (actualToken.getType() == TokenType.EOF) {
-//            return;
-//        }
-//        //Hacer que matchee con EOF
-//    }
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩
     private void program(){
@@ -677,7 +369,7 @@ public class Parser {
         if (onFirst(actualToken, first("N2"))) {
             N2();
             match(TokenType.RBRACE);
-        } else if (onFirst(actualToken, first("}"))) {
+        } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -715,7 +407,7 @@ public class Parser {
         if (onFirst(actualToken, first("N3"))) {
             N3();
             match(TokenType.RBRACE);
-        } else if (onFirst(actualToken, first("}"))) {
+        } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -1472,7 +1164,7 @@ public class Parser {
         match(TokenType.ID);
         primarioPrimaPrima();
     }
-    //TODO: agregué lambda acá
+
     //⟨Primario⟩’’ ::= ⟨AccesoVar⟩’ | ⟨Llamada-Método⟩’ | lambda
     private void primarioPrimaPrima(){
         Set<TokenType> followPrimarioPrimaPrima = new HashSet<>(Set.of(TokenType.DOT, TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,

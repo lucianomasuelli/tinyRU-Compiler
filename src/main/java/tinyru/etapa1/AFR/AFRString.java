@@ -95,16 +95,12 @@ public class AFRString {
                 currChar = scanner.getCurrentChar();
             }
         }
-        if (str.toString().equals("void")) {
-            token = new Token(TokenType.PVOID, str.toString(), initialLine, initialColumn);
-        }
-        else {
-            if (length <= 1024){
-                token = new Token(TokenType.STRING, str.toString(), initialLine, initialColumn);
-                scanner.advance();
-            } else{
-                throw new StringTooLongError( initialLine, initialColumn);
-            }
+
+        if (length <= 1024){
+            token = new Token(TokenType.STRING, str.toString(), initialLine, initialColumn);
+            scanner.advance();
+        } else{
+            throw new StringTooLongError( initialLine, initialColumn);
         }
 
         return token;

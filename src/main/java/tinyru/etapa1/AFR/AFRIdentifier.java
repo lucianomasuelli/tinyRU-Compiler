@@ -55,6 +55,9 @@ public class AFRIdentifier {
                 }
             }
         }
+        if (identifier.toString().equals("void")) {
+            token = new Token(TokenType.PVOID, identifier.toString(), scanner.getLine(), initialColumn);
+        }
         if (token == null) {
             token = new Token(TokenType.ID, identifier.toString(), scanner.getLine(), initialColumn);
         }

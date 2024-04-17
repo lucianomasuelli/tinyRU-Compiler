@@ -1,0 +1,5 @@
+struct Hola {
+    .(){}
+}
+
+start {}
