@@ -394,25 +394,15 @@ public class Parser {
         }
     }
 
-    //⟨Impl⟩ ::= impl idStruct { ⟨Impl⟩’
+    //⟨Impl⟩ ::= impl idStruct { N3 }
     private void impl() {
         match(TokenType.PIMPL);
         match(TokenType.STRUCTID);
         match(TokenType.LBRACE);
-        implPrima();
+        N3();
+        match(TokenType.RBRACE);
     }
 
-    //⟨Impl⟩’ ::= N3 } | }
-    private void implPrima() {
-        if (onFirst(actualToken, first("N3"))) {
-            N3();
-            match(TokenType.RBRACE);
-        } else if (actualToken.getLexeme().equals("}")) {
-            match(TokenType.RBRACE);
-        } else {
-            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
-        }
-    }
 
     //N3 ::= ⟨Miembro⟩N3’
     private void N3() {
