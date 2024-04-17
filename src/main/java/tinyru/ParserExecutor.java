@@ -3,6 +3,8 @@ package tinyru;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa2.Parser;
 
+import java.io.IOException;
+
 public class ParserExecutor extends Executor{
 
         public ParserExecutor(String outputFile) {
@@ -14,11 +16,12 @@ public class ParserExecutor extends Executor{
             Lexer lexer = null;
             try {
                 lexer = new Lexer(filePath);
-            } catch (Exception e) {
+                Parser parser = new Parser(lexer);
+                parser.analyze();
+
+                System.out.println("CORRECTO: ANÁLISIS SINTÁCTICO");
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-
-            Parser parser = new Parser(lexer);
-            parser.analyze();
         }
 }

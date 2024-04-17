@@ -2,7 +2,7 @@
   <artifact type="jar" name="tinyRU-Compiler:jar2">
     <output-path>$PROJECT_DIR$/out/artifacts/tinyRU_Compiler_jar2</output-path>
     <root id="archive" name="tinyRU-Compiler.jar">
-      <element id="module-output" name="etapa1" />
+      <element id="module-output" name="etapa2" />
     </root>
   </artifact>
 </component>

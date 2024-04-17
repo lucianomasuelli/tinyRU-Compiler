@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="etapa2:jar" />
+    </artifacts-to-build>
+  </component>
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="Arreglo bugs, agrego tests.">
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/etapa1_jar2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/artifacts/tinyRU_Compiler_jar2.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/artifacts/tinyRU_Compiler_jar2.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tinyru/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tinyru/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/tinyru/ParserExecutor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/tinyru/ParserExecutor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/resources/etapa2/test1.ru" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="JUnit5 Test Class" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="reglas_gabriel" />
+      </map>
+    </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 6
+}</component>
+  <component name="ProjectId" id="2ddf5AwlXHLx4xjGfHjGVlN5GGY" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Executor.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.CharTooLongTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.FileScannerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.IllegalCharTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.IllegalStructIdTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.IllegalSymbolTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerGeneralTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerGeneralTest.nextToken.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerNumberErrorTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerNumberTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerNumberTest.nextToken.executor&quot;: &quot;Debug&quot;,
+    &quot;JUnit.LexerNumberTest.tokenize.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerStringTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.LexerTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.ParserTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UnterminatedCharTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.UnterminatedStringTest.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrary&quot;: &quot;JUnit5&quot;,
+    &quot;com.intellij.testIntegration.createTest.CreateTestDialog.defaultLibrarySuperClass.JUnit5&quot;: &quot;&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;test-debug&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;/home/luciano/Documentos/Facultad/4to/1_semestre/compiladores/tinyRU-Compiler/src/main/java/org/example/Main.java&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.uml&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CreateTestDialog.Recents.Supers">
+      <recent name="" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/test/resources" />
+    </key>
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="tinyru" />
+    </key>
+    <key name="CreateTestDialog.RecentsKey">
+      <recent name="tinyru.etapa2" />
+      <recent name="tinyru" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.ParserTest">
+    <configuration name="LexerGeneralTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="etapa2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tinyru.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tinyru" />
+      <option name="MAIN_CLASS_NAME" value="tinyru.LexerGeneralTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="LexerGeneralTest.nextToken" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="etapa2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tinyru.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tinyru" />
+      <option name="MAIN_CLASS_NAME" value="tinyru.LexerGeneralTest" />
+      <option name="METHOD_NAME" value="nextToken" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ParserTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="etapa2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tinyru.etapa2.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tinyru.etapa2" />
+      <option name="MAIN_CLASS_NAME" value="tinyru.etapa2.ParserTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UnterminatedCharTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="etapa2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tinyru.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tinyru" />
+      <option name="MAIN_CLASS_NAME" value="tinyru.UnterminatedCharTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UnterminatedStringTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="etapa2" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tinyru.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="tinyru" />
+      <option name="MAIN_CLASS_NAME" value="tinyru.UnterminatedStringTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="etapa2" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="etapa2" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.ParserTest" />
+        <item itemvalue="JUnit.LexerGeneralTest" />
+        <item itemvalue="JUnit.LexerGeneralTest.nextToken" />
+        <item itemvalue="JUnit.UnterminatedStringTest" />
+        <item itemvalue="JUnit.UnterminatedCharTest" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-18abd8497189-intellij.indexing.shared.core-IU-241.14494.240" />
+        <option value="bundled-js-predefined-1d06a55b98c1-74d2a5396914-JavaScript-IU-241.14494.240" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="e9d35260-6531-491e-8fe1-2ed4644a8854" name="Changes" comment="" />
+      <created>1710342692755</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1710342692755</updated>
+      <workItem from="1710342693784" duration="1788000" />
+      <workItem from="1710360299065" duration="3268000" />
+      <workItem from="1710421560666" duration="7604000" />
+      <workItem from="1710436272774" duration="972000" />
+      <workItem from="1710441998166" duration="3991000" />
+      <workItem from="1710450599701" duration="814000" />
+      <workItem from="1710508317253" duration="10944000" />
+      <workItem from="1710524415935" duration="1346000" />
+      <workItem from="1710527885489" duration="6126000" />
+      <workItem from="1710615173117" duration="17108000" />
+      <workItem from="1710678997026" duration="1875000" />
+      <workItem from="1710681116488" duration="12405000" />
+      <workItem from="1710700230877" duration="13177000" />
+      <workItem from="1710762035986" duration="9611000" />
+      <workItem from="1710778297956" duration="2411000" />
+      <workItem from="1710805005830" duration="1445000" />
+      <workItem from="1710856097662" duration="4962000" />
+      <workItem from="1710868329417" duration="2083000" />
+      <workItem from="1710875102412" duration="4595000" />
+      <workItem from="1710882698697" duration="2461000" />
+      <workItem from="1710935914916" duration="7669000" />
+      <workItem from="1710946368377" duration="5429000" />
+      <workItem from="1710967037267" duration="314000" />
+      <workItem from="1710970592245" duration="872000" />
+      <workItem from="1711474341541" duration="8000" />
+      <workItem from="1712515273645" duration="106000" />
+      <workItem from="1712842432724" duration="7734000" />
+      <workItem from="1712856546274" duration="7544000" />
+      <workItem from="1712924150707" duration="10038000" />
+      <workItem from="1713021963808" duration="4038000" />
+      <workItem from="1713128178280" duration="5865000" />
+      <workItem from="1713134063334" duration="4489000" />
+      <workItem from="1713183342952" duration="4913000" />
+      <workItem from="1713200306893" duration="4345000" />
+      <workItem from="1713216602797" duration="7603000" />
+      <workItem from="1713269714058" duration="3851000" />
+      <workItem from="1713273580620" duration="9757000" />
+      <workItem from="1713288438168" duration="7213000" />
+      <workItem from="1713301685395" duration="4843000" />
+      <workItem from="1713310826636" duration="11574000" />
+      <workItem from="1713349336150" duration="4534000" />
+      <workItem from="1713354267238" duration="4262000" />
+    </task>
+    <task id="LOCAL-00001" summary="Initial commit">
+      <option name="closed" value="true" />
+      <created>1710343220583</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1710343220583</updated>
+    </task>
+    <task id="LOCAL-00002" summary="cambios iniciales">
+      <option name="closed" value="true" />
+      <created>1710363642697</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1710363642697</updated>
+    </task>
+    <task id="LOCAL-00003" summary="feat: add FileScanner functionality">
+      <option name="closed" value="true" />
+      <created>1710427528777</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1710427528777</updated>
+    </task>
+    <task id="LOCAL-00004" summary="feat: add seeNextChar method to FileScanner">
+      <option name="closed" value="true" />
+      <created>1710428509879</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1710428509879</updated>
+    </task>
+    <task id="LOCAL-00005" summary="feat: add class Lexer">
+      <option name="closed" value="true" />
+      <created>1710451260185</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1710451260185</updated>
+    </task>
+    <task id="LOCAL-00006" summary="feat: add afr for strings and numbers">
+      <option name="closed" value="true" />
+      <created>1710518207968</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1710518207969</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: add test for string and number afr">
+      <option name="closed" value="true" />
+      <created>1710518293635</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1710518293635</updated>
+    </task>
+    <task id="LOCAL-00008" summary="actualización lexer">
+      <option name="closed" value="true" />
+      <created>1710535670195</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1710535670195</updated>
+    </task>
+    <task id="LOCAL-00009" summary="feat: add AFRNumber implementation and LexerError class">
+      <option name="closed" value="true" />
+      <created>1710632626302</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1710632626302</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: add AFRIdentifier and AFRStructID">
+      <option name="closed" value="true" />
+      <created>1710688496227</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1710688496227</updated>
+    </task>
+    <task id="LOCAL-00011" summary="debugeo algunas cosas">
+      <option name="closed" value="true" />
+      <created>1710690903498</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1710690903498</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add AFR for comparision operators and unary operators. Add comment recognizer">
+      <option name="closed" value="true" />
+      <created>1710712737958</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1710712737958</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: add AFR for characters and different error tests">
+      <option name="closed" value="true" />
+      <created>1710770996089</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1710770996089</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: add Executor">
+      <option name="closed" value="true" />
+      <created>1710805169403</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1710805169404</updated>
+    </task>
+    <task id="LOCAL-00015" summary="actualizo clase Main">
+      <option name="closed" value="true" />
+      <created>1710861920058</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1710861920058</updated>
+    </task>
+    <task id="LOCAL-00016" summary="ahora escribe la salida en el archivo q se pasa como segundo parametro">
+      <option name="closed" value="true" />
+      <created>1710879758948</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1710879758948</updated>
+    </task>
+    <task id="LOCAL-00017" summary="cambios en la forma que muestra la salida, el ejecutador ahora es etepa1.jar">
+      <option name="closed" value="true" />
+      <created>1710943289876</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1710943289876</updated>
+    </task>
+    <task id="LOCAL-00018" summary="actualizo algunas clases y agrego varios tests">
+      <option name="closed" value="true" />
+      <created>1710951775888</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1710951775888</updated>
+    </task>
+    <task id="LOCAL-00019" summary="actualizo imports, creamos clase Parser">
+      <option name="closed" value="true" />
+      <created>1712846340937</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1712846340937</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Creo los executors para Lexer y Parser">
+      <option name="closed" value="true" />
+      <created>1712850628520</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1712850628521</updated>
+    </task>
+    <task id="LOCAL-00021" summary="Implemento método first">
+      <option name="closed" value="true" />
+      <created>1712864046801</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1712864046801</updated>
+    </task>
+    <task id="LOCAL-00022" summary="Creo algunos métodos, actualizo errores en la gramática">
+      <option name="closed" value="true" />
+      <created>1712935938377</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1712935938377</updated>
+    </task>
+    <task id="LOCAL-00023" summary="Creo algunos métodos, actualizo errores en la gramática">
+      <option name="closed" value="true" />
+      <created>1713026479475</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1713026479475</updated>
+    </task>
+    <task id="LOCAL-00024" summary="Agrego métodos para las derivaciones">
+      <option name="closed" value="true" />
+      <created>1713140705443</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1713140705443</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Ahora el método match recibe TokenType.">
+      <option name="closed" value="true" />
+      <created>1713191007462</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1713191007462</updated>
+    </task>
+    <task id="LOCAL-00026" summary="Actualizo los métodos, creo un test">
+      <option name="closed" value="true" />
+      <created>1713224174712</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1713224174712</updated>
+    </task>
+    <task id="LOCAL-00027" summary="Actualizo first">
+      <option name="closed" value="true" />
+      <created>1713275148848</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1713275148849</updated>
+    </task>
+    <task id="LOCAL-00028" summary="Actualizo first">
+      <option name="closed" value="true" />
+      <created>1713276286492</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1713276286492</updated>
+    </task>
+    <task id="LOCAL-00029" summary="bla">
+      <option name="closed" value="true" />
+      <created>1713278272692</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1713278272692</updated>
+    </task>
+    <task id="LOCAL-00030" summary="Arreglo algunos bugs">
+      <option name="closed" value="true" />
+      <created>1713283317167</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1713283317167</updated>
+    </task>
+    <task id="LOCAL-00031" summary="Agrego lambda en Primario'' y en Lista-Definiciones">
+      <option name="closed" value="true" />
+      <created>1713315206050</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1713315206051</updated>
+    </task>
+    <task id="LOCAL-00032" summary="Arreglo bugs">
+      <option name="closed" value="true" />
+      <created>1713327751649</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1713327751649</updated>
+    </task>
+    <task id="LOCAL-00033" summary="Arreglo bugs, agrego tests.">
+      <option name="closed" value="true" />
+      <created>1713356771274</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1713356771274</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnknownFeatures">
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.ru" />
+    <option featureType="com.intellij.fileTypeFactory" implementationName="*.nu" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="HEAD" />
+                </option>
+              </RecentGroup>
+              <RecentGroup>
+                <option name="FILTER_VALUES">
+                  <option value="main" />
+                </option>
+              </RecentGroup>
+            </list>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="feat: add test for string and number afr" />
+    <MESSAGE value="actualización lexer" />
+    <MESSAGE value="feat: add AFRNumber implementation and LexerError class" />
+    <MESSAGE value="feat: add AFRIdentifier and AFRStructID" />
+    <MESSAGE value="debugeo algunas cosas" />
+    <MESSAGE value="feat: add AFR for comparision operators and unary operators. Add comment recognizer" />
+    <MESSAGE value="feat: add AFR for characters and different error tests" />
+    <MESSAGE value="feat: add Executor" />
+    <MESSAGE value="actualizo clase Main" />
+    <MESSAGE value="ahora escribe la salida en el archivo q se pasa como segundo parametro" />
+    <MESSAGE value="cambios en la forma que muestra la salida, el ejecutador ahora es etepa1.jar" />
+    <MESSAGE value="actualizo algunas clases y agrego varios tests" />
+    <MESSAGE value="actualizo imports, creamos clase Parser" />
+    <MESSAGE value="Creo los executors para Lexer y Parser" />
+    <MESSAGE value="Implemento método first" />
+    <MESSAGE value="Creo algunos métodos, actualizo errores en la gramática" />
+    <MESSAGE value="Agrego métodos para las derivaciones" />
+    <MESSAGE value="Ahora el método match recibe TokenType." />
+    <MESSAGE value="Actualizo los métodos, creo un test" />
+    <MESSAGE value="Actualizo first" />
+    <MESSAGE value="bla" />
+    <MESSAGE value="Arreglo algunos bugs" />
+    <MESSAGE value="Agrego lambda en Primario'' y en Lista-Definiciones" />
+    <MESSAGE value="Arreglo bugs" />
+    <MESSAGE value="Arreglo bugs, agrego tests." />
+    <option name="LAST_COMMIT_MESSAGE" value="Arreglo bugs, agrego tests." />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/tinyru/etapa2/Parser.java</url>
+          <line>30</line>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/tinyru/etapa2/ParserTest.java</url>
+          <line>16</line>
+          <option name="timeStamp" value="6" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="tinyru.FileScanner" memberName="currentChar" />
+        <PinnedItemInfo parentTag="tinyru.etapa2.Parser" memberName="actualToken" />
+      </pinned-members>
+    </pin-to-top-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>
