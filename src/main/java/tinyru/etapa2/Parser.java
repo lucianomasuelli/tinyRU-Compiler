@@ -281,7 +281,7 @@ public class Parser {
                 firstSet = new HashSet<>(Set.of(TokenType.RPAREN, TokenType.SUM, TokenType.RESTA, TokenType.NOT, TokenType.INC, TokenType.DEC, TokenType.PNIL, TokenType.PTRUE, TokenType.PFALSE, TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.PNEW));
             }
             case "lista_expresiones" -> {
-                firstSet = new HashSet<>(Set.of(TokenType.SUM, TokenType.RESTA, TokenType.NOT, TokenType.INC, TokenType.DEC, TokenType.PNIL, TokenType.PTRUE, TokenType.PFALSE, TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.PNEW));
+                firstSet = new HashSet<>(Set.of(TokenType.SUM, TokenType.RESTA, TokenType.NOT, TokenType.INC, TokenType.DEC, TokenType.PNIL, TokenType.PTRUE, TokenType.PFALSE, TokenType.NUM, TokenType.STRING, TokenType.CHAR, TokenType.LPAREN, TokenType.PSELF, TokenType.ID, TokenType.PNEW,TokenType.STRUCTID));
             }
             case "lista_expresiones'" -> {
                 firstSet = new HashSet<>(Set.of(TokenType.COMMA, TokenType.LAMBDA));
@@ -1093,7 +1093,7 @@ public class Parser {
     //⟨Llamada-Método-Enc-Acceso-Var-Enc⟩ ::= ⟨Llamada-Método-Encadenado⟩’ | ⟨Acceso-Variable-Encadenado⟩’
     //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
     private void llamadaMetodoEncadenado_accVarEnc(){
-        Set<TokenType> followLlamadaMetodoEncadenado_accVarEnc = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,
+        Set<TokenType> followLlamadaMetodoEncadenado_accVarEnc = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
         if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
@@ -1247,9 +1247,9 @@ public class Parser {
             N12Prima();
         } else if (onFirst(actualToken, first("tipo_primitivo"))){
             tipoPrimitivo();
-            match(TokenType.LBRACE);
+            match(TokenType.LBRACKET);
             expresion();
-            match(TokenType.RBRACE);
+            match(TokenType.RBRACKET);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1315,13 +1315,13 @@ public class Parser {
     // ⟨Acceso-Variable-Encadenado⟩’ ::=  [⟨Expresion⟩] N12’ | N12’
     //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
     private void accesoVariableEncadenadoPrima(){
-        Set<TokenType> followAccesoVariableEncadenadoPrima = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACE,
+        Set<TokenType> followAccesoVariableEncadenadoPrima = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
         if (actualToken.getLexeme().equals("[")){
-            match(TokenType.LBRACE);
+            match(TokenType.LBRACKET);
             expresion();
-            match(TokenType.RBRACE);
+            match(TokenType.RBRACKET);
             N12Prima();
         } else if (onFirst(actualToken, first("N12'"))){
             N12Prima();
