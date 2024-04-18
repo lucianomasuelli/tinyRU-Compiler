@@ -21,7 +21,7 @@ public class AFRNot {
 
         if (nextChar == '='){
             lexeme.append(op);
-            lexeme.append(nextChar);
+            lexeme.append((char) nextChar);
             scanner.advance();
         }
         else {
