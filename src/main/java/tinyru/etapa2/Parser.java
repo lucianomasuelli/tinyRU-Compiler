@@ -24,6 +24,9 @@ public class Parser {
             program();
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (UnexpectedTokenError e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
         }
     }
 
