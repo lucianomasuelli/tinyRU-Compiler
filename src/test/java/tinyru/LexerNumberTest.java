@@ -1,6 +1,9 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
+import tinyru.etapa1.Lexer;
+import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 
 import java.io.IOException;
 

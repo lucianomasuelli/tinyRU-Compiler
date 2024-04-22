@@ -2,7 +2,7 @@
   <artifact type="jar" name="etapa1:jar2">
     <output-path>$PROJECT_DIR$/out/artifacts/etapa1_jar2</output-path>
     <root id="archive" name="etapa1.jar">
-      <element id="module-output" name="etapa1" />
+      <element id="module-output" name="etapa2" />
     </root>
   </artifact>
 </component>

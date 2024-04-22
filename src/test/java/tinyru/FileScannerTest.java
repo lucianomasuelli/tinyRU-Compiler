@@ -1,9 +1,11 @@
 package tinyru;
 
+import tinyru.etapa1.FileScanner;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class FileScannerTest {
     @org.junit.jupiter.api.Test

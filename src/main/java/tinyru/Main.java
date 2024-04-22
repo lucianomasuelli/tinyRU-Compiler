@@ -12,12 +12,12 @@ public class Main {
             }
             String filePath = args[0];
             if (args.length == 1) {
-                Executor executor = new Executor(null);
+                Executor executor = new LexerExecutor(null);
                 executor.execute(filePath);
             }
             else {
                 if (args.length == 2) {
-                    Executor executor = new Executor(args[1]);
+                    Executor executor = new LexerExecutor(args[1]);
                     executor.execute(filePath);
                 }
                 else {
@@ -25,8 +25,8 @@ public class Main {
                 }
             }
         }
-            else {
-                throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
-            }
+        else {
+            throw new IllegalArgumentException("La sintaxis de invocación debe ser: java -jar etapa1.jar <ARCHIVO_FUENTE> [<ARCHIVO_SALIDA>]");
         }
     }
+}

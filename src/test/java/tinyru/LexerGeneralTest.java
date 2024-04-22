@@ -1,11 +1,11 @@
 package tinyru;
 
 import org.junit.jupiter.api.Test;
+import tinyru.etapa1.Lexer;
+import tinyru.etapa1.Token;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class LexerGeneralTest {
 
@@ -13,7 +13,7 @@ class LexerGeneralTest {
     void nextToken() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/Reject/unterminatedBoolOp.ru");
+            lexer = new Lexer("src/test/resources/Accept/fibonacci.ru");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -24,9 +24,7 @@ class LexerGeneralTest {
             Token token;
             while (currChar != -1) {
                 token = lexer.nextToken();
-                if (token != null) {
-                    tokens.add(token);
-                }
+                tokens.add(token);
                 currChar = lexer.getCurrentChar();
             }
             System.out.println(tokens);
