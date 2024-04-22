@@ -8,8 +8,10 @@ import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.StructInput;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa3.VarInput;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,8 +36,9 @@ public class Parser {
         }
     }
 
-    private void match(TokenType expected) {
+    private Token match(TokenType expected) {
         if (actualToken.getType() == expected) {
+            Token prevToken = actualToken;
             try {
                 actualToken = lexer.nextToken();
             } catch (IOException e) {
@@ -44,6 +47,7 @@ public class Parser {
         } else {
             throw new WrongTokenError(actualToken, expected, actualToken.getLine(), actualToken.getColumn());
         }
+        return prevToken;
     }
 
     private Set<TokenType> first(String noTerminal) {
@@ -352,17 +356,22 @@ public class Parser {
         match(TokenType.PSTRUCT);
         String name = actualToken.getLexeme();
         match(TokenType.STRUCTID);
+        StructInput structInput;
         if(!symbolTable.fetchStruct(name)){
-            StructInput structInput = new StructInput();
-            symbolTable.addStruct(name, structInput);
+            structInput = new StructInput();
+        } else {
+            structInput = symbolTable.getStruct(name);
         }
+        symbolTable.actualStruct = structInput;
         structPrima();
+        symbolTable.addStruct(name, structInput);
     }
 
     // ⟨Struct⟩’ ::= ⟨Herencia⟩ ⟨Struct⟩’’ | ⟨Struct⟩’’
     public void structPrima() {
         if (onFirst(actualToken, first("herencia"))) {
-            herencia();
+            String hereda = herencia();
+            symbolTable.actualStruct.setHerencia(hereda);
             structPrimaPrima();
         } else if (onFirst(actualToken, first("struct''"))) {
             structPrimaPrima();
@@ -461,18 +470,31 @@ public class Parser {
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
     private void atributo() {
+        ArrayList<Token> atributosDeclarados = new ArrayList<>();
+        VarInput v;
+        Boolean visibility;
+        String type;
         if (actualToken.getLexeme().equals("pri")) {
             match(TokenType.PPRI);
-            tipo();
-            listaDeclaracionVariables();
+            visibility = true;
+            type = tipo();
+            listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
+
         } else if (onFirst(actualToken, first("tipo"))) {
-            tipo();
-            listaDeclaracionVariables();
+            type = tipo();
+            visibility = false;
+            listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+
+        for(Token t: atributosDeclarados){
+            v = new VarInput(t.getLexeme(),type,visibility);
+            symbolTable.actualStruct.addAttribute(t.getLexeme(),v);
+        }
+
     }
     // ⟨Método⟩ ::= st fn idMetAt ⟨Método⟩’ | fn idMetAt ⟨Método⟩’
     private void metodo() {
@@ -583,17 +605,18 @@ public class Parser {
         match(TokenType.SEMICOLON);
     }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’
-    private void listaDeclaracionVariables() {
-        match(TokenType.ID);
-        listaDeclaracionVariablesPrima();
+    private void listaDeclaracionVariables(ArrayList<Token> atributosDeclarados) {
+        Token token = match(TokenType.ID);
+        atributosDeclarados.add(token);
+        listaDeclaracionVariablesPrima(atributosDeclarados);
     }
 
     // ⟨Lista-Declaración-Variables⟩’ ::= , ⟨Lista-Declaración-Variables⟩ | λ
-    private void listaDeclaracionVariablesPrima() {
+    private void listaDeclaracionVariablesPrima(ArrayList<Token> atributosDeclarados) {
         Set<String> followListaDeclaracionVariablesPrima = new HashSet<>(Set.of(";"));
         if (actualToken.getLexeme().equals(",")) {
             match(TokenType.COMMA);
-            listaDeclaracionVariables();
+            listaDeclaracionVariables(atributosDeclarados);
         } else if (followListaDeclaracionVariablesPrima.contains(actualToken.getLexeme())) {
             // lambda
         } else {
@@ -656,20 +679,22 @@ public class Parser {
     }
 
     // ⟨Tipo⟩ ::= ⟨Tipo-Primitivo⟩ | ⟨Tipo-Referencia⟩ | ⟨Tipo-Arreglo⟩
-    private void tipo() {
+    private String tipo() {
+        String type;
         if (onFirst(actualToken, first("tipo_primitivo"))) {
-            tipoPrimitivo();
+            type = tipoPrimitivo();
         } else if (onFirst(actualToken, first("tipo_referencia"))) {
-            tipoReferencia();
+            type = tipoReferencia();
         } else if (onFirst(actualToken, first("tipo_arreglo"))) {
-            tipoArreglo();
+            type = tipoArreglo();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return type;
     }
 
     // ⟨Tipo-Primitivo⟩ ::= Str | Bool |Int | Char
-    private void tipoPrimitivo() {
+    private String tipoPrimitivo() {
         if (actualToken.getLexeme().equals("Str")) {
             match(TokenType.PSTR);
         } else if (actualToken.getLexeme().equals("Bool")) {

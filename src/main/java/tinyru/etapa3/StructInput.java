@@ -5,6 +5,10 @@ import tinyru.etapa3.VarInput;
 
 
 public class StructInput {
+
+    private String nombre;
+    private StructInput herencia;
+    private String herenciaNombre;
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
     private Hashtable<String, MethodInput> methodTable = new Hashtable<>();
