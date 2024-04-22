@@ -35,7 +35,7 @@ public class AFRDot {
             currChar = scanner.getCurrentChar();
         }
         if (currChar == '(') {
-            token = new Token(TokenType.CONSTRUCT, "(", scanner.getLine(), initialColumn);
+            token = new Token(TokenType.CONSTRUCT, ".", scanner.getLine(), initialColumn);
         } else {
             token = new Token(TokenType.DOT, ".", scanner.getLine(), initialColumn);
         }

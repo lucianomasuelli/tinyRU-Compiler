@@ -1,6 +1,9 @@
 package tinyru;
 
+import tinyru.etapa1.Exceptions.LexerError;
 import tinyru.etapa1.Lexer;
+import tinyru.etapa2.Exceptions.ParserError;
+import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Parser;
 
 import java.io.IOException;
@@ -20,8 +23,13 @@ public class ParserExecutor extends Executor{
                 parser.analyze();
 
                 System.out.println("CORRECTO: ANÁLISIS SINTÁCTICO");
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
+
+            } catch (LexerError | ParserError e) {
+                System.out.println(e.getMessage());
+
             }
         }
 }

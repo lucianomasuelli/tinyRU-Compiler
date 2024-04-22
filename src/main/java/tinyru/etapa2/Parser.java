@@ -1,7 +1,9 @@
 package tinyru.etapa2;
+import tinyru.etapa1.Exceptions.LexerError;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
+import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 
 import java.io.IOException;
