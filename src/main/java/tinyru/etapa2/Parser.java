@@ -6,6 +6,8 @@ import tinyru.etapa1.TokenType;
 import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
+import tinyru.etapa3.StructInput;
+import tinyru.etapa3.SymbolTable;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -14,6 +16,7 @@ import java.util.Set;
 public class Parser {
     Lexer lexer;
     Token actualToken;
+    SymbolTable symbolTable = new SymbolTable();
 
     public Parser(Lexer lexer) {
         this.lexer = lexer;
@@ -347,7 +350,12 @@ public class Parser {
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
     private void struct() {
         match(TokenType.PSTRUCT);
+        String name = actualToken.getLexeme();
         match(TokenType.STRUCTID);
+        if(!symbolTable.fetchStruct(name)){
+            StructInput structInput = new StructInput();
+            symbolTable.addStruct(name, structInput);
+        }
         structPrima();
     }
 
