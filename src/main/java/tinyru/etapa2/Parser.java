@@ -5,6 +5,7 @@ import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
+import tinyru.etapa2.Exceptions.WrongTokenError;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class Parser {
             program();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (UnexpectedTokenError e) {
+        } catch (UnexpectedTokenError | WrongTokenError e) {
             System.out.println(e.getMessage());
             System.exit(1);
         }
@@ -38,7 +39,7 @@ public class Parser {
                 throw new RuntimeException(e);
             }
         } else {
-            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+            throw new WrongTokenError(actualToken, expected, actualToken.getLine(), actualToken.getColumn());
         }
     }
 
