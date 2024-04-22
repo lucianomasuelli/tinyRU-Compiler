@@ -29,6 +29,7 @@ public class ParserExecutor extends Executor{
 
             } catch (LexerError | ParserError e) {
                 System.out.println(e.getMessage());
+                System.exit(1);
 
             }
         }
