@@ -6,9 +6,8 @@ import tinyru.etapa3.VarInput;
 
 public class StructInput {
 
-    private String nombre;
-    private StructInput herencia;
-    private String herenciaNombre;
+    private String name;
+    private String inheritanceName;
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
     private Hashtable<String, MethodInput> methodTable = new Hashtable<>();
@@ -48,6 +47,22 @@ public class StructInput {
 
     public boolean fetchMethod(String name) {
         return methodTable.containsKey(name);
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setInheritanceName(String inheritanceName) {
+        this.inheritanceName = inheritanceName;
+    }
+
+    public String getInheritanceName() {
+        return inheritanceName;
     }
 
 

@@ -6,6 +6,7 @@ import tinyru.etapa1.TokenType;
 import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
+import tinyru.etapa3.MethodInput;
 import tinyru.etapa3.StructInput;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa3.VarInput;
@@ -37,8 +38,9 @@ public class Parser {
     }
 
     private Token match(TokenType expected) {
+        Token prevToken;
         if (actualToken.getType() == expected) {
-            Token prevToken = actualToken;
+            prevToken = actualToken;
             try {
                 actualToken = lexer.nextToken();
             } catch (IOException e) {
@@ -352,7 +354,7 @@ public class Parser {
     }
 
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
-    private void struct() {
+    private void struct() { //TODO: Probar si funciona bien.
         match(TokenType.PSTRUCT);
         String name = actualToken.getLexeme();
         match(TokenType.STRUCTID);
@@ -370,8 +372,8 @@ public class Parser {
     // ⟨Struct⟩’ ::= ⟨Herencia⟩ ⟨Struct⟩’’ | ⟨Struct⟩’’
     public void structPrima() {
         if (onFirst(actualToken, first("herencia"))) {
-            String hereda = herencia();
-            symbolTable.actualStruct.setHerencia(hereda);
+            String ancestor = herencia();
+            symbolTable.actualStruct.setInheritanceName(ancestor);
             structPrimaPrima();
         } else if (onFirst(actualToken, first("struct''"))) {
             structPrimaPrima();
@@ -445,9 +447,9 @@ public class Parser {
     }
 
     //⟨Herencia⟩ ::= : ⟨Tipo⟩
-    private void herencia() {
+    private String herencia() {
         match(TokenType.COLON);
-        tipo();
+        return tipo();
     }
 
     // ⟨Miembro⟩ ::= ⟨Método⟩ | ⟨Constructor ⟩
@@ -496,37 +498,37 @@ public class Parser {
         }
 
     }
-    // ⟨Método⟩ ::= st fn idMetAt ⟨Método⟩’ | fn idMetAt ⟨Método⟩’
-    private void metodo() {
+    // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
+    // | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
+    private void metodo() { //TODO: Probar si funciona bien
+        boolean isStatic = false;
         if (actualToken.getLexeme().equals("st")) {
             match(TokenType.PST);
-            match(TokenType.PFN);
-            match(TokenType.ID);
-            metodoPrima();
+            isStatic = true;
+            metodoPrima(isStatic);
         } else if (actualToken.getLexeme().equals("fn")) {
-            match(TokenType.PFN);
-            match(TokenType.ID);
-            metodoPrima();
+            metodoPrima(isStatic);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
 
     }
 
-    // ⟨Método⟩’ ::= ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩ | -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
-    private void metodoPrima() {
-        if (onFirst(actualToken, first("argumentos_formales"))) {
-            argumentosFormales();
-            match(TokenType.RETURN_TYPE);
-            tipoMetodo();
-            bloqueMetodo();
-        } else if (actualToken.getLexeme().equals("->")) {
-            match(TokenType.RETURN_TYPE);
-            tipoMetodo();
-            bloqueMetodo();
+    private void metodoPrima(boolean isStatic) {
+        match(TokenType.PFN);
+        String name = actualToken.getLexeme();
+        match(TokenType.ID);
+        if(!symbolTable.actualStruct.fetchMethod(name)){
+            symbolTable.actualMethod = new MethodInput(name, isStatic);
         } else {
-            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+            symbolTable.actualMethod = symbolTable.actualStruct.getMethod(name);
         }
+        argumentosFormales(); //TODO: Actualizar este método.
+        match(TokenType.RETURN_TYPE);
+        String type = tipoMetodo();
+        symbolTable.actualMethod.setReturnType(type);
+        bloqueMetodo();
+        symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
@@ -600,9 +602,14 @@ public class Parser {
 
     // ⟨Decl-Var-Locales⟩ ::= ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
     private void declVarLocales() {
-        tipo();
-        listaDeclaracionVariables();
+        ArrayList<Token> declaredAttributes = new ArrayList<>();
+        String type = tipo();
+        listaDeclaracionVariables(declaredAttributes);
         match(TokenType.SEMICOLON);
+        for(Token t: declaredAttributes){
+            VarInput v = new VarInput(t.getLexeme(), type,false);
+            symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+        }
     }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’
     private void listaDeclaracionVariables(ArrayList<Token> atributosDeclarados) {
@@ -668,14 +675,17 @@ public class Parser {
     }
 
     // ⟨Tipo-Método⟩ ::= ⟨Tipo⟩ | void
-    private void tipoMetodo() {
+    private String tipoMetodo() {
+        String type;
         if (onFirst(actualToken, first("tipo"))) {
-            tipo();
+            type = tipo();
         } else if (actualToken.getLexeme().equals("void")) {
             match(TokenType.PVOID);
+            type = "void";
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return type;
     }
 
     // ⟨Tipo⟩ ::= ⟨Tipo-Primitivo⟩ | ⟨Tipo-Referencia⟩ | ⟨Tipo-Arreglo⟩
@@ -695,6 +705,7 @@ public class Parser {
 
     // ⟨Tipo-Primitivo⟩ ::= Str | Bool |Int | Char
     private String tipoPrimitivo() {
+        String type = actualToken.getLexeme();
         if (actualToken.getLexeme().equals("Str")) {
             match(TokenType.PSTR);
         } else if (actualToken.getLexeme().equals("Bool")) {
@@ -706,17 +717,20 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return type;
     }
 
     // ⟨Tipo-Referencia⟩ ::= idStruct
-    private void tipoReferencia() {
+    private String tipoReferencia() {
+        String type = actualToken.getLexeme();
         match(TokenType.STRUCTID);
+        return type;
     }
 
     // ⟨Tipo-Arreglo⟩ ::= Array ⟨Tipo-Primitivo⟩
-    private void tipoArreglo() {
+    private String tipoArreglo() {
         match(TokenType.PARRAY);
-        tipoPrimitivo();
+        return tipoPrimitivo();
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
