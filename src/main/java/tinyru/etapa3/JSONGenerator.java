@@ -20,11 +20,8 @@ public class JSONGenerator {
             StructInput struct = st.getStructTable().get(key);
             json += "{\n";
             json += "\"nombre\": \"" + key + "\",\n";
-            if (struct.getInheritanceName() != null) {
-                json += "\"herencia\": \"" + struct.getInheritanceName() + "\",\n";
-            } else {
-                json += "\"herencia\": Object,\n";
-            }
+            json += "\"herencia\": \"" + struct.getInheritanceName() + "\",\n";
+
             json += "\"atributos\": [\n";
             for (String key2 : struct.getAttributeTable().keySet()) {
                 VarInput attribute = struct.getAttributeTable().get(key2);

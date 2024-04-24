@@ -4,7 +4,7 @@ public class ParamInput {
 
         private String name;
         private String type;
-        private Integer position;
+        private Integer position; //TODO agregar que calcule la posición relativa
 
         public ParamInput(String name, String type) {
             this.name = name;

@@ -377,6 +377,7 @@ public class Parser {
             symbolTable.actualStruct.setInheritanceName(ancestor);
             structPrimaPrima();
         } else if (onFirst(actualToken, first("struct''"))) {
+            symbolTable.actualStruct.setInheritanceName("Object");
             structPrimaPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());

@@ -12,7 +12,7 @@ class ParserTest {
     @Test
     void analyze() {
         try {
-            Lexer lexer = new Lexer("src/test/resources/etapa2/test1.ru");
+            Lexer lexer = new Lexer("src/test/resources/etapa2/failing/constructorNotInImpl.ru");
             Parser parser = new Parser(lexer);
             parser.analyze();
 
