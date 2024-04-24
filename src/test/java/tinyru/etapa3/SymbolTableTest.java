@@ -3,9 +3,9 @@ package tinyru.etapa3;
 import org.junit.jupiter.api.Test;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa2.Parser;
+import tinyru.etapa3.JSONGenerator;
 
 import java.io.IOException;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 class SymbolTableTest {
@@ -17,8 +17,10 @@ class SymbolTableTest {
             Parser parser = new Parser(lexer);
             parser.analyze();
             SymbolTable table = parser.getSymbolTable();
-            printTable(table);
-
+            //printTable(table);
+            JSONGenerator json = new JSONGenerator("test1.ru");
+            String jsonText = json.jasonify(table);
+            System.out.println(jsonText);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

@@ -8,6 +8,7 @@ public class StructInput {
 
     private String name;
     private String inheritanceName;
+
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
     private Hashtable<String, MethodInput> methodTable = new Hashtable<>();

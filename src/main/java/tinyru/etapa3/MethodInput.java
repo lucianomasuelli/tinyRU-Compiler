@@ -7,12 +7,16 @@ public class MethodInput {
     String returnType;
     Boolean isStatic;
 
+    int position;
+
     Hashtable<String, ParamInput> parameterTable = new Hashtable<>();
     Hashtable<String, VarInput> localVarTable = new Hashtable<>();
 
     public MethodInput(String name, Boolean isStatic) {
         this.name = name;
         this.isStatic = isStatic;
+        this.returnType = "void"; //TODO agregar que tome el tipo de retorno
+        this.position = 0; //TODO agregar que calcule la posición relativa
     }
 
     public void addParameter(String name, ParamInput parameter) {
@@ -38,4 +42,16 @@ public class MethodInput {
     public String getReturnType() {
         return returnType;
     }
+
+    public String getName() {
+        return name;
+    }
+    public String getIsStatic() {
+        return isStatic.toString();
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
 }
