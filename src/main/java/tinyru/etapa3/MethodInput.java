@@ -23,11 +23,19 @@ public class MethodInput {
         return parameterTable.get(name);
     }
 
+    public Hashtable<String, ParamInput> getParameterTable() {
+        return parameterTable;
+    }
+
     public void addLocalVar(String name, VarInput localVar) {
         localVarTable.put(name, localVar);
     }
 
     public void setReturnType(String returnType) {
         this.returnType = returnType;
+    }
+
+    public String getReturnType() {
+        return returnType;
     }
 }

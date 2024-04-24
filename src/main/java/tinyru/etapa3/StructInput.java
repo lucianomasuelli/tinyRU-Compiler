@@ -21,6 +21,10 @@ public class StructInput {
         return attributeTable.get(name);
     }
 
+    public Hashtable<String, VarInput> getAttributeTable() {
+        return attributeTable;
+    }
+
     public boolean fetchAttribute(String name) {
         return attributeTable.containsKey(name);
     }
@@ -37,6 +41,10 @@ public class StructInput {
         return constantTable.containsKey(name);
     }
 
+    public Hashtable<String, ConstInput> getConstantTable() {
+        return constantTable;
+    }
+
     public void addMethod(String name, MethodInput method) {
         methodTable.put(name, method);
     }
@@ -47,6 +55,10 @@ public class StructInput {
 
     public boolean fetchMethod(String name) {
         return methodTable.containsKey(name);
+    }
+
+    public Hashtable<String, MethodInput> getMethodTable() {
+        return methodTable;
     }
 
     public void setName(String name) {
@@ -65,5 +77,8 @@ public class StructInput {
         return inheritanceName;
     }
 
+    public String getParent() {
+        return inheritanceName;
+    }
 
 }

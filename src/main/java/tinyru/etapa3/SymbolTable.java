@@ -23,6 +23,10 @@ public class SymbolTable {
         return structTable.containsKey(name);
     }
 
+    public Hashtable<String, StructInput> getStructTable() {
+        return structTable;
+    }
+
 }
 
 

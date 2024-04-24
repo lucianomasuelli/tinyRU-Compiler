@@ -1,6 +1,4 @@
-package tinyru;
-
-import tinyru.etapa1.FileScanner;
+package tinyru.etapa1;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

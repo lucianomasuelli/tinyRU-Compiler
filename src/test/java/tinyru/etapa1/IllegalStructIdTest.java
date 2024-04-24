@@ -1,19 +1,17 @@
-package tinyru;
+package tinyru.etapa1;
 
 import org.junit.jupiter.api.Test;
-import tinyru.etapa1.Exceptions.UnterminatedCharError;
-import tinyru.etapa1.Lexer;
-import tinyru.etapa1.Token;
+import tinyru.etapa1.Exceptions.IllegalStructIdError;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UnterminatedCharTest {
+class IllegalStructIdTest {
 
     @Test
     void nextToken() {
-        Lexer lexer;
+        Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/unterminatedChar.ru");
+            lexer = new Lexer("src/test/resources/illegalStructId.ru");
         }
         catch (Exception e) {
             throw new RuntimeException(e);
@@ -22,10 +20,10 @@ class UnterminatedCharTest {
             Token token = lexer.nextToken();
             System.out.println(token);
             fail("Se esperaba que se lanzara una excepción");
-        } catch (UnterminatedCharError e) {
+        } catch (IllegalStructIdError e) {
             System.out.println("Mensaje de error: \n" + e.getMessage());
         } catch (Exception e) {
-            fail("Se esperaba que se lanzara una excepción UnterminatedCharError, pero se lanzó una excepción diferente: " + e.getClass().getSimpleName());
+            fail("Se esperaba que se lanzara una excepción IllegalStructIdError, pero se lanzó una excepción diferente: " + e.getClass().getSimpleName());
         }
     }
 }

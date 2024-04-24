@@ -1,31 +1,31 @@
-package tinyru;
+package tinyru.etapa1;
 
 import org.junit.jupiter.api.Test;
-import tinyru.etapa1.Exceptions.IllegalSymbolError;
-import tinyru.etapa1.Lexer;
-import tinyru.etapa1.Token;
+import tinyru.etapa1.Exceptions.IllegalCharError;
+
+import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class IllegalSymbolTest {
+class IllegalCharTest {
 
     @Test
     void nextToken() {
         Lexer lexer = null;
         try {
-            lexer = new Lexer("src/test/resources/illegalSymbol.ru");
+            lexer = new Lexer("src/test/resources/illegalChar.ru");
         }
-        catch (Exception e) {
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
         try {
             Token token = lexer.nextToken();
             System.out.println(token);
             fail("Se esperaba que se lanzara una excepción");
-        } catch (IllegalSymbolError e) {
+        } catch (IllegalCharError e) {
             System.out.println("Mensaje de error: \n" + e.getMessage());
         } catch (Exception e) {
-            fail("Se esperaba que se lanzara una excepción IllegalSymbolError, pero se lanzó una excepción diferente: " + e.getClass().getSimpleName());
+            fail("Se esperaba que se lanzara una excepción IllegalCharError, pero se lanzó una excepción diferente: " + e.getClass().getSimpleName());
         }
     }
 }

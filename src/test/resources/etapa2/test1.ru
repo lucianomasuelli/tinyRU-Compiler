@@ -1,6 +1,11 @@
-/? Descripción: caso de prueba que se fija si se ha lidiado con la regla Encadenado
-/? que tiene dos id en primeros probando la opción de Acceso-Variable-Encadenado
-/? Salida esperada:
-/? CORRECTO: ANALISIS SINTACTICO
+struct Hola {
+    Int a, b;
+}
+impl Hola {
+    fn method_1  () -> void {}
+    st fn method_2() -> Int {
+        ret 1;
+    }
+}
 
-start { ret self.xdid ; }
+start {}

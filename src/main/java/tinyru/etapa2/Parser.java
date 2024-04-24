@@ -6,10 +6,7 @@ import tinyru.etapa1.TokenType;
 import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
-import tinyru.etapa3.MethodInput;
-import tinyru.etapa3.StructInput;
-import tinyru.etapa3.SymbolTable;
-import tinyru.etapa3.VarInput;
+import tinyru.etapa3.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,6 +20,10 @@ public class Parser {
 
     public Parser(Lexer lexer) {
         this.lexer = lexer;
+    }
+
+    public SymbolTable getSymbolTable(){
+        return symbolTable;
     }
 
     public void analyze() {
@@ -523,7 +524,7 @@ public class Parser {
         } else {
             symbolTable.actualMethod = symbolTable.actualStruct.getMethod(name);
         }
-        argumentosFormales(); //TODO: Actualizar este método.
+        argumentosFormales(); //TODO: Probar si funciona bien.
         match(TokenType.RETURN_TYPE);
         String type = tipoMetodo();
         symbolTable.actualMethod.setReturnType(type);
@@ -639,28 +640,35 @@ public class Parser {
 
     // ⟨Argumentos-Formales⟩’ ::= ⟨Lista-Argumentos-Formales⟩ ) |  )
     private void argumentosFormalesPrima() {
+        ArrayList<ParamInput> args = new ArrayList<>();
         if (onFirst(actualToken, first("lista_argumentos_formales"))) {
-            listaArgumentosFormales();
+            listaArgumentosFormales(args);
             match(TokenType.RPAREN);
         } else if (actualToken.getLexeme().equals(")")) {
             match(TokenType.RPAREN);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        int pos = 0;
+        for(ParamInput arg : args) {
+            symbolTable.actualMethod.addParameter(arg.getName(), arg);
+            arg.setPosition(pos);
+            pos++;
+        }
     }
 
     // ⟨Lista-Argumentos-Formales⟩ ::= ⟨Argumento-Formal ⟩ ⟨Lista-Argumentos-Formales⟩’
-    private void listaArgumentosFormales() {
-        argumentoFormal();
-        listaArgumentosFormalesPrima();
+    private void listaArgumentosFormales(ArrayList<ParamInput> args) {
+        argumentoFormal(args);
+        listaArgumentosFormalesPrima(args);
     }
 
     // ⟨Lista-Argumentos-Formales⟩’ ::= , ⟨Lista-Argumentos-Formales⟩ | λ
-    private void listaArgumentosFormalesPrima() {
+    private void listaArgumentosFormalesPrima(ArrayList<ParamInput> args) {
         Set<String> followListaArgumentosFormalesPrima = new HashSet<>(Set.of(")"));
         if (actualToken.getLexeme().equals(",")) {
             match(TokenType.COMMA);
-            listaArgumentosFormales();
+            listaArgumentosFormales(args);
         } else if (followListaArgumentosFormalesPrima.contains(actualToken.getLexeme())) {
             // lambda
         } else {
@@ -669,9 +677,12 @@ public class Parser {
     }
 
     // ⟨Argumento-Formal ⟩ ::= ⟨Tipo⟩ idMetAt
-    private void argumentoFormal() {
-        tipo();
+    private void argumentoFormal(ArrayList<ParamInput> args) {
+        String type = tipo();
+        String name = actualToken.getLexeme();
         match(TokenType.ID);
+        ParamInput p = new ParamInput(name, type);
+        args.add(p);
     }
 
     // ⟨Tipo-Método⟩ ::= ⟨Tipo⟩ | void
