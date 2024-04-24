@@ -27,6 +27,17 @@ public class SymbolTable {
         return structTable;
     }
 
+    public void addStructIO() {
+        StructInput structIO = new StructInput();
+        structIO.setName("IO");
+        structTable.put("IO", structIO);
+
+        MethodInput methodInput1 = new MethodInput("out_str",true);
+        methodInput1.addParameter("str", new ParamInput("str", "String"));
+        methodInput1.setReturnType("void");
+
+    }
+
 }
 
 

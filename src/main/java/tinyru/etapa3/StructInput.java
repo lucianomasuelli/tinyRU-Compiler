@@ -82,4 +82,8 @@ public class StructInput {
         return inheritanceName;
     }
 
+    public void setParent(String parent) {
+        this.inheritanceName = parent;
+    }
+
 }
