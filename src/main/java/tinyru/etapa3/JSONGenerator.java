@@ -47,6 +47,7 @@ public class JSONGenerator {
                     json += "{\n";
                     json += "\"nombre\": \"" + key3 + "\",\n";
                     json += "\"tipo\": \"" + parameter.getType() + "\"\n";
+                    json += "\"posicion\": " + parameter.getPosition() + "\n";
                     json += "},\n";
                 }
                 json += "}\n";

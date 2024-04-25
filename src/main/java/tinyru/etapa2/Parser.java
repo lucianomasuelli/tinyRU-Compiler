@@ -425,22 +425,23 @@ public class Parser {
         match(TokenType.PIMPL);
         match(TokenType.STRUCTID);
         match(TokenType.LBRACE);
-        N3();
+        int methodPos = 0;
+        N3(methodPos);
         match(TokenType.RBRACE);
     }
 
 
     //N3 ::= ⟨Miembro⟩N3’
-    private void N3() {
-        miembro();
-        N3Prima();
+    private void N3(int pos) {
+        pos = miembro(pos);
+        N3Prima(pos);
     }
 
     //N3’ ::= N3 | λ
-    private void N3Prima() {
+    private void N3Prima(int pos) {
         Set<TokenType> followN3Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N3"))) {
-            N3();
+            N3(pos);
         } else if (followN3Prima.contains(actualToken.getType())) {
             // lambda
         } else {
@@ -455,14 +456,16 @@ public class Parser {
     }
 
     // ⟨Miembro⟩ ::= ⟨Método⟩ | ⟨Constructor ⟩
-    private void miembro() {
+    private int miembro(int pos) {
         if (onFirst(actualToken, first("metodo"))) {
-            metodo();
+            metodo(pos);
+            pos += 1;
         } else if (onFirst(actualToken, first("constructor"))) {
             constructor();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return pos;
     }
 
     // ⟨Constructor ⟩ ::= . ⟨Argumentos-Formales⟩ ⟨Bloque-Método⟩
@@ -502,21 +505,21 @@ public class Parser {
     }
     // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
     // | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
-    private void metodo() { //TODO: Probar si funciona bien
+    private void metodo(int pos) {
         boolean isStatic = false;
         if (actualToken.getLexeme().equals("st")) {
             match(TokenType.PST);
             isStatic = true;
-            metodoPrima(isStatic);
+            metodoPrima(isStatic, pos);
         } else if (actualToken.getLexeme().equals("fn")) {
-            metodoPrima(isStatic);
+            metodoPrima(isStatic, pos);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
 
     }
 
-    private void metodoPrima(boolean isStatic) {
+    private void metodoPrima(boolean isStatic, int pos) {
         match(TokenType.PFN);
         String name = actualToken.getLexeme();
         match(TokenType.ID);
@@ -525,11 +528,12 @@ public class Parser {
         } else {
             symbolTable.actualMethod = symbolTable.actualStruct.getMethod(name);
         }
-        argumentosFormales(); //TODO: Probar si funciona bien.
+        argumentosFormales();
         match(TokenType.RETURN_TYPE);
         String type = tipoMetodo();
         symbolTable.actualMethod.setReturnType(type);
         bloqueMetodo();
+        symbolTable.actualMethod.setPosition(pos);
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
     }
 

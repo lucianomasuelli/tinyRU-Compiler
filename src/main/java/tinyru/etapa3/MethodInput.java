@@ -6,7 +6,6 @@ public class MethodInput {
     String name;
     String returnType;
     Boolean isStatic;
-
     int position;
 
     Hashtable<String, ParamInput> parameterTable = new Hashtable<>();
@@ -46,12 +45,17 @@ public class MethodInput {
     public String getName() {
         return name;
     }
+
     public String getIsStatic() {
         return isStatic.toString();
     }
 
     public int getPosition() {
         return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
 }
