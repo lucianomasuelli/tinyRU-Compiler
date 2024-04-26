@@ -7,6 +7,7 @@ import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
+import tinyru.etapa3.Exceptions.ParamAlreadyDecleared;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -355,7 +356,7 @@ public class Parser {
     }
 
     // ⟨Struct⟩ ::= struct idStruct ⟨Struct⟩’
-    private void struct() { //TODO: Probar si funciona bien.
+    private void struct() {
         match(TokenType.PSTRUCT);
         String name = actualToken.getLexeme();
         match(TokenType.STRUCTID);
@@ -471,8 +472,22 @@ public class Parser {
     // ⟨Constructor ⟩ ::= . ⟨Argumentos-Formales⟩ ⟨Bloque-Método⟩
     private void constructor() {
         match(TokenType.CONSTRUCT);
-        argumentosFormales();
+        symbolTable.actualConstructor = new ConstructorInput();
+        ArrayList<ParamInput> args = argumentosFormales();
+        int pos = 0;
+        for(ParamInput arg : args) {
+            if(symbolTable.actualConstructor.fetchParameter(arg.getName())){
+                throw new ParamAlreadyDecleared(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+            }
+
+            symbolTable.actualConstructor.addConstructorParam(arg.getName(), arg);
+            arg.setPosition(pos);
+
+            pos++;
+        }
+
         bloqueMetodo();
+        symbolTable.actualStruct.setConstructor(symbolTable.actualConstructor); // add constructor to struct
     }
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
@@ -528,7 +543,19 @@ public class Parser {
         } else {
             symbolTable.actualMethod = symbolTable.actualStruct.getMethod(name);
         }
-        argumentosFormales();
+        ArrayList<ParamInput> args = argumentosFormales();
+        int paramPos = 0;
+        for(ParamInput arg : args) {
+            if(symbolTable.actualMethod.fetchParameter(arg.getName())){
+                throw new ParamAlreadyDecleared(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+            }
+
+            symbolTable.actualMethod.addParameter(arg.getName(), arg);
+            arg.setPosition(paramPos);
+
+            paramPos++;
+        }
+
         match(TokenType.RETURN_TYPE);
         String type = tipoMetodo();
         symbolTable.actualMethod.setReturnType(type);
@@ -638,13 +665,13 @@ public class Parser {
     }
 
     // ⟨Argumentos-Formales⟩ ::= ( ⟨Argumentos-Formales⟩’
-    private void argumentosFormales() {
+    private ArrayList<ParamInput> argumentosFormales() {
         match(TokenType.LPAREN);
-        argumentosFormalesPrima();
+        return argumentosFormalesPrima();
     }
 
     // ⟨Argumentos-Formales⟩’ ::= ⟨Lista-Argumentos-Formales⟩ ) |  )
-    private void argumentosFormalesPrima() {
+    private ArrayList<ParamInput> argumentosFormalesPrima() {
         ArrayList<ParamInput> args = new ArrayList<>();
         if (onFirst(actualToken, first("lista_argumentos_formales"))) {
             listaArgumentosFormales(args);
@@ -654,12 +681,8 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-        int pos = 0;
-        for(ParamInput arg : args) {
-            symbolTable.actualMethod.addParameter(arg.getName(), arg);
-            arg.setPosition(pos);
-            pos++;
-        }
+
+        return args;
     }
 
     // ⟨Lista-Argumentos-Formales⟩ ::= ⟨Argumento-Formal ⟩ ⟨Lista-Argumentos-Formales⟩’

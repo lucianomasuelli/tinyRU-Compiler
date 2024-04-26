@@ -6,8 +6,8 @@ import java.util.Hashtable;
 
 public class SymbolTable {
     public StructInput actualStruct;
-
-    public  MethodInput actualMethod;
+    public MethodInput actualMethod = new MethodInput(null, null);
+    public ConstructorInput actualConstructor = new ConstructorInput();
 
     private Hashtable<String, StructInput> structTable = new Hashtable<>();
 
@@ -49,42 +49,53 @@ public class SymbolTable {
 
         MethodInput methodInput2 = new MethodInput("out_int",true);
         methodInput2.addParameter("i", new ParamInput("i", "Int"));
+        methodInput2.setPosition(1);
         methodInput2.setReturnType("void");
 
         MethodInput methodInput3 = new MethodInput("out_bool",true);
         methodInput3.addParameter("b", new ParamInput("b", "Bool"));
+        methodInput3.setPosition(2);
         methodInput3.setReturnType("void");
 
         MethodInput methodInput4 = new MethodInput("out_char",true);
         methodInput4.addParameter("c", new ParamInput("c", "Char"));
+        methodInput4.setPosition(3);
         methodInput4.setReturnType("void");
 
         MethodInput methodInput5 = new MethodInput("out_array_int",true);
         methodInput5.addParameter("a", new ParamInput("a", "Array"));
+        methodInput5.setPosition(4);
         methodInput5.setReturnType("void");
 
         MethodInput methodInput6 = new MethodInput("out_array_str",true);
         methodInput6.addParameter("a", new ParamInput("a", "Array"));
+        methodInput6.setPosition(5);
         methodInput6.setReturnType("void");
 
         MethodInput methodInput7 = new MethodInput("out_array_bool",true);
         methodInput7.addParameter("a", new ParamInput("a", "Array"));
+        methodInput7.setPosition(6);
         methodInput7.setReturnType("void");
 
         MethodInput methodInput8 = new MethodInput("out_array_char",true);
         methodInput8.addParameter("a", new ParamInput("a", "Array"));
+        methodInput8.setPosition(7);
         methodInput8.setReturnType("void");
 
         MethodInput methodInput9 = new MethodInput("in_str",true);
+        methodInput9.setPosition(8);
         methodInput9.setReturnType("Str");
 
         MethodInput methodInput10 = new MethodInput("in_int",true);
+        methodInput10.setPosition(9);
         methodInput10.setReturnType("Int");
 
         MethodInput methodInput11 = new MethodInput("in_bool",true);
+        methodInput11.setPosition(10);
         methodInput11.setReturnType("Bool");
 
         MethodInput methodInput12 = new MethodInput("in_char",true);
+        methodInput12.setPosition(11);
         methodInput12.setReturnType("Char");
 
         structIO.addMethod("out_str", methodInput1);
@@ -132,11 +143,13 @@ public class SymbolTable {
         stringType.setName("String");
 
         MethodInput methodInput1 = new MethodInput("length",false);
+        methodInput1.setPosition(0);
         methodInput1.setReturnType("Int");
         stringType.addMethod("length", methodInput1);
 
         MethodInput methodInput2 = new MethodInput("concat",false);
         methodInput2.addParameter("str", new ParamInput("str", "String"));
+        methodInput2.setPosition(1);
         methodInput2.setReturnType("String");
         stringType.addMethod("concat", methodInput2);
 

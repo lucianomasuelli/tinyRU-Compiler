@@ -26,6 +26,10 @@ public class MethodInput {
         return parameterTable.get(name);
     }
 
+    public boolean fetchParameter(String name) {
+        return parameterTable.containsKey(name);
+    }
+
     public Hashtable<String, ParamInput> getParameterTable() {
         return parameterTable;
     }

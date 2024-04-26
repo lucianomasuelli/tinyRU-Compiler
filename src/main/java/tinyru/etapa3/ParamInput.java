@@ -9,6 +9,7 @@ public class ParamInput {
         public ParamInput(String name, String type) {
             this.name = name;
             this.type = type;
+            this.position = 0;
         }
 
         public String getName() {

@@ -8,6 +8,7 @@ public class StructInput {
 
     private String name;
     private String inheritanceName;
+    private ConstructorInput constructor;
 
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
@@ -84,6 +85,14 @@ public class StructInput {
 
     public void setParent(String parent) {
         this.inheritanceName = parent;
+    }
+
+    public void setConstructor(ConstructorInput constructor) {
+        this.constructor = constructor;
+    }
+
+    public ConstructorInput getConstructor() {
+        return constructor;
     }
 
 }
