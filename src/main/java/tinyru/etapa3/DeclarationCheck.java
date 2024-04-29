@@ -96,7 +96,6 @@ public class DeclarationCheck {
     }
     public void consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
         if (actualStruct.fetchMethod(method.getName())) {
-
             //Mismo tipo de atributo, en la mismo orden y mismo retorno
 
             for (String key : method.getParameterTable().keySet()){
@@ -108,13 +107,11 @@ public class DeclarationCheck {
                 }
             }
 
-
         }
     }
 
     //Check if the variable is already declared
     public void varCheck(StructInput actualStruct, VarInput var) {
-        //Actualizar posición relativa de los parametros
         if (actualStruct.fetchAttribute(var.getName())) {
             throw new VarAlreadyDeclaredError(var.getName(), var.getLine(), var.getColumn());
         }
