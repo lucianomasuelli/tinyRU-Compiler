@@ -9,6 +9,7 @@ import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
 import tinyru.etapa3.Exceptions.InheritanceError;
 import tinyru.etapa3.Exceptions.ParamAlreadyDecleared;
+import tinyru.etapa3.Exceptions.PrimitiveTypeInheritanceError;
 import tinyru.etapa3.Exceptions.SemanticError;
 
 import java.io.IOException;
@@ -465,8 +466,13 @@ public class Parser {
 
     //⟨Herencia⟩ ::= : ⟨Tipo⟩
     private String herencia() {
+        HashSet<String> types = new HashSet<>(Set.of("Str", "Bool", "Int", "Char","Array Str", "Array Bool","Array Int", "Array Char"));
         match(TokenType.COLON);
-        return tipo();
+        String type = tipo();
+        if (types.contains(type)) {
+            throw new PrimitiveTypeInheritanceError(actualToken.getLexeme(),type, actualToken.getLine(), actualToken.getColumn());
+        }
+        return type;
     }
 
     // ⟨Miembro⟩ ::= ⟨Método⟩ | ⟨Constructor ⟩
@@ -799,7 +805,7 @@ public class Parser {
     // ⟨Tipo-Arreglo⟩ ::= Array ⟨Tipo-Primitivo⟩
     private String tipoArreglo() {
         match(TokenType.PARRAY);
-        return tipoPrimitivo();
+        return "Array " + tipoPrimitivo();
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
