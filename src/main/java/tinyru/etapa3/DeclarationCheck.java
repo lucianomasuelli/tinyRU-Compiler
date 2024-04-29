@@ -45,13 +45,13 @@ public class DeclarationCheck {
                 StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
                 for (String key : parentStruct.getMethodTable().keySet()) {
                     MethodInput method = parentStruct.getMethodTable().get(key);
-                    methodCheck(method);
-                    actualStruct.addMethod(method.getName(), method);
+                    methodCheck(struct,method);
+                    struct.addMethod(method.getName(), method);
                 }
                 for (String key : parentStruct.getAttributeTable().keySet()) {
                     VarInput var = parentStruct.getAttributeTable().get(key);
-                    varCheck(var);
-                    actualStruct.addAttribute(var.getName(), var);
+                    varCheck(struct,var);
+                    struct.addAttribute(var.getName(), var);
                 }
 
             }
@@ -60,15 +60,15 @@ public class DeclarationCheck {
     }
 
     // Check if the method is already declared
-    public void methodCheck(MethodInput method) {
-        if (symbolTable.actualStruct.fetchMethod(method.getName())) {
+    public void methodCheck(StructInput actualStruct, MethodInput method) {
+        if (actualStruct.fetchMethod(method.getName())) {
             throw new MethodAlreadyDeclaredError(method.getName(), method.getLine(), method.getColumn());
         }
     }
 
     //Check if the variable is already declared
-    public void varCheck(VarInput var) {
-        if (symbolTable.actualStruct.fetchAttribute(var.getName())) {
+    public void varCheck(StructInput actualStruct, VarInput var) {
+        if (actualStruct.fetchAttribute(var.getName())) {
             throw new VarAlreadyDeclaredError(var.getName(), var.getLine(), var.getColumn());
         }
     }

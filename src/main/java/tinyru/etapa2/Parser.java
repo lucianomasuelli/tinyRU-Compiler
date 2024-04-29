@@ -531,7 +531,7 @@ public class Parser {
             v.setColumn(t.getColumn());
 
             DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
-            declarationCheck.varCheck(v);
+            declarationCheck.varCheck(symbolTable.actualStruct, v);
 
             symbolTable.actualStruct.addAttribute(t.getLexeme(),v);
         }
@@ -585,7 +585,7 @@ public class Parser {
         symbolTable.actualMethod.setColumn(methodToken.getColumn());
 
         DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
-        declarationCheck.methodCheck(symbolTable.actualMethod);
+        declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
     }
