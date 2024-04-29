@@ -468,9 +468,11 @@ public class Parser {
     private String herencia() {
         HashSet<String> types = new HashSet<>(Set.of("Str", "Bool", "Int", "Char","Array Str", "Array Bool","Array Int", "Array Char"));
         match(TokenType.COLON);
+        int line = actualToken.getLine();
+        int column = actualToken.getColumn();
         String type = tipo();
         if (types.contains(type)) {
-            throw new PrimitiveTypeInheritanceError(actualToken.getLexeme(),type, actualToken.getLine(), actualToken.getColumn());
+            throw new PrimitiveTypeInheritanceError(actualToken.getLexeme(),type, line, column);
         }
         return type;
     }
