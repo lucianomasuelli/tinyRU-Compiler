@@ -13,7 +13,7 @@ class SymbolTableTest {
     @Test
     void analyze() {
         try {
-            Lexer lexer = new Lexer("src/test/resources/etapa3/failing/variableAlreadyDeclared.ru");
+            Lexer lexer = new Lexer("src/test/resources/etapa3/test1.ru");
             Parser parser = new Parser(lexer);
             parser.analyze();
             SymbolTable table = parser.getSymbolTable();

@@ -45,12 +45,12 @@ public class DeclarationCheck {
                 StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
                 for (String key : parentStruct.getMethodTable().keySet()) {
                     MethodInput method = parentStruct.getMethodTable().get(key);
-                    methodCheck(struct,method);
+                    consolidationMethodCheck(struct,method);
                     struct.addMethod(method.getName(), method);
                 }
                 for (String key : parentStruct.getAttributeTable().keySet()) {
                     VarInput var = parentStruct.getAttributeTable().get(key);
-                    varCheck(struct,var);
+                    consolidationVarCheck(struct,var);
                     struct.addAttribute(var.getName(), var);
                 }
 
@@ -65,6 +65,23 @@ public class DeclarationCheck {
             throw new MethodAlreadyDeclaredError(method.getName(), method.getLine(), method.getColumn());
         }
     }
+    public void consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
+        if (actualStruct.fetchMethod(method.getName())) {
+
+            //Mismo tipo de atributo, en la mismo orden y mismo retorno
+
+            for (String key : method.getParameterTable().keySet()){
+                ParamInput p = method.getParameterTable().get(key);
+                ParamInput p2 = actualStruct.getMethod(method.getName()).getParameterByPos(p.getPosition());
+                if (!p.getType().equals(p2.getType()) || !p.getPosition().equals(p2.getPosition())){
+                    MethodInput m = actualStruct.getMethod(method.getName());
+                    throw new MethodOverloadError(m.getName(), m.getLine(), m.getColumn());
+                }
+            }
+
+
+        }
+    }
 
     //Check if the variable is already declared
     public void varCheck(StructInput actualStruct, VarInput var) {
@@ -72,4 +89,12 @@ public class DeclarationCheck {
             throw new VarAlreadyDeclaredError(var.getName(), var.getLine(), var.getColumn());
         }
     }
+
+    public void consolidationVarCheck(StructInput actualStruct, VarInput var) {
+        if (actualStruct.fetchAttribute(var.getName())) {
+            VarInput v = actualStruct.getAttribute(var.getName());
+            throw new VarAlreadyDeclaredError(v.getName(), v.getLine(), v.getColumn());
+        }
+    }
+
 }

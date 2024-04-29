@@ -28,6 +28,17 @@ public class MethodInput {
         return parameterTable.get(name);
     }
 
+    public ParamInput getParameterByPos(int pos) {
+        ParamInput p,param = null;
+        for (String key : parameterTable.keySet()) {
+            p = parameterTable.get(key);
+            if (p.getPosition() == pos) {
+                param=p;
+            }
+        }
+        return param;
+    }
+
     public boolean fetchParameter(String name) {
         return parameterTable.containsKey(name);
     }
