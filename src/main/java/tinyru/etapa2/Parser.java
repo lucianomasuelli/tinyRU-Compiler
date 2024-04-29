@@ -6,11 +6,7 @@ import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
-import tinyru.etapa3.Exceptions.ParamAlreadyDeclared;
-import tinyru.etapa3.Exceptions.InheritanceError;
-import tinyru.etapa3.Exceptions.ParamAlreadyDecleared;
-import tinyru.etapa3.Exceptions.PrimitiveTypeInheritanceError;
-import tinyru.etapa3.Exceptions.SemanticError;
+import tinyru.etapa3.Exceptions.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -370,20 +366,32 @@ public class Parser {
         StructInput structInput;
         if(!symbolTable.fetchStruct(name)){
             structInput = new StructInput();
+            structInput.setIsDeclared(true);
+
+            symbolTable.actualStruct = structInput;
+            structPrima();
+            structInput.setName(name);
+            structInput.setLine(sructToken.getLine());
+            structInput.setColumn(sructToken.getColumn());
+
+            structInput.setIsDeclared(true);
+
+            symbolTable.addStruct(name, structInput);
         } else {
             structInput = symbolTable.getStruct(name);
+            if(!structInput.getIsDeclared()){
+                symbolTable.actualStruct = structInput;
+                structPrima();
+                structInput.setName(name);
+                structInput.setLine(sructToken.getLine());
+                structInput.setColumn(sructToken.getColumn());
+                structInput.setIsDeclared(true);
+            } else {
+                throw new StructAlreadyDeclaredError(name, sructToken.getLine(), sructToken.getColumn());
+            }
         }
-        symbolTable.actualStruct = structInput;
-        structPrima();
-        structInput.setName(name);
-        structInput.setLine(sructToken.getLine());
-        structInput.setColumn(sructToken.getColumn());
-        structInput.setIsDeclared(true);
 
-        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
-        declarationCheck.structCheck(structInput);
 
-        symbolTable.addStruct(name, structInput);
     }
 
     // ⟨Struct⟩’ ::= ⟨Herencia⟩ ⟨Struct⟩’’ | ⟨Struct⟩’’

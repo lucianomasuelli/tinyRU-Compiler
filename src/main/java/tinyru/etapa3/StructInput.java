@@ -12,7 +12,7 @@ public class StructInput {
     private int line;
     private int column;
     private boolean hasImpl = false;
-    private boolean isDeclared = true;
+    private boolean isDeclared = false;
 
     private boolean isChecked = false;
 
