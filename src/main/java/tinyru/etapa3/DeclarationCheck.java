@@ -13,7 +13,7 @@ public class DeclarationCheck {
         for (String key : symbolTable.getStructTable().keySet()) {
             StructInput struct = symbolTable.getStruct(key);
             inheritanceCheck(struct);
-            circularInheritanceCheck(struct);
+            consolidation(struct);
         }
     }
 
@@ -34,12 +34,26 @@ public class DeclarationCheck {
         }
     }
 
-    // Check circular inheritance
-    public void circularInheritanceCheck(StructInput struct) {
+    // Consolidate and check circular inheritance
+    public void consolidation(StructInput struct) {
         StructInput actualStruct = struct;
         while (actualStruct.getInheritanceName() != null) {
             if (actualStruct.getInheritanceName().equals(struct.getName())) {
                 throw new CircularInheritanceError(struct.getName(), struct.getInheritanceName(), struct.getLine(), struct.getColumn());
+            }
+            else { //adds the attributes and methods of the parent struct to the child struct
+                StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
+                for (String key : parentStruct.getMethodTable().keySet()) {
+                    MethodInput method = parentStruct.getMethodTable().get(key);
+                    methodCheck(method);
+                    actualStruct.addMethod(method.getName(), method);
+                }
+                for (String key : parentStruct.getAttributeTable().keySet()) {
+                    VarInput var = parentStruct.getAttributeTable().get(key);
+                    varCheck(var);
+                    actualStruct.addAttribute(var.getName(), var);
+                }
+
             }
             actualStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
         }
