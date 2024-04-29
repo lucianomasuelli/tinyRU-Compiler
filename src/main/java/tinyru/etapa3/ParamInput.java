@@ -4,7 +4,9 @@ public class ParamInput {
 
         private String name;
         private String type;
-        private Integer position; //TODO agregar que calcule la posición relativa
+        private Integer position;
+        private Integer line;
+        private Integer column;
 
         public ParamInput(String name, String type) {
             this.name = name;
@@ -26,5 +28,21 @@ public class ParamInput {
 
         public Integer getPosition() {
             return position;
+        }
+
+        public void setLine(Integer line) {
+            this.line = line;
+        }
+
+        public Integer getLine() {
+            return line;
+        }
+
+        public void setColumn(Integer column) {
+            this.column = column;
+        }
+
+        public Integer getColumn() {
+            return column;
         }
 }

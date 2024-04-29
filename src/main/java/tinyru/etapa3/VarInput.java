@@ -6,6 +6,8 @@ public class VarInput {
 
     private String name;
     private String type;
+    private int line;
+    private int column;
 
     private Boolean visibility;
 
@@ -32,6 +34,22 @@ public class VarInput {
 
     public int getPosition() {
         return position;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public int getColumn() {
+        return column;
     }
 
 }

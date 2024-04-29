@@ -9,6 +9,8 @@ public class StructInput {
     private String name;
     private String inheritanceName;
     private ConstructorInput constructor;
+    private int line;
+    private int column;
 
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
@@ -93,6 +95,22 @@ public class StructInput {
 
     public ConstructorInput getConstructor() {
         return constructor;
+    }
+
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public int getColumn() {
+        return column;
     }
 
 }

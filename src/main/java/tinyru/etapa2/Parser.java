@@ -7,7 +7,9 @@ import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
+import tinyru.etapa3.Exceptions.InheritanceError;
 import tinyru.etapa3.Exceptions.ParamAlreadyDecleared;
+import tinyru.etapa3.Exceptions.SemanticError;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,7 +35,7 @@ public class Parser {
             program();
         } catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (UnexpectedTokenError | WrongTokenError e) {
+        } catch (SemanticError | ParserError e) {
             System.out.println(e.getMessage());
             System.exit(1);
         }
@@ -326,6 +328,9 @@ public class Parser {
     private void program(){
         listaDefiniciones();
         start();
+
+        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
+        declarationCheck.declarationCheck();
     }
 
 
@@ -359,6 +364,7 @@ public class Parser {
     private void struct() {
         match(TokenType.PSTRUCT);
         String name = actualToken.getLexeme();
+        Token sructToken = actualToken;
         match(TokenType.STRUCTID);
         StructInput structInput;
         if(!symbolTable.fetchStruct(name)){
@@ -368,6 +374,13 @@ public class Parser {
         }
         symbolTable.actualStruct = structInput;
         structPrima();
+        structInput.setName(name);
+        structInput.setLine(sructToken.getLine());
+        structInput.setColumn(sructToken.getColumn());
+
+        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
+        declarationCheck.structCheck(structInput);
+
         symbolTable.addStruct(name, structInput);
     }
 
@@ -477,7 +490,7 @@ public class Parser {
         int pos = 0;
         for(ParamInput arg : args) {
             if(symbolTable.actualConstructor.fetchParameter(arg.getName())){
-                throw new ParamAlreadyDecleared(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+                throw new ParamAlreadyDecleared(arg.getName(), arg.getLine(), arg.getColumn());
             }
 
             symbolTable.actualConstructor.addConstructorParam(arg.getName(), arg);
@@ -494,18 +507,18 @@ public class Parser {
     private void atributo() {
         ArrayList<Token> atributosDeclarados = new ArrayList<>();
         VarInput v;
-        Boolean visibility;
+        Boolean pri;
         String type;
         if (actualToken.getLexeme().equals("pri")) {
             match(TokenType.PPRI);
-            visibility = true;
+            pri = true;
             type = tipo();
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
 
         } else if (onFirst(actualToken, first("tipo"))) {
             type = tipo();
-            visibility = false;
+            pri = false;
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
         } else {
@@ -513,7 +526,13 @@ public class Parser {
         }
 
         for(Token t: atributosDeclarados){
-            v = new VarInput(t.getLexeme(),type,visibility);
+            v = new VarInput(t.getLexeme(),type,pri);
+            v.setLine(t.getLine());
+            v.setColumn(t.getColumn());
+
+            DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
+            declarationCheck.varCheck(v);
+
             symbolTable.actualStruct.addAttribute(t.getLexeme(),v);
         }
 
@@ -537,6 +556,7 @@ public class Parser {
     private void metodoPrima(boolean isStatic, int pos) {
         match(TokenType.PFN);
         String name = actualToken.getLexeme();
+        Token methodToken = actualToken;
         match(TokenType.ID);
         if(!symbolTable.actualStruct.fetchMethod(name)){
             symbolTable.actualMethod = new MethodInput(name, isStatic);
@@ -547,7 +567,7 @@ public class Parser {
         int paramPos = 0;
         for(ParamInput arg : args) {
             if(symbolTable.actualMethod.fetchParameter(arg.getName())){
-                throw new ParamAlreadyDecleared(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+                throw new ParamAlreadyDecleared(arg.getName(), arg.getLine(), arg.getColumn());
             }
 
             symbolTable.actualMethod.addParameter(arg.getName(), arg);
@@ -561,6 +581,12 @@ public class Parser {
         symbolTable.actualMethod.setReturnType(type);
         bloqueMetodo();
         symbolTable.actualMethod.setPosition(pos);
+        symbolTable.actualMethod.setLine(methodToken.getLine());
+        symbolTable.actualMethod.setColumn(methodToken.getColumn());
+
+        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
+        declarationCheck.methodCheck(symbolTable.actualMethod);
+
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
     }
 
@@ -708,8 +734,11 @@ public class Parser {
     private void argumentoFormal(ArrayList<ParamInput> args) {
         String type = tipo();
         String name = actualToken.getLexeme();
+        Token argToken = actualToken;
         match(TokenType.ID);
         ParamInput p = new ParamInput(name, type);
+        p.setLine(argToken.getLine());
+        p.setColumn(argToken.getColumn());
         args.add(p);
     }
 

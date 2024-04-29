@@ -7,6 +7,8 @@ public class MethodInput {
     String returnType;
     Boolean isStatic;
     int position;
+    int line;
+    int column;
 
     Hashtable<String, ParamInput> parameterTable = new Hashtable<>();
     Hashtable<String, VarInput> localVarTable = new Hashtable<>();
@@ -62,4 +64,19 @@ public class MethodInput {
         this.position = position;
     }
 
+    public void setLine(int line) {
+        this.line = line;
+    }
+
+    public int getLine() {
+        return line;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
+    public int getColumn() {
+        return column;
+    }
 }
