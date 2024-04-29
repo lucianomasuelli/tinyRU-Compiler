@@ -524,16 +524,17 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-
+        int pos = 0;
         for(Token t: atributosDeclarados){
             v = new VarInput(t.getLexeme(),type,pri);
             v.setLine(t.getLine());
             v.setColumn(t.getColumn());
-
+            v.setPosition(pos);
             DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
             declarationCheck.varCheck(symbolTable.actualStruct, v);
 
             symbolTable.actualStruct.addAttribute(t.getLexeme(),v);
+            pos++;
         }
 
     }

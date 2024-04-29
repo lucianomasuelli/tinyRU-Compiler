@@ -12,6 +12,8 @@ public class StructInput {
     private int line;
     private int column;
 
+    private boolean isChecked = false;
+
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
     private Hashtable<String, ConstInput> constantTable = new Hashtable<>();
     private Hashtable<String, MethodInput> methodTable = new Hashtable<>();
@@ -113,4 +115,11 @@ public class StructInput {
         return column;
     }
 
+    public boolean getIsChecked() {
+        return isChecked;
+    }
+
+    public void setIsChecked(boolean isChecked) {
+        this.isChecked = isChecked;
+    }
 }

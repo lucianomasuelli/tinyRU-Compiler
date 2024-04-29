@@ -42,21 +42,47 @@ public class DeclarationCheck {
                 throw new CircularInheritanceError(struct.getName(), struct.getInheritanceName(), struct.getLine(), struct.getColumn());
             }
             else { //adds the attributes and methods of the parent struct to the child struct
-                StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
-                for (String key : parentStruct.getMethodTable().keySet()) {
-                    MethodInput method = parentStruct.getMethodTable().get(key);
-                    consolidationMethodCheck(struct,method);
-                    struct.addMethod(method.getName(), method);
-                }
-                for (String key : parentStruct.getAttributeTable().keySet()) {
-                    VarInput var = parentStruct.getAttributeTable().get(key);
-                    consolidationVarCheck(struct,var);
-                    struct.addAttribute(var.getName(), var);
-                }
+                if (!actualStruct.getIsChecked()){
+                    StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
+                    int numOfMethods = parentStruct.getMethodTable().size();
+                    for (String key : struct.getMethodTable().keySet()) {
+                        MethodInput met = struct.getMethodTable().get(key);
+                        met.setPosition(met.getPosition() + numOfMethods);
+                    }
+                    for (String key : parentStruct.getMethodTable().keySet()) {
+                        MethodInput method = parentStruct.getMethodTable().get(key);
+                        consolidationMethodCheck(struct,method);
+                        struct.addMethod(method.getName(), method);
+                    }
+                    int numOfAttributes = parentStruct.getAttributeTable().size();
+                    for (String key : struct.getAttributeTable().keySet()) {
+                        VarInput var = struct.getAttributeTable().get(key);
+                        var.setPosition(var.getPosition() + numOfAttributes);
+                    }
+                    for (String key : parentStruct.getAttributeTable().keySet()) {
+                        VarInput var = parentStruct.getAttributeTable().get(key);
+                        consolidationVarCheck(struct,var);
+                        struct.addAttribute(var.getName(), var);
+                    }
+                } else {
+                    StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
 
+                    for (String key : parentStruct.getMethodTable().keySet()) {
+                        MethodInput method = parentStruct.getMethodTable().get(key);
+                        consolidationMethodCheck(struct,method);
+                        struct.addMethod(method.getName(), method);
+                    }
+                    for (String key : parentStruct.getAttributeTable().keySet()) {
+                        VarInput var = parentStruct.getAttributeTable().get(key);
+                        consolidationVarCheck(struct,var);
+                        struct.addAttribute(var.getName(), var);
+                    }
+                }
+                actualStruct.setIsChecked(true);
             }
             actualStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
         }
+        struct.setIsChecked(true);
     }
 
     // Check if the method is already declared
@@ -85,6 +111,7 @@ public class DeclarationCheck {
 
     //Check if the variable is already declared
     public void varCheck(StructInput actualStruct, VarInput var) {
+        //Actualizar posición relativa de los parametros
         if (actualStruct.fetchAttribute(var.getName())) {
             throw new VarAlreadyDeclaredError(var.getName(), var.getLine(), var.getColumn());
         }
