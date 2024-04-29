@@ -1,6 +1,7 @@
 package tinyru.etapa3;
 
 import tinyru.etapa3.Exceptions.*;
+import tinyru.etapa1.Token;
 
 public class DeclarationCheck {
     private SymbolTable symbolTable;
@@ -14,6 +15,8 @@ public class DeclarationCheck {
             StructInput struct = symbolTable.getStruct(key);
             inheritanceCheck(struct);
             consolidation(struct);
+            implCheck(struct);
+            noStructCheck(struct);
         }
     }
 
@@ -123,5 +126,18 @@ public class DeclarationCheck {
             throw new VarAlreadyDeclaredError(v.getName(), v.getLine(), v.getColumn());
         }
     }
+
+    public void implCheck(StructInput struct) {
+        if (!struct.getHasImpl()) {
+            throw new NoImplError(struct.getName(), struct.getLine(), struct.getColumn());
+        }
+    }
+
+    public void noStructCheck(StructInput struct) {
+        if (!struct.getIsDeclared()){
+            throw new NoStructError(struct.getName(), struct.getLine(), struct.getColumn());
+        }
+    }
+
 
 }

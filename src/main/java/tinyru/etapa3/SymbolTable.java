@@ -40,6 +40,7 @@ public class SymbolTable {
     public void addStructIO() {
         StructInput structIO = new StructInput();
         structIO.setName("IO");
+        structIO.setHasImpl(true);
 
         structIO.setInheritanceName("Object");
 
@@ -117,12 +118,14 @@ public class SymbolTable {
     public void addObject(){
         StructInput object = new StructInput();
         object.setName("Object");
+        object.setHasImpl(true);
         structTable.put("Object", object);
     }
 
     public void addArray(){
         StructInput array = new StructInput();
         array.setName("Array");
+        array.setHasImpl(true);
 
         MethodInput methodInput1 = new MethodInput("length",false);
         methodInput1.setReturnType("Int");
@@ -133,6 +136,7 @@ public class SymbolTable {
 
     public void addInt(){
         StructInput intType = new StructInput();
+        intType.setHasImpl(true);
         intType.setName("Int");
         structTable.put("Int", intType);
 
@@ -140,6 +144,7 @@ public class SymbolTable {
 
     public void addString() {
         StructInput stringType = new StructInput();
+        stringType.setHasImpl(true);
         stringType.setName("String");
 
         MethodInput methodInput1 = new MethodInput("length",false);
@@ -159,12 +164,14 @@ public class SymbolTable {
 
     public void addBool(){
         StructInput boolType = new StructInput();
+        boolType.setHasImpl(true);
         boolType.setName("Bool");
         structTable.put("Bool", boolType);
     }
 
     public void addChar(){
         StructInput charType = new StructInput();
+        charType.setHasImpl(true);
         charType.setName("Char");
         structTable.put("Char", charType);
     }

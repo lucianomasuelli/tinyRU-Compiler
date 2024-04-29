@@ -11,6 +11,8 @@ public class StructInput {
     private ConstructorInput constructor;
     private int line;
     private int column;
+    private boolean hasImpl = false;
+    private boolean isDeclared = true;
 
     private boolean isChecked = false;
 
@@ -113,6 +115,22 @@ public class StructInput {
 
     public int getColumn() {
         return column;
+    }
+
+    public void setHasImpl(boolean hasImpl) {
+        this.hasImpl = hasImpl;
+    }
+
+    public boolean getHasImpl() {
+        return hasImpl;
+    }
+
+    public void setIsDeclared(boolean isDeclared) {
+        this.isDeclared = isDeclared;
+    }
+
+    public boolean getIsDeclared() {
+        return isDeclared;
     }
 
     public boolean getIsChecked() {

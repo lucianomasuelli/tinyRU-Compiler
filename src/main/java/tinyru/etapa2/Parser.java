@@ -1,5 +1,4 @@
 package tinyru.etapa2;
-import tinyru.etapa1.Exceptions.LexerError;
 import tinyru.etapa1.Lexer;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
@@ -7,8 +6,7 @@ import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
-import tinyru.etapa3.Exceptions.InheritanceError;
-import tinyru.etapa3.Exceptions.ParamAlreadyDecleared;
+import tinyru.etapa3.Exceptions.ParamAlreadyDeclared;
 import tinyru.etapa3.Exceptions.SemanticError;
 
 import java.io.IOException;
@@ -377,6 +375,7 @@ public class Parser {
         structInput.setName(name);
         structInput.setLine(sructToken.getLine());
         structInput.setColumn(sructToken.getColumn());
+        structInput.setIsDeclared(true);
 
         DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
         declarationCheck.structCheck(structInput);
@@ -437,6 +436,21 @@ public class Parser {
     //⟨Impl⟩ ::= impl idStruct { N3 }
     private void impl() {
         match(TokenType.PIMPL);
+
+        StructInput struct;
+        // if struct is not declared, create it
+        if(!symbolTable.fetchStruct(actualToken.getLexeme())){
+            struct = new StructInput();
+            struct.setName(actualToken.getLexeme());
+            struct.setHasImpl(true);
+            struct.setIsDeclared(false);
+
+            symbolTable.addStruct(struct.getName(), struct);
+        } else {
+            struct = symbolTable.getStruct(actualToken.getLexeme());
+            struct.setHasImpl(true);
+        }
+
         match(TokenType.STRUCTID);
         match(TokenType.LBRACE);
         int methodPos = 0;
@@ -490,7 +504,7 @@ public class Parser {
         int pos = 0;
         for(ParamInput arg : args) {
             if(symbolTable.actualConstructor.fetchParameter(arg.getName())){
-                throw new ParamAlreadyDecleared(arg.getName(), arg.getLine(), arg.getColumn());
+                throw new ParamAlreadyDeclared(arg.getName(), arg.getLine(), arg.getColumn());
             }
 
             symbolTable.actualConstructor.addConstructorParam(arg.getName(), arg);
@@ -568,7 +582,7 @@ public class Parser {
         int paramPos = 0;
         for(ParamInput arg : args) {
             if(symbolTable.actualMethod.fetchParameter(arg.getName())){
-                throw new ParamAlreadyDecleared(arg.getName(), arg.getLine(), arg.getColumn());
+                throw new ParamAlreadyDeclared(arg.getName(), arg.getLine(), arg.getColumn());
             }
 
             symbolTable.actualMethod.addParameter(arg.getName(), arg);
