@@ -112,6 +112,10 @@ public class DeclarationCheck {
                 }
 
             }
+            if (!method.getReturnType().equals(actualStruct.getMethod(method.getName()).getReturnType())){
+                MethodInput m = actualStruct.getMethod(method.getName());
+                throw new MethodOverloadError(m.getName(), m.getLine(), m.getColumn());
+            }
 
         }
     }
