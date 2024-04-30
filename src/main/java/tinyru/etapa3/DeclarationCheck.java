@@ -20,7 +20,11 @@ public class DeclarationCheck {
             typesCheck(struct);
         }
 
-
+        //check if the type of the attributes of start are correct
+        for (String key : symbolTable.getStart().getAttributeTable().keySet()) {
+            VarInput var = symbolTable.getStart().getAttributeTable().get(key);
+            checkVarType(var);
+        }
     }
 
     // Check if the inheritance is valid
