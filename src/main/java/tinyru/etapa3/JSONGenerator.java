@@ -2,6 +2,9 @@ package tinyru.etapa3;
 
 import tinyru.etapa3.SymbolTable;
 
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class JSONGenerator {
     private String filename;
 
@@ -108,8 +111,17 @@ public class JSONGenerator {
         json += "]\n";
         json += "}\n";
         //añade el start
+        createJSON(json);
         return json;
     }
 
-    //añade clases predefinidas
+    public void createJSON(String json){
+        try {
+            FileWriter myWriter = new FileWriter(filename + ".json");
+            myWriter.write(json);
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
+    }
 }
