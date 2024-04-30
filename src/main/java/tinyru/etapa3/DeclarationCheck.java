@@ -136,5 +136,9 @@ public class DeclarationCheck {
         }
     }
 
-
+    public void checkConstructor(StructInput struct) {
+        if (!struct.getHasConstructor()) {
+            throw new NoConstructorError(struct.getName(), struct.getLine(), struct.getColumn());
+        }
+    }
 }

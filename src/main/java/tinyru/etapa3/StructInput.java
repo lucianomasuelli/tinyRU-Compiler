@@ -13,7 +13,7 @@ public class StructInput {
     private int column;
     private boolean hasImpl = false;
     private boolean isDeclared = false;
-
+    private boolean hasConstructor = false;
     private boolean isChecked = false;
 
     private Hashtable<String, VarInput> attributeTable = new Hashtable<>();
@@ -139,5 +139,13 @@ public class StructInput {
 
     public void setIsChecked(boolean isChecked) {
         this.isChecked = isChecked;
+    }
+
+    public void setHasConstructor(boolean hasConstructor) {
+        this.hasConstructor = hasConstructor;
+    }
+
+    public boolean getHasConstructor() {
+        return hasConstructor;
     }
 }

@@ -450,11 +450,13 @@ public class Parser {
 
         StructInput struct;
         // if struct is not declared, create it
-        if(!symbolTable.fetchStruct(actualToken.getLexeme())){
+        if (!symbolTable.fetchStruct(actualToken.getLexeme())) {
             struct = new StructInput();
             struct.setName(actualToken.getLexeme());
             struct.setHasImpl(true);
             struct.setIsDeclared(false);
+
+            symbolTable.actualStruct = struct;
 
             symbolTable.addStruct(struct.getName(), struct);
         } else {
@@ -517,6 +519,11 @@ public class Parser {
     // ⟨Constructor ⟩ ::= . ⟨Argumentos-Formales⟩ ⟨Bloque-Método⟩
     private void constructor() {
         match(TokenType.CONSTRUCT);
+
+        if (symbolTable.actualStruct.getHasConstructor()) {
+            throw new ConstructorAlreadyDeclared(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
+        }
+
         symbolTable.actualConstructor = new ConstructorInput();
         ArrayList<ParamInput> args = argumentosFormales();
         int pos = 0;
@@ -532,6 +539,7 @@ public class Parser {
         }
 
         bloqueMetodo();
+        symbolTable.actualStruct.setHasConstructor(true);
         symbolTable.actualStruct.setConstructor(symbolTable.actualConstructor); // add constructor to struct
     }
 
