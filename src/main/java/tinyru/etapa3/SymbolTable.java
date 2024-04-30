@@ -159,7 +159,7 @@ public class SymbolTable {
         StructInput stringType = new StructInput();
         stringType.setHasImpl(true);
         stringType.setIsDeclared(true);
-        stringType.setName("String");
+        stringType.setName("Str");
 
         MethodInput methodInput1 = new MethodInput("length",false);
         methodInput1.setPosition(0);
@@ -167,12 +167,12 @@ public class SymbolTable {
         stringType.addMethod("length", methodInput1);
 
         MethodInput methodInput2 = new MethodInput("concat",false);
-        methodInput2.addParameter("str", new ParamInput("str", "String"));
+        methodInput2.addParameter("s", new ParamInput("s", "Str"));
         methodInput2.setPosition(1);
-        methodInput2.setReturnType("String");
+        methodInput2.setReturnType("Str");
         stringType.addMethod("concat", methodInput2);
 
-        structTable.put("String", stringType);
+        structTable.put("Str", stringType);
 
     }
 

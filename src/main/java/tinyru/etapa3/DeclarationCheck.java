@@ -19,6 +19,8 @@ public class DeclarationCheck {
             noStructCheck(struct);
             typesCheck(struct);
         }
+
+
     }
 
     // Check if the inheritance is valid
