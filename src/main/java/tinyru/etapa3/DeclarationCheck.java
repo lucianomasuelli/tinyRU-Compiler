@@ -151,4 +151,22 @@ public class DeclarationCheck {
             throw new NoConstructorError(struct.getName(), struct.getLine(), struct.getColumn());
         }
     }
+
+    public void checkVarType(VarInput var) {
+        if (!symbolTable.fetchStruct(var.getType())) {
+            throw new VarTypeError(var.getName(), var.getType(), var.getLine(), var.getColumn());
+        }
+    }
+
+    public void checkMethodTypeReturn(MethodInput method) {
+        if (!symbolTable.fetchStruct(method.getReturnType())) {
+            throw new MethodTypeReturnError(method.getName(), method.getReturnType(), method.getLine(), method.getColumn());
+        }
+    }
+
+    public void checkParamType(ParamInput param) {
+        if (!symbolTable.fetchStruct(param.getType())) {
+            throw new ParamTypeError(param.getName(), param.getType(), param.getLine(), param.getColumn());
+        }
+    }
 }
