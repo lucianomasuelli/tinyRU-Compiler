@@ -369,8 +369,8 @@ public class Parser {
             structInput.setIsDeclared(true);
 
             symbolTable.actualStruct = structInput;
-            structPrima();
             structInput.setName(name);
+            structPrima();
             structInput.setLine(sructToken.getLine());
             structInput.setColumn(sructToken.getColumn());
 
@@ -448,10 +448,14 @@ public class Parser {
     private void impl() {
         match(TokenType.PIMPL);
 
-        StructInput struct;
-        // if struct is not declared, create it
-        if (!symbolTable.fetchStruct(actualToken.getLexeme())) {
-            struct = new StructInput();
+        if(symbolTable.fetchStruct(actualToken.getLexeme())) {
+            symbolTable.actualStruct = symbolTable.getStruct(actualToken.getLexeme());
+            if(symbolTable.actualStruct.getHasImpl()) {
+                throw new ImplAlreadyDeclared(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
+            }
+            symbolTable.actualStruct.setHasImpl(true);
+        } else {
+            StructInput struct = new StructInput();
             struct.setName(actualToken.getLexeme());
             struct.setHasImpl(true);
             struct.setIsDeclared(false);
@@ -459,9 +463,6 @@ public class Parser {
             symbolTable.actualStruct = struct;
 
             symbolTable.addStruct(struct.getName(), struct);
-        } else {
-            struct = symbolTable.getStruct(actualToken.getLexeme());
-            struct.setHasImpl(true);
         }
 
         match(TokenType.STRUCTID);
@@ -469,6 +470,10 @@ public class Parser {
         int methodPos = 0;
         N3(methodPos);
         match(TokenType.RBRACE);
+
+        if(!symbolTable.actualStruct.getHasConstructor()) {
+            throw new ConstructorNotDeclared(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
+        }
     }
 
 

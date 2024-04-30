@@ -91,7 +91,7 @@ public class DeclarationCheck {
     // Check if the method is already declared
     public void methodCheck(StructInput actualStruct, MethodInput method) {
         if (actualStruct.fetchMethod(method.getName())) {
-            throw new MethodAlreadyDeclaredError(method.getName(), method.getLine(), method.getColumn());
+            throw new MethodAlreadyDeclaredError(actualStruct, method.getName(), method.getLine(), method.getColumn());
         }
     }
     public void consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
@@ -113,14 +113,14 @@ public class DeclarationCheck {
     //Check if the variable is already declared
     public void varCheck(StructInput actualStruct, VarInput var) {
         if (actualStruct.fetchAttribute(var.getName())) {
-            throw new VarAlreadyDeclaredError(var.getName(), var.getLine(), var.getColumn());
+            throw new VarAlreadyDeclaredError(actualStruct, var.getName(), var.getLine(), var.getColumn());
         }
     }
 
     public void consolidationVarCheck(StructInput actualStruct, VarInput var) {
         if (actualStruct.fetchAttribute(var.getName())) {
             VarInput v = actualStruct.getAttribute(var.getName());
-            throw new VarAlreadyDeclaredError(v.getName(), v.getLine(), v.getColumn());
+            throw new VarAlreadyDeclaredError(actualStruct, v.getName(), v.getLine(), v.getColumn());
         }
     }
 
