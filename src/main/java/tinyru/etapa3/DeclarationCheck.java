@@ -99,12 +99,18 @@ public class DeclarationCheck {
             //Mismo tipo de atributo, en la mismo orden y mismo retorno
 
             for (String key : method.getParameterTable().keySet()){
-                ParamInput p = method.getParameterTable().get(key);
-                ParamInput p2 = actualStruct.getMethod(method.getName()).getParameterByPos(p.getPosition());
-                if (!p.getType().equals(p2.getType()) || !p.getPosition().equals(p2.getPosition())){
+                try {
+                    ParamInput p = method.getParameterTable().get(key);
+                    ParamInput p2 = actualStruct.getMethod(method.getName()).getParameterByPos(p.getPosition());
+                    if (!p.getType().equals(p2.getType()) || !p.getPosition().equals(p2.getPosition())){
+                        MethodInput m = actualStruct.getMethod(method.getName());
+                        throw new MethodOverloadError(m.getName(), m.getLine(), m.getColumn());
+                    }
+                } catch (NullPointerException e) {
                     MethodInput m = actualStruct.getMethod(method.getName());
                     throw new MethodOverloadError(m.getName(), m.getLine(), m.getColumn());
                 }
+
             }
 
         }
