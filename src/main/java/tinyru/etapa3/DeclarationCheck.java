@@ -164,7 +164,7 @@ public class DeclarationCheck {
             checkMethodTypeReturn(method);
             for (String key2 : method.getParameterTable().keySet()) {
                 ParamInput param = method.getParameterTable().get(key2);
-                checkParamType(param);
+                checkParamType(method, param);
             }
         }
 
@@ -177,14 +177,14 @@ public class DeclarationCheck {
     }
 
     public void checkMethodTypeReturn(MethodInput method) {
-        if (!symbolTable.fetchStruct(method.getReturnType())) {
+        if (!symbolTable.fetchStruct(method.getReturnType()) && !method.getReturnType().equals("void")) {
             throw new MethodTypeReturnError(method.getName(), method.getReturnType(), method.getLine(), method.getColumn());
         }
     }
 
-    public void checkParamType(ParamInput param) {
+    public void checkParamType(MethodInput method, ParamInput param) {
         if (!symbolTable.fetchStruct(param.getType())) {
-            throw new ParamTypeError(param.getName(), param.getName(), param.getType(), param.getLine(), param.getColumn());
+            throw new ParamTypeError(method.getName(), param.getName(), param.getType(), param.getLine(), param.getColumn());
         }
     }
 }
