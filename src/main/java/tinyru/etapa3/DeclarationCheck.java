@@ -17,6 +17,7 @@ public class DeclarationCheck {
             consolidation(struct);
             implCheck(struct);
             noStructCheck(struct);
+            typesCheck(struct);
         }
     }
 
@@ -152,6 +153,23 @@ public class DeclarationCheck {
         }
     }
 
+    public void typesCheck(StructInput struct) {
+
+        for (String key : struct.getAttributeTable().keySet()) {
+            VarInput var = struct.getAttributeTable().get(key);
+            checkVarType(var);
+        }
+        for (String key : struct.getMethodTable().keySet()) {
+            MethodInput method = struct.getMethodTable().get(key);
+            checkMethodTypeReturn(method);
+            for (String key2 : method.getParameterTable().keySet()) {
+                ParamInput param = method.getParameterTable().get(key2);
+                checkParamType(param);
+            }
+        }
+
+    }
+
     public void checkVarType(VarInput var) {
         if (!symbolTable.fetchStruct(var.getType())) {
             throw new VarTypeError(var.getName(), var.getType(), var.getLine(), var.getColumn());
@@ -166,7 +184,7 @@ public class DeclarationCheck {
 
     public void checkParamType(ParamInput param) {
         if (!symbolTable.fetchStruct(param.getType())) {
-            throw new ParamTypeError(param.getName(), param.getType(), param.getLine(), param.getColumn());
+            throw new ParamTypeError(param.getName(), param.getName(), param.getType(), param.getLine(), param.getColumn());
         }
     }
 }
