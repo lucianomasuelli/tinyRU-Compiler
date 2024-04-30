@@ -90,6 +90,21 @@ public class JSONGenerator {
             }
             json += "\t}\n";
         }
+        json += "start: {\n";
+        json += "\tnombre: " + st.getStart().getName() + "\n";
+        json += "\tatributos: [";
+        for (String key : st.getStart().getAttributeTable().keySet()) {
+            VarInput attribute = st.getStart().getAttributeTable().get(key);
+            json += "\n\t\t{\n";
+            json += "\t\t\"nombre\": \"" + key + "\",\n";
+            json += "\t\t\"tipo\": \"" + attribute.getType() + "\",\n";
+            json += "\t\t\"posicion\": " + attribute.getPosition() + "\n";
+            if(st.getStart().getAttributeTable().size() > 1)
+                json += "\t\t},\n";
+            else
+                json += "\t\t}\n";
+        }
+
         json += "]\n";
         json += "}\n";
         //añade el start

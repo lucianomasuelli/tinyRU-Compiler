@@ -334,6 +334,8 @@ public class Parser {
     //⟨Start⟩ ::= start ⟨Bloque-Método⟩
     private void start() {
         match(TokenType.PSTART);
+        StartInput start = new StartInput();
+        symbolTable.setStart(start);
         bloqueMetodo();
         if (actualToken.getType() != TokenType.EOF) {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -714,6 +716,13 @@ public class Parser {
         for(Token t: declaredAttributes){
             VarInput v = new VarInput(t.getLexeme(), type,false);
             symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+            if(symbolTable.getStart() != null) {
+                if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
+                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                }
+
+                symbolTable.getStart().addAttribute(t.getLexeme(), v);
+            }
         }
     }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’

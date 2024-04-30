@@ -7,4 +7,9 @@ public class VarAlreadyDeclaredError extends SemanticError{
         super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
                 +"| DESCRIPCION: " + "Variable '" + name + "' already declared in struct '" + struct.getName() + "'");
     }
+
+    public VarAlreadyDeclaredError(String name, int line, int column) {
+        super("| NÚMERO DE LINEA: " + line + "| NÚMERO DE COLUMNA: " + column
+                +"| DESCRIPCION: " + "Variable '" + name + "' already declared");
+    }
 }

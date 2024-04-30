@@ -10,6 +10,7 @@ public class SymbolTable {
     public ConstructorInput actualConstructor = new ConstructorInput();
 
     private Hashtable<String, StructInput> structTable = new Hashtable<>();
+    private StartInput start;
 
     public SymbolTable() {
         addStructIO();
@@ -19,6 +20,14 @@ public class SymbolTable {
         addString();
         addBool();
         addChar();
+    }
+
+    public void setStart(StartInput start) {
+        this.start = start;
+    }
+
+    public StartInput getStart() {
+        return start;
     }
 
     public void addStruct(String name, StructInput struct) {
