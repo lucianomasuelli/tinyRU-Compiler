@@ -3,8 +3,13 @@ package tinyru.etapa3;
 import tinyru.etapa3.Exceptions.*;
 import tinyru.etapa1.Token;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class DeclarationCheck {
     private SymbolTable symbolTable;
+
+    private HashSet<String> arrayTypes = new HashSet<>(Set.of("Array Str", "Array Bool","Array Int", "Array Char"));
 
     public DeclarationCheck(SymbolTable symbolTable) {
         this.symbolTable = symbolTable;
@@ -173,19 +178,19 @@ public class DeclarationCheck {
     }
 
     public void checkVarType(VarInput var) {
-        if (!symbolTable.fetchStruct(var.getType())) {
+        if (!symbolTable.fetchStruct(var.getType()) && !arrayTypes.contains(var.getType())){
             throw new VarTypeError(var.getName(), var.getType(), var.getLine(), var.getColumn());
         }
     }
 
     public void checkMethodTypeReturn(MethodInput method) {
-        if (!symbolTable.fetchStruct(method.getReturnType()) && !method.getReturnType().equals("void")) {
+        if (!symbolTable.fetchStruct(method.getReturnType()) && !arrayTypes.contains(method.getReturnType()) && !method.getReturnType().equals("void")) {
             throw new MethodTypeReturnError(method.getName(), method.getReturnType(), method.getLine(), method.getColumn());
         }
     }
 
     public void checkParamType(MethodInput method, ParamInput param) {
-        if (!symbolTable.fetchStruct(param.getType())) {
+        if (!symbolTable.fetchStruct(param.getType()) && !arrayTypes.contains(param.getType())) {
             throw new ParamTypeError(method.getName(), param.getName(), param.getType(), param.getLine(), param.getColumn());
         }
     }
