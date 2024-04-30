@@ -23,6 +23,7 @@ public class DeclarationCheck {
             implCheck(struct);
             noStructCheck(struct);
             typesCheck(struct);
+            checkConstructorParams(struct);
         }
 
         //check if the type of the attributes of start are correct
@@ -30,6 +31,7 @@ public class DeclarationCheck {
             VarInput var = symbolTable.getStart().getAttributeTable().get(key);
             checkVarType(var);
         }
+
     }
 
     // Check if the inheritance is valid
@@ -196,6 +198,19 @@ public class DeclarationCheck {
     public void checkParamType(MethodInput method, ParamInput param) {
         if (!symbolTable.fetchStruct(param.getType()) && !arrayTypes.contains(param.getType())) {
             throw new ParamTypeError(method.getName(), param.getName(), param.getType(), param.getLine(), param.getColumn());
+        }
+    }
+
+
+    //check if the constructor parameters type are correct
+    public void checkConstructorParams(StructInput struct) {
+        if(struct.getConstructor() != null) {
+            for (String key : struct.getConstructor().getConstructorParams().keySet()) {
+                ParamInput param = struct.getConstructor().getConstructorParams().get(key);
+                if (!symbolTable.fetchStruct(param.getType())) {
+                    throw new ParamTypeError("Constructor", param.getName(), param.getType(), param.getLine(), param.getColumn());
+                }
+            }
         }
     }
 }
