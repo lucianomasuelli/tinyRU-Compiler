@@ -93,9 +93,9 @@ public class JSONGenerator {
             }
             json += "\t}\n";
         }
-        json += "start: {\n";
-        json += "\tnombre: " + st.getStart().getName() + "\n";
-        json += "\tatributos: [";
+        json += "\"start\": {\n";
+        json += "\t\"nombre\": " + st.getStart().getName() + "\n";
+        json += "\t\"atributos\": [";
         for (String key : st.getStart().getAttributeTable().keySet()) {
             VarInput attribute = st.getStart().getAttributeTable().get(key);
             json += "\n\t\t{\n";

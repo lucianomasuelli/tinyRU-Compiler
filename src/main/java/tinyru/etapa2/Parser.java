@@ -713,16 +713,23 @@ public class Parser {
         String type = tipo();
         listaDeclaracionVariables(declaredAttributes);
         match(TokenType.SEMICOLON);
+        int posM = symbolTable.actualMethod.getLocalVarTable().size();
+        int posS = symbolTable.getStart().getAttributeTable().size();
         for(Token t: declaredAttributes){
             VarInput v = new VarInput(t.getLexeme(), type,false);
-            symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+//            symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+//            v.setPosition(posM);
             if(symbolTable.getStart() != null) {
                 if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
                     throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
                 }
 
                 symbolTable.getStart().addAttribute(t.getLexeme(), v);
+                v.setPosition(posS);
+                posS++;
             }
+            posM++;
+
         }
     }
     // ⟨Lista-Declaración-Variables⟩::= idMetAt ⟨Lista-Declaración-Variables⟩’

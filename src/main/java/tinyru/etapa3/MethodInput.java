@@ -90,4 +90,8 @@ public class MethodInput {
     public int getColumn() {
         return column;
     }
+
+    public Hashtable<String, VarInput> getLocalVarTable() {
+        return localVarTable;
+    }
 }
