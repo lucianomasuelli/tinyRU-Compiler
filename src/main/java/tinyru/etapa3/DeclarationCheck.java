@@ -111,7 +111,10 @@ public class DeclarationCheck {
     public void consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
         if (actualStruct.fetchMethod(method.getName())) {
             //Mismo tipo de atributo, en la mismo orden y mismo retorno
-
+            if (method.getParameterTable().size() != actualStruct.getMethod(method.getName()).getParameterTable().size()){
+                MethodInput m = actualStruct.getMethod(method.getName());
+                throw new MethodOverloadError(m.getName(), m.getLine(), m.getColumn());
+            }
             for (String key : method.getParameterTable().keySet()){
                 try {
                     ParamInput p = method.getParameterTable().get(key);
