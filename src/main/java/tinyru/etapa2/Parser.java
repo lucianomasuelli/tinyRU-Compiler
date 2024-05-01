@@ -571,7 +571,7 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-        int pos = 0;
+        int pos = symbolTable.actualStruct.getAttributeTable().size();
         for(Token t: atributosDeclarados){
             v = new VarInput(t.getLexeme(),type,pri);
             v.setLine(t.getLine());
@@ -581,7 +581,7 @@ public class Parser {
             declarationCheck.varCheck(symbolTable.actualStruct, v);
 
             symbolTable.actualStruct.addAttribute(t.getLexeme(),v);
-            pos++;
+            pos = pos + 1;
         }
 
     }
