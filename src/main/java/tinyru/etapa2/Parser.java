@@ -499,7 +499,7 @@ public class Parser {
 
     //⟨Herencia⟩ ::= : ⟨Tipo⟩
     private String herencia() {
-        HashSet<String> types = new HashSet<>(Set.of("Str", "Bool", "Int", "Char","Array Str", "Array Bool","Array Int", "Array Char"));
+        HashSet<String> types = new HashSet<>(Set.of("Str", "Bool", "Int", "Char","Array Str", "Array Bool","Array Int", "Array Char","IO"));
         match(TokenType.COLON);
         int line = actualToken.getLine();
         int column = actualToken.getColumn();
