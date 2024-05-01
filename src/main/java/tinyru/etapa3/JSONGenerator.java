@@ -90,9 +90,11 @@ public class JSONGenerator {
                     json += "\t\t],\n";
                 else
                     json += "\t\t]\n";
+                json += "\t\t}\n";
             }
             json += "\t}\n";
         }
+        json += "],\n";
         json += "\"start\": {\n";
         json += "\t\"nombre\": " + st.getStart().getName() + "\n";
         json += "\t\"atributos\": [";
@@ -109,6 +111,7 @@ public class JSONGenerator {
         }
 
         json += "]\n";
+        json += "\t}\n";
         json += "}\n";
         //añade el start
         createJSON(json);
