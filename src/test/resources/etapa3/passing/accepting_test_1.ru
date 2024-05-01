@@ -5,7 +5,6 @@ struct A {
 }
 impl A {
 	fn method_a(Int a, Int b) -> Int {
-		Y y1, y2;
 		Int c;
 	}
 	.(){}
