@@ -8,7 +8,7 @@ public class SemanticError extends RuntimeException {
     }
 
     public String getMessage() {
-        return "ERROR: SEMÁNTICO \n" + errorMessage;
+        return "ERROR: SEMÁNTICO - DECLARACIONES \n" + errorMessage;
     }
 
 }

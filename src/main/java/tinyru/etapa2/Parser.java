@@ -450,13 +450,13 @@ public class Parser {
     private void impl() {
         match(TokenType.PIMPL);
 
-        if(symbolTable.fetchStruct(actualToken.getLexeme())) {
+        if(symbolTable.fetchStruct(actualToken.getLexeme())) { // if struct already exists, check if it has impl
             symbolTable.actualStruct = symbolTable.getStruct(actualToken.getLexeme());
             if(symbolTable.actualStruct.getHasImpl()) {
                 throw new ImplAlreadyDeclared(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
             }
             symbolTable.actualStruct.setHasImpl(true);
-        } else {
+        } else { // if struct does not exist, create it
             StructInput struct = new StructInput();
             struct.setName(actualToken.getLexeme());
             struct.setHasImpl(true);
