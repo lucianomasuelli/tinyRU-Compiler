@@ -91,7 +91,7 @@ public class JSONGenerator {
                 else
                     json += "\t\t]\n";
                 json += "\t\t}\n";
-            }
+            } else { json += "\t}\n";}
             json += "\t}\n";
         }
         json += "],\n";
