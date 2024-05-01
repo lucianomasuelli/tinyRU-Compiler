@@ -461,6 +461,8 @@ public class Parser {
             struct.setName(actualToken.getLexeme());
             struct.setHasImpl(true);
             struct.setIsDeclared(false);
+            struct.setLine(actualToken.getLine());
+            struct.setColumn(actualToken.getColumn());
 
             symbolTable.actualStruct = struct;
 
