@@ -1,15 +1,13 @@
 struct A {
-	pri Str str_a, str_b;
 	Int int_a;
 	Array Int arr_1;
 }
 impl A {
-	fn method_a(Int a, Int b) -> Int {
-		Int c;
+	fn method_a(Int a) -> Int {
+		Int b;
 	}
 	.(){}
 }
 start {
-    Int a;
     A b;
 }
