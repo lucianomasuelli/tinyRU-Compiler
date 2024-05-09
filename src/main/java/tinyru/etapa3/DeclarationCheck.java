@@ -57,7 +57,9 @@ public class DeclarationCheck {
         Stack<StructInput> inheritanceStructs = new Stack<>();
         StructInput actualStruct = struct;
         inheritanceStructs.push(actualStruct);
+        // creates a stack with the inheritance chain
         while(actualStruct.getInheritanceName() != null) {
+            //checks if there is a circular inheritance
             if (actualStruct.getInheritanceName().equals(struct.getName())) {
                 throw new CircularInheritanceError(struct.getName(), struct.getInheritanceName(), struct.getLine(), struct.getColumn());
             }
@@ -72,18 +74,18 @@ public class DeclarationCheck {
             if (actualStruct.getInheritanceName() != null) {
                 StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
                 if(!actualStruct.getIsChecked()) {
-                    // Agrega los métodos heredados o chequea si están sobreescritos
-                    int overrideCount = 0;
+
+                    // consolidates the inherited methods and attributes
                     for (String key : parentStruct.getMethodTable().keySet()) {
                         MethodInput method = parentStruct.getMethodTable().get(key);
-                        // chequea si está sobreescrito
+                        // checks if is overriden
                         isOverride = consolidationMethodCheck(actualStruct,method);
                         if (!isOverride){
-                            // chequea si hay un método en la misma posición, si lo hay deja lugar en la posición
+                            // checks if there is a method in the same position, if so, rearranges the positions
                             rearrangePositions(actualStruct,method.getPosition());
                             MethodInput newMethod = new MethodInput(method.getName(),method.getIsStatic(), method.getPosition(), method.getReturnType());
                             actualStruct.addMethod(method.getName(), newMethod);
-                            //agrego los parametros
+                            // add parameters
                             for (String key2 : method.getParameterTable().keySet()) {
                                 ParamInput param = method.getParameterTable().get(key2);
                                 newMethod.addParameter(param.getName(), new ParamInput(param.getName(), param.getType(), param.getPosition()));
@@ -92,9 +94,25 @@ public class DeclarationCheck {
                         }
 
                     }
+
+                    int numAttributes = parentStruct.getAttributeTable().size();
+                    for (String key : actualStruct.getAttributeTable().keySet()) {
+                        VarInput var = actualStruct.getAttributeTable().get(key);
+                        var.setPosition(numAttributes+ var.getPosition());
+                    }
+
+                    // consolidates the inherited attributes
+                    for (String key : parentStruct.getAttributeTable().keySet()) {
+                        VarInput var = parentStruct.getAttributeTable().get(key);
+                        consolidationVarCheck(actualStruct,var);
+                        actualStruct.addAttribute(var.getName(), new VarInput(var.getName(), var.getType(), var.getVisibility(), var.getPosition()));
+                    }
+
+
+                    // fix the position of overriden methods
                     for (String key : parentStruct.getMethodTable().keySet()) {
                         MethodInput method = parentStruct.getMethodTable().get(key);
-                        // chequea si está sobreescrito
+                        // checks if is overriden
                         if(actualStruct.fetchMethod(method.getName())){
                             int originalPos = method.getPosition();
                             MethodInput mOverride = actualStruct.getMethod(method.getName());

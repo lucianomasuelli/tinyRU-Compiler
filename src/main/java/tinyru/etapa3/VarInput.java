@@ -20,6 +20,13 @@ public class VarInput {
         this.position = 0; //TODO agregar que calcule la posición relativa
     }
 
+    public VarInput(String name, String type, Boolean visibility, int position) {
+        this.name = name;
+        this.type = type;
+        this.visibility = visibility;
+        this.position = position;
+    }
+
     public String getName() {
         return name;
     }
@@ -28,8 +35,8 @@ public class VarInput {
         return type;
     }
 
-    public String getVisibility() {
-        return visibility ? "public" : "private"; // No se como lo estabamos poniendo
+    public boolean getVisibility() {
+        return visibility;
     }
 
     public int getPosition() {
