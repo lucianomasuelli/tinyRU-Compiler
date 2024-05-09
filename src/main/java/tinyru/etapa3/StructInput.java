@@ -148,4 +148,15 @@ public class StructInput {
     public boolean getHasConstructor() {
         return hasConstructor;
     }
+
+    public MethodInput getMethodByPos(int pos) {
+        int i = 0;
+        for (MethodInput method : methodTable.values()) {
+            if (i == pos) {
+                return method;
+            }
+            i++;
+        }
+        return null;
+    }
 }
