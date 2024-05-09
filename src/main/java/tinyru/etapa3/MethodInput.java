@@ -20,6 +20,13 @@ public class MethodInput {
         this.position = 0; //TODO agregar que calcule la posición relativa
     }
 
+    public MethodInput(String name, Boolean isStatic, int position, String returnType) {
+        this.name = name;
+        this.isStatic = isStatic;
+        this.returnType = returnType;
+        this.position = position;
+    }
+
     public void addParameter(String name, ParamInput parameter) {
         parameterTable.put(name, parameter);
     }
@@ -63,8 +70,8 @@ public class MethodInput {
         return name;
     }
 
-    public String getIsStatic() {
-        return isStatic.toString();
+    public boolean getIsStatic() {
+        return isStatic;
     }
 
     public int getPosition() {

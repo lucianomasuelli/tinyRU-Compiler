@@ -14,6 +14,12 @@ public class ParamInput {
             this.position = 0;
         }
 
+        public ParamInput(String name, String type, Integer position) {
+            this.name = name;
+            this.type = type;
+            this.position = position;
+        }
+
         public String getName() {
             return name;
         }

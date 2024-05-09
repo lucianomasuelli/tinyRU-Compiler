@@ -21,7 +21,7 @@ public class DeclarationCheck {
         for (String key : symbolTable.getStructTable().keySet()) {
             StructInput struct = symbolTable.getStruct(key);
             inheritanceCheck(struct);
-            consolidation(struct);
+            consolidationInverse(struct);
             implCheck(struct);
             noStructCheck(struct);
             typesCheck(struct);
@@ -53,14 +53,73 @@ public class DeclarationCheck {
         }
     }
 
+    public void consolidationInverse (StructInput struct) {
+        Stack<StructInput> inheritanceStructs = new Stack<>();
+        StructInput actualStruct = struct;
+        inheritanceStructs.push(actualStruct);
+        while(actualStruct.getInheritanceName() != null) {
+            StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
+            inheritanceStructs.push(parentStruct);
+            actualStruct = parentStruct;
+        }
+        while(!inheritanceStructs.isEmpty()) {
+            actualStruct = inheritanceStructs.pop();
+            boolean overrideMethods = false;
+            boolean isOverride = false;
+            if (actualStruct.getInheritanceName() != null) {
+                StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
+                if(!actualStruct.getIsChecked()) {
+                    // Agrega los métodos heredados o chequea si están sobreescritos
+                    int overrideCount = 0;
+                    for (String key : parentStruct.getMethodTable().keySet()) {
+                        MethodInput method = parentStruct.getMethodTable().get(key);
+                        // chequea si está sobreescrito
+                        isOverride = consolidationMethodCheck(actualStruct,method);
+                        if (!isOverride){
+                            // chequea si hay un método en la misma posición, si lo hay deja lugar en la posición
+                            rearrangePositions(actualStruct,method.getPosition());
+                            MethodInput newMethod = new MethodInput(method.getName(),method.getIsStatic(), method.getPosition(), method.getReturnType());
+                            actualStruct.addMethod(method.getName(), newMethod);
+                            //agrego los parametros
+                            for (String key2 : method.getParameterTable().keySet()) {
+                                ParamInput param = method.getParameterTable().get(key2);
+                                newMethod.addParameter(param.getName(), new ParamInput(param.getName(), param.getType(), param.getPosition()));
+                            }
+
+                        }
+
+                    }
+                    for (String key : parentStruct.getMethodTable().keySet()) {
+                        MethodInput method = parentStruct.getMethodTable().get(key);
+                        // chequea si está sobreescrito
+                        if(actualStruct.fetchMethod(method.getName())){
+                            int originalPos = method.getPosition();
+                            MethodInput mOverride = actualStruct.getMethod(method.getName());
+                            MethodInput m2 = actualStruct.getMethodByPos(originalPos);
+                            if(m2 != null)
+                                m2.setPosition(mOverride.getPosition());
+                            mOverride.setPosition(originalPos);
+                        }
+                    }
+                    actualStruct.setIsChecked(true);
+                }
+            }
+
+        }
+
+    }
+
     // Consolidate and check circular inheritance
     public void consolidation(StructInput struct) {
         StructInput actualStruct = struct;
         Stack<StructInput> stack = new Stack<>();
         Stack<MethodInput> methods = new Stack<>();
-        Boolean overrideMethods = false;
+        Stack<Integer> numOfOverrides = new Stack<>();
+        int overrideCount;
+        boolean overrideMethods;
         Boolean isOverride = false;
         while (actualStruct.getInheritanceName() != null) {
+            overrideMethods = false;
             if (actualStruct.getInheritanceName().equals(struct.getName())) {
                 throw new CircularInheritanceError(struct.getName(), struct.getInheritanceName(), struct.getLine(), struct.getColumn());
             }
@@ -73,23 +132,31 @@ public class DeclarationCheck {
                         numOfMethods -= 1;
                     }
                 }
-                //Suma la cantidad de metodos de la clase actual
-                for (String key : struct.getMethodTable().keySet()){
-                    MethodInput method = struct.getMethodTable().get(key);
-                    method.setPosition(numOfMethods + method.getPosition());
-                }
-                //Chequea los metodos
+                //Actualiza la posición de los métodos
+//                for (String key : struct.getMethodTable().keySet()){
+//                    MethodInput method = struct.getMethodTable().get(key);
+//                    method.setPosition(numOfMethods + method.getPosition());
+//                }
+                // Chequea si los métodos están sobreescritos
+                overrideCount = 0;
                 for (String key : parentStruct.getMethodTable().keySet()) {
                     MethodInput method = parentStruct.getMethodTable().get(key);
                     // chequea si está sobreescrito
                     isOverride = consolidationMethodCheck(struct,method);
                     if (!isOverride){
-                        struct.addMethod(method.getName(), method);
+                        // chequea si hay un método en la misma posición
+                        rearrangePositions(struct,method.getPosition());
+                        struct.addMethod(method.getName(), new MethodInput(method.getName(),method.getIsStatic(), method.getPosition(),method.getReturnType()));
                     } else {
                         overrideMethods = true;
-                        MethodInput m = struct.getMethod(method.getName());
+                        MethodInput m = actualStruct.getMethod(method.getName());
                         methods.push(m);
+                        overrideCount += 1;
                     }
+                }
+
+                if (overrideCount != 0){
+                    numOfOverrides.push(overrideCount);
                 }
 
                 //Calcula la cantidad de atributos y los suma
@@ -105,14 +172,16 @@ public class DeclarationCheck {
                     struct.addAttribute(var.getName(), var);
                 }
 
-                stack.push(actualStruct);
+                if(overrideMethods) {
+                    stack.push(actualStruct);
+                }
 
             }
             actualStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
         }
         struct.setIsChecked(true);
-        if (overrideMethods){
-            fixPosition(stack,methods);
+        if (!stack.empty()){
+            fixPosition(stack,methods,numOfOverrides);
         }
     }
 
@@ -122,6 +191,7 @@ public class DeclarationCheck {
             throw new MethodAlreadyDeclaredError(actualStruct, method.getName(), method.getLine(), method.getColumn());
         }
     }
+
     public Boolean consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
         if (actualStruct.fetchMethod(method.getName())) {
             //Mismo tipo de atributo, en la mismo orden y mismo retorno
@@ -236,33 +306,35 @@ public class DeclarationCheck {
         }
     }
 
-    public void fixPosition(Stack<StructInput> structs, Stack<MethodInput> methods){
+    public void rearrangePositions(StructInput struct, int position) {
+        for (String key : struct.getMethodTable().keySet()){
+            MethodInput method = struct.getMethodTable().get(key);
+            if (method.getPosition() >= position){
+                method.setPosition(method.getPosition() + 1);
+            }
+        }
+    }
+
+    public void fixPosition(Stack<StructInput> structs, Stack<MethodInput> methods, Stack<Integer> numOfOverrides){
         int position; //TODO fix position
-        MethodInput method=null;
+        MethodInput method;
         MethodInput methodInput2;
+        int overrides;
         while (!structs.isEmpty()  || !methods.isEmpty()){
             StructInput struct = structs.pop();
             StructInput parent = symbolTable.getStruct(struct.getInheritanceName());
 
             //Actualiza la posición del metodo a la del metodo padre
-            if (method == null) {
+            overrides = numOfOverrides.pop();
+            for (int i = 0; i < overrides;  i++) {
                 method = methods.pop();
-            }
-            while (parent.fetchMethod(method.getName())){
                 position = parent.getMethod(method.getName()).getPosition();
                 methodInput2 = struct.getMethodByPos(position);
                 if (methodInput2 != null){
                     methodInput2.setPosition(method.getPosition());
                 }
                 method.setPosition(position);
-                if (!methods.isEmpty()){
-                    method = methods.pop();
-                } else {
-                    return;
-                }
-
             }
-
 
         }
 

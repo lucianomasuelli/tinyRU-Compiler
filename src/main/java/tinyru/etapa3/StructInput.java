@@ -150,13 +150,14 @@ public class StructInput {
     }
 
     public MethodInput getMethodByPos(int pos) {
-        int i = 0;
-        for (MethodInput method : methodTable.values()) {
-            if (i == pos) {
-                return method;
+        MethodInput methodPos = null;
+        for(String key : methodTable.keySet()) {
+            MethodInput method = methodTable.get(key);
+            if(method.getPosition() == pos) {
+                methodPos = method;
+                break;
             }
-            i++;
         }
-        return null;
+        return methodPos;
     }
 }
