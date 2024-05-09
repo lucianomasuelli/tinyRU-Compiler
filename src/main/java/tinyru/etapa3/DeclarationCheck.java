@@ -58,6 +58,9 @@ public class DeclarationCheck {
         StructInput actualStruct = struct;
         inheritanceStructs.push(actualStruct);
         while(actualStruct.getInheritanceName() != null) {
+            if (actualStruct.getInheritanceName().equals(struct.getName())) {
+                throw new CircularInheritanceError(struct.getName(), struct.getInheritanceName(), struct.getLine(), struct.getColumn());
+            }
             StructInput parentStruct = symbolTable.getStruct(actualStruct.getInheritanceName());
             inheritanceStructs.push(parentStruct);
             actualStruct = parentStruct;
