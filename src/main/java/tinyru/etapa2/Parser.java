@@ -7,6 +7,7 @@ import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
 import tinyru.etapa3.Exceptions.*;
+import tinyru.etapa4.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -871,33 +872,38 @@ public class Parser {
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
-    private void sentencia() {
+    private NodoSentencia sentencia() {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))){
-            asignacion();
+            NodoAsig nodoAsig = asignacion();
             match(TokenType.SEMICOLON);
+            return nodoAsig;
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            sentenciaSimple();
+            NodoSentSimple sentenciaSimple = sentenciaSimple();
             match(TokenType.SEMICOLON);
+            return sentenciaSimple;
         } else if (actualToken.getLexeme().equals("if")) {
             match(TokenType.PIF);
             match(TokenType.LPAREN);
-            expresion();
+            NodoExpresion expr = expresion();
             match(TokenType.RPAREN);
-            sentencia();
-            sentenciaPrima();
+            NodoSentencia sent = sentencia();
+            NodoSentencia sentElse = sentenciaPrima();
+            return new NodoIf(expr, sent, sentElse);
         } else if (actualToken.getLexeme().equals("while")) {
             match(TokenType.PWHILE);
             match(TokenType.LPAREN);
-            expresion();
+            NodoExpresion expr = expresion();
             match(TokenType.RPAREN);
-            sentencia();
+            NodoSentencia sent = sentencia();
+            return new NodoWhile(expr, sent);
         } else if (onFirst(actualToken, first("bloque"))) {
-            bloque();
+            NodoBloque bloque = bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
             match(TokenType.PRET);
-            sentenciaPrimaPrima();
+            NodoExpresion retExpr = sentenciaPrimaPrima();
+            return new NodoRet(retExpr);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
