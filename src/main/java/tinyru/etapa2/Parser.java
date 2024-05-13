@@ -7,6 +7,8 @@ import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
 import tinyru.etapa3.Exceptions.*;
+import tinyru.etapa4.AST;
+import tinyru.etapa4.ASTNode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,12 +20,24 @@ public class Parser {
     Token actualToken;
     SymbolTable symbolTable = new SymbolTable();
 
+    AST ast;
+
+    ASTNode actualNode;
+
     public Parser(Lexer lexer) {
         this.lexer = lexer;
+        this.ast  = new AST();
     }
 
     public SymbolTable getSymbolTable(){
         return symbolTable;
+    }
+
+    public AST getAST(){
+        return ast;
+    }
+    public void setActualASTNode(ASTNode node){
+        this.actualNode = node;
     }
 
     public void analyze() {
@@ -872,6 +886,8 @@ public class Parser {
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
     private void sentencia() {
+        ASTNode sentence = new ASTNode("sentence");
+        ast.addSentence(sentence);
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))){
