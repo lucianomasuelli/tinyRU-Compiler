@@ -211,6 +211,10 @@ public class DeclarationCheck {
         if (actualStruct.fetchMethod(method.getName())) {
             throw new MethodAlreadyDeclaredError(actualStruct, method.getName(), method.getLine(), method.getColumn());
         }
+        for (String v: method.getLocalVarTable().keySet()){
+            VarInput var = method.getLocalVarTable().get(v);
+            checkVarType(var);
+        }
     }
 
     public Boolean consolidationMethodCheck(StructInput actualStruct, MethodInput method) {
