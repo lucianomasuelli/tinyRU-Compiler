@@ -1,6 +1,6 @@
-package tinyru.etapa4;
+package tinyru.etapa4.AST;
 
-public class NodoExpresion {
+public class ExpresionNode {
     NodoExpBin nodoExpBin;
     NodoExpUn nodoExpUn;
     NodoOp nodoOp;

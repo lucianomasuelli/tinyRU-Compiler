@@ -7,7 +7,7 @@ import tinyru.etapa2.Exceptions.UnexpectedTokenError;
 import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
 import tinyru.etapa3.Exceptions.*;
-import tinyru.etapa4.*;
+import tinyru.etapa4.AST.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -884,37 +884,37 @@ public class Parser {
     }
 
     // ⟨Sentencia⟩ ::= ; | ⟨Asignación⟩ ; | ⟨Sentencia-Simple⟩ ; | if (⟨Expresión⟩) ⟨Sentencia⟩ ⟨Sentencia⟩’ | while ( ⟨Expresión⟩ ) ⟨Sentencia⟩ | ⟨Bloque⟩ | ret ⟨Sentencia⟩’’
-    private NodoSentencia sentencia() {
+    private SentenciaNode sentencia() {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))){
-            NodoAsig nodoAsig = asignacion();
+            AsigNode asigNode = asignacion();
             match(TokenType.SEMICOLON);
-            return nodoAsig;
+            return asigNode;
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            NodoSentSimple sentenciaSimple = sentenciaSimple();
+            SentSimpleNode sentenciaSimple = sentenciaSimple();
             match(TokenType.SEMICOLON);
             return sentenciaSimple;
         } else if (actualToken.getLexeme().equals("if")) {
             match(TokenType.PIF);
             match(TokenType.LPAREN);
-            NodoExpresion expr = expresion();
+            ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
-            NodoSentencia sent = sentencia();
-            NodoSentencia sentElse = sentenciaPrima();
-            return new NodoIf(expr, sent, sentElse);
+            SentenciaNode sent = sentencia();
+            SentenciaNode sentElse = sentenciaPrima();
+            return new IfNode(expr, sent, sentElse);
         } else if (actualToken.getLexeme().equals("while")) {
             match(TokenType.PWHILE);
             match(TokenType.LPAREN);
-            NodoExpresion expr = expresion();
+            ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
-            NodoSentencia sent = sentencia();
-            return new NodoWhile(expr, sent);
+            SentenciaNode sent = sentencia();
+            return new WhileNode(expr, sent);
         } else if (onFirst(actualToken, first("bloque"))) {
             NodoBloque bloque = bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
             match(TokenType.PRET);
-            NodoExpresion retExpr = sentenciaPrimaPrima();
+            ExpresionNode retExpr = sentenciaPrimaPrima();
             return new NodoRet(retExpr);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -967,9 +967,9 @@ public class Parser {
     }
 
     // ⟨Asignación⟩ ::= ⟨AccesoVar-Simple⟩ = ⟨Expresión⟩ | ⟨AccesoSelf-Simple⟩ = ⟨Expresión⟩
-    private void asignacion() {
+    private AsigNode asignacion() {
         if (onFirst(actualToken, first("acceso_var_simple"))){
-            accesoVarSimple();
+            AccVarSimpleNode var = accesoVarSimple();
             match(TokenType.ASSIGN);
             expresion();
         } else if (onFirst(actualToken, first("acceso_self_simple"))) {
@@ -1000,9 +1000,11 @@ public class Parser {
     }
 
     // ⟨AccesoVar-Simple⟩ ::= id ⟨AccesoVar-Simple⟩’
-    private void accesoVarSimple() {
+    private AccVarSimpleNode accesoVarSimple() {
+        AccVarSimpleNode var = new AccVarSimpleNode(actualToken);
         match(TokenType.ID);
         accesoVarSimplePrima();
+        return var;
     }
 
     // ⟨AccesoVar-Simple⟩’ ::= N10 | [ ⟨Expresión⟩ ] | λ
@@ -1167,7 +1169,8 @@ public class Parser {
     }
     // ⟨ExpAd⟩ ::= ⟨ExpMul⟩⟨ExpAd⟩’
     private void expAd(){
-        expMul();
+        ExpAdNode expAd = new ExpAdNode();
+        expAd = expMul();
         expAdPrima();
     }
     // ⟨ExpAd⟩’ ::= ⟨OpAd⟩ ⟨ExpMul⟩⟨ExpAd⟩’ | λ
@@ -1188,9 +1191,11 @@ public class Parser {
         }
     }
     // ⟨ExpMul⟩ ::= ⟨ExpUn⟩⟨ExpMul⟩’
-    private void expMul(){
-        expUn();
+    private ExpMulNode expMul(){
+        ExpMulNode expMul = new ExpMulNode();
+        expMul = expUn();
         expMulPrima();
+        return expMul;
     }
     // ⟨ExpMul⟩’ ::= ⟨OpMul⟩⟨ExpUn⟩⟨ExpMul⟩’ | λ
     private void expMulPrima() {
@@ -1209,15 +1214,17 @@ public class Parser {
         }
     }
     // ⟨ExpUn⟩ ::= ⟨OpUnario⟩ ⟨ExpUn⟩ | ⟨Operando⟩
-    private void expUn(){
+    private ExpUnNode expUn(){
+        ExpUnNode expUn = null;
         if (onFirst(actualToken, first("op_unario"))){
             opUnario();
             expUn();
         } else if (onFirst(actualToken, first("operando"))){
-            operando();
+            expUn = operando();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return expUn;
     }
     // ⟨OpIgual ⟩ ::= == | !=
     private void opIgual(){
@@ -1282,15 +1289,17 @@ public class Parser {
         }
     }
     // ⟨Operando⟩ ::= ⟨Literal⟩ | ⟨Primario⟩ N12’
-    private void operando(){
+    private OperandoNode operando(){
+        OperandoNode op = null;
         if (onFirst(actualToken, first("literal"))){
-            literal();
+            op = literal();
         } else if (onFirst(actualToken, first("primario"))){
             primario();
             N12Prima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return op;
     }
     // N12 ::= . id ⟨Llamada-Método-Enc-Acceso-Var-Enc⟩
     private void N12(){
@@ -1328,7 +1337,7 @@ public class Parser {
         }
     }
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
-    private void literal(){
+    private LiteralNode literal(){
         if (actualToken.getType() == TokenType.PNIL){
             match(TokenType.PNIL);
         } else if (actualToken.getType() == TokenType.PTRUE){
@@ -1336,7 +1345,9 @@ public class Parser {
         } else if (actualToken.getType() == TokenType.PFALSE){
             match(TokenType.PFALSE);
         } else if (actualToken.getType() == TokenType.NUM){
+            IntLiteralNode intLiteral = new IntLiteralNode(actualToken);
             match(TokenType.NUM);
+            return intLiteral;
         } else if (actualToken.getType() == TokenType.STRING){
             match(TokenType.STRING);
         } else if (actualToken.getType() == TokenType.CHAR){
