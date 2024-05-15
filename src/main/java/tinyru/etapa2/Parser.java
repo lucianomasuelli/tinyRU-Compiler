@@ -1127,6 +1127,7 @@ public class Parser {
     }
     // ⟨ExpIgual⟩ ::= ⟨ExpCompuesta⟩⟨ExpIgual⟩’
     private void expIgual(){
+
         expCompuesta();
         expIgualPrima();
     }
@@ -1147,9 +1148,11 @@ public class Parser {
         }
     }
     // ⟨ExpCompuesta⟩ ::= ⟨ExpAd ⟩ ⟨ExpCompuesta⟩’
-    private void expCompuesta(){
-        expAd();
+    private ExpCompNode expCompuesta(){
+        ExpCompNode expComp = new ExpCompNode();
+        expComp = expAd();
         expCompuestaPrima();
+        return expComp;
     }
     // ⟨ExpCompuesta⟩’::= ⟨OpCompuesto⟩ ⟨ExpAd ⟩ | λ
     private void expCompuestaPrima() {
@@ -1168,10 +1171,11 @@ public class Parser {
 
     }
     // ⟨ExpAd⟩ ::= ⟨ExpMul⟩⟨ExpAd⟩’
-    private void expAd(){
+    private ExpAdNode expAd(){
         ExpAdNode expAd = new ExpAdNode();
         expAd = expMul();
         expAdPrima();
+        return expAd;
     }
     // ⟨ExpAd⟩’ ::= ⟨OpAd⟩ ⟨ExpMul⟩⟨ExpAd⟩’ | λ
     // follow = {&&,||,),;,],==,!=,<,>,<=,>=,,}
