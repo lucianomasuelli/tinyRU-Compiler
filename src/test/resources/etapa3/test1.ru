@@ -1,21 +1,13 @@
-struct A {
-    Int a, b;
+struct A{
+    Int a,b;
 }
 
 impl A {
-    .(Int a, Int b) {}
-    fn method_1 () -> void {}
-    st fn method_2(Int wala, Str jeje) -> Int {
-        ret 1;
+    .(){}
+    fn met1(Int a) -> Int {
+        a = 2*3+4;
     }
 }
 
-struct B:A {
-    Int c,d;
-}
-
-struct C:B {
-    Str e;
-}
 
 start {}
