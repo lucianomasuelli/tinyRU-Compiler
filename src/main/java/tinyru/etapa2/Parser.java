@@ -1343,22 +1343,28 @@ public class Parser {
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
     private LiteralNode literal(){
         if (actualToken.getType() == TokenType.PNIL){
+            NilLiteralNode literal = new NilLiteralNode(actualToken);
             match(TokenType.PNIL);
         } else if (actualToken.getType() == TokenType.PTRUE){
+            TrueLiteralNode literal = new TrueLiteralNode(actualToken);
             match(TokenType.PTRUE);
         } else if (actualToken.getType() == TokenType.PFALSE){
+            FalseLiteralNode literal = new FalseLiteralNode(actualToken);
             match(TokenType.PFALSE);
         } else if (actualToken.getType() == TokenType.NUM){
             IntLiteralNode intLiteral = new IntLiteralNode(actualToken);
             match(TokenType.NUM);
             return intLiteral;
         } else if (actualToken.getType() == TokenType.STRING){
+            StringLiteralNode strLiteral = new StringLiteralNode(actualToken);
             match(TokenType.STRING);
         } else if (actualToken.getType() == TokenType.CHAR){
+            CharLiteralNode charLiteral = new CharLiteralNode(actualToken);
             match(TokenType.CHAR);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return literal;
     }
     //⟨Primario⟩ ::= ⟨ExpresionParentizada⟩ | ⟨AccesoSelf ⟩ | ⟨Primario⟩’ | ⟨Llamada-Método-Estático⟩ | ⟨Llamada-Constructor ⟩
     private void primario(){
