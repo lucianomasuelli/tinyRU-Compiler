@@ -879,7 +879,8 @@ public class Parser {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))){
-            sentencia = asignacion();
+            AsigNode asig = asignacion();
+            sentencia = new SentenciaNode(asig);
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
             sentenciaSimple();
@@ -1353,12 +1354,15 @@ public class Parser {
     }
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
     private LiteralNode literal(){
-        LiteralNode literal = null;
+        LiteralNode literal;
         if (actualToken.getType() == TokenType.PNIL){
+            literal = new NilLiteralNode();
             match(TokenType.PNIL);
         } else if (actualToken.getType() == TokenType.PTRUE){
+            literal = new TrueLiteralNode();
             match(TokenType.PTRUE);
         } else if (actualToken.getType() == TokenType.PFALSE){
+            literal = new FalseLiteralNode();
             match(TokenType.PFALSE);
         } else if (actualToken.getType() == TokenType.NUM){
             literal = new IntLiteralNode(actualToken);
@@ -1367,6 +1371,7 @@ public class Parser {
             literal = new StrLiteralNode(actualToken);
             match(TokenType.STRING);
         } else if (actualToken.getType() == TokenType.CHAR){
+            literal = new CharLiteralNode(actualToken);
             match(TokenType.CHAR);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
