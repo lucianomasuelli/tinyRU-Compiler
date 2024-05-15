@@ -16,17 +16,18 @@ public class ASTTest {
             Lexer lexer = new Lexer("src/test/resources/etapa3/test1.ru");
             Parser parser = new Parser(lexer);
             parser.analyze();
-            AST ast = parser.getAST();
+            //AST ast = parser.getAST();
             //printTable(table);
-            printAST(ast);
+            //printAST(ast);
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
     }
-
-void printAST(AST ast) {
-        for (ASTNode node : ast.getRoot()) {
-            node.print();
-        }
-    }
 }
+
+//void printAST(AST ast) {
+//        for (ASTNode node : ast.getRoot()) {
+//            node.print();
+//        }
+//    }
+//}
