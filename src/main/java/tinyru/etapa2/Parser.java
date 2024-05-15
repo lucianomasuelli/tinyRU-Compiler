@@ -12,6 +12,7 @@ import tinyru.etapa4.AST.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Parser {
@@ -29,16 +30,18 @@ public class Parser {
     }
 
 
-    public void analyze() {
+    public AbstractSyntaxTree analyze() {
+        AbstractSyntaxTree ast = null;
         try {
             actualToken = lexer.nextToken();
-            program();
+            ast = program();
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (SemanticError | ParserError e) {
             System.out.println(e.getMessage());
             System.exit(1);
         }
+        return ast;
     }
 
     private Token match(TokenType expected) {
@@ -325,17 +328,21 @@ public class Parser {
 
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩
-    private void program(){
-        listaDefiniciones();
-        start();
+    private AbstractSyntaxTree program(){
+        List<SentenciaNode> children = new ArrayList<>();
+        listaDefiniciones(children);
+        start(children);
 
         DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
         declarationCheck.declarationCheck();
+
+        ProgramNode programNode = new ProgramNode(children);
+        return new AbstractSyntaxTree(programNode);
     }
 
 
     //⟨Start⟩ ::= start ⟨Bloque-Método⟩
-    private void start() {
+    private void start(List children) {
         match(TokenType.PSTART);
         StartInput start = new StartInput();
         symbolTable.setStart(start);
@@ -347,14 +354,14 @@ public class Parser {
 
 
     // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | lambda
-    private void listaDefiniciones() {
+    private void listaDefiniciones(List children) {
         Set<TokenType> followListaDefiniciones = new HashSet<>(Set.of(TokenType.PSTART));
         if (onFirst(actualToken, first("struct"))) {
             struct();
-            listaDefiniciones();
+            listaDefiniciones(children);
         } else if (onFirst(actualToken, first("impl"))) {
             impl();
-            listaDefiniciones();
+            listaDefiniciones(children);
         } else if (followListaDefiniciones.contains(actualToken.getType())) {
             // lambda
         } else {
@@ -879,8 +886,7 @@ public class Parser {
         if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("asignacion"))){
-            AsigNode asig = asignacion();
-            sentencia = new SentenciaNode(asig);
+            sentencia = asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
             sentenciaSimple();
