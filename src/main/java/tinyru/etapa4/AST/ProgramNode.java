@@ -3,17 +3,17 @@ package tinyru.etapa4.AST;
 import java.util.List;
 
 public class ProgramNode {
-    private List<SentenciaNode> children;
+    private List<BloqueNode> children;
 
-    public ProgramNode(List<SentenciaNode> children) {
+    public ProgramNode(List<BloqueNode> children) {
         this.children = children;
     }
 
-    public List<SentenciaNode> getChildren() {
+    public List<BloqueNode> getChildren() {
         return children;
     }
 
-    public void setChildren(List<SentenciaNode> children) {
+    public void setChildren(List<BloqueNode> children) {
         this.children = children;
     }
 }

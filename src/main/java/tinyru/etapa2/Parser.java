@@ -329,7 +329,7 @@ public class Parser {
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩
     private AbstractSyntaxTree program(){
-        List<SentenciaNode> children = new ArrayList<>();
+        List<BloqueNode> children = new ArrayList<>();
         listaDefiniciones(children);
         start(children);
 
@@ -599,21 +599,22 @@ public class Parser {
     }
     // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
     // | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
-    private void metodo(int pos) {
+    private MetodoNode metodo(int pos) {
         boolean isStatic = false;
+        MetodoNode metodoNode;
         if (actualToken.getLexeme().equals("st")) {
             match(TokenType.PST);
             isStatic = true;
-            metodoPrima(isStatic, pos);
+            metodoNode = metodoPrima(isStatic, pos);
         } else if (actualToken.getLexeme().equals("fn")) {
-            metodoPrima(isStatic, pos);
+            metodoNode = metodoPrima(isStatic, pos);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-
+        return metodoNode;
     }
 
-    private void metodoPrima(boolean isStatic, int pos) {
+    private MetodoNode metodoPrima(boolean isStatic, int pos) {
         match(TokenType.PFN);
         String name = actualToken.getLexeme();
         Token methodToken = actualToken;
@@ -639,7 +640,7 @@ public class Parser {
         match(TokenType.RETURN_TYPE);
         String type = tipoMetodo();
         symbolTable.actualMethod.setReturnType(type);
-        bloqueMetodo();
+        BloqueMetodoNode bloque = bloqueMetodo();
         symbolTable.actualMethod.setPosition(pos);
         symbolTable.actualMethod.setLine(methodToken.getLine());
         symbolTable.actualMethod.setColumn(methodToken.getColumn());
@@ -648,33 +649,40 @@ public class Parser {
         declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
+        MetodoNode metodoNode = new MetodoNode(symbolTable.actualMethod, bloque);
+        return metodoNode;
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
-    private void bloqueMetodo() {
+    private BloqueMetodoNode bloqueMetodo() {
         match(TokenType.LBRACE);
-        bloqueMetodoPrima();
+        return bloqueMetodoPrima();
     }
 
     //⟨Bloque-Método⟩’ ::= N6 ⟨Bloque-Método⟩’’ | N7 } | }
-    private void bloqueMetodoPrima() {
+    private BloqueMetodoNode bloqueMetodoPrima() {
+        BloqueMetodoNode bloqueMetodoNode = null;
+        List<SentenciaNode> sent = new ArrayList<>();
         if (onFirst(actualToken, first("N6"))) {
             N6();
-            bloqueMetodoPrimaPrima();
+            bloqueMetodoPrimaPrima(sent);
+            bloqueMetodoNode = new BloqueMetodoNode(sent);
         } else if (onFirst(actualToken, first("N7"))) {
-            N7();
+            N7(sent);
             match(TokenType.RBRACE);
+            bloqueMetodoNode = new BloqueMetodoNode(sent);
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return bloqueMetodoNode;
     }
 
     //⟨Bloque-Método⟩’’ ::= N7 } | }
-    private void bloqueMetodoPrimaPrima() {
+    private void bloqueMetodoPrimaPrima(List<SentenciaNode> sent) {
         if (onFirst(actualToken, first("N7"))) {
-            N7();
+            N7(sent);
             match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
@@ -702,16 +710,16 @@ public class Parser {
     }
 
     // N7 ::= ⟨Sentencia⟩N7’
-    private void N7() {
-        sentencia();
-        N7Prima();
+    private void N7(List<SentenciaNode> sentencias) {
+        sentencias.add(sentencia());
+        N7Prima(sentencias);
     }
 
     // N7’ ::= N7 | λ
-    private void N7Prima() {
+    private void N7Prima(List<SentenciaNode> sentencias) {
         Set<TokenType> followN7Prima = new HashSet<>(Set.of(TokenType.RBRACE));
         if (onFirst(actualToken, first("N7"))) {
-            N7();
+            N7(sentencias);
         } else if (followN7Prima.contains(actualToken.getType())) {
             // lambda
         } else {
