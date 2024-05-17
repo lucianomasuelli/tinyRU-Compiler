@@ -7,5 +7,6 @@ public class IntLiteralNode extends LiteralNode {
 
     public IntLiteralNode(Token token){
         super(token);
+        this.type = "IntLiteralNode";
     }
 }

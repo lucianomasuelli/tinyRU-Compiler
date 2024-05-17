@@ -5,6 +5,7 @@ public class AsigNode extends SentenciaNode {
     ExpresionNode expr;
 
     public AsigNode(AccesoVarNode variable, ExpresionNode expr){
+        this.type = "AsigNode";
         this.variable = variable;
         this.expr = expr;
     }
