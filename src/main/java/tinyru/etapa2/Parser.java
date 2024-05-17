@@ -19,6 +19,8 @@ public class Parser {
     Lexer lexer;
     Token actualToken;
     SymbolTable symbolTable = new SymbolTable();
+    List<BloqueNode> childrenBlocks = new ArrayList<>();
+
 
 
     public Parser(Lexer lexer) {
@@ -329,20 +331,19 @@ public class Parser {
 
     //⟨program⟩ ::= ⟨Lista-Definiciones⟩ ⟨Start⟩
     private AbstractSyntaxTree program(){
-        List<BloqueNode> children = new ArrayList<>();
-        listaDefiniciones(children);
-        start(children);
+
+        listaDefiniciones();
+        start();
 
         DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
         declarationCheck.declarationCheck();
 
-        ProgramNode programNode = new ProgramNode(children);
-        return new AbstractSyntaxTree(programNode);
+        return new AbstractSyntaxTree(childrenBlocks);
     }
 
 
     //⟨Start⟩ ::= start ⟨Bloque-Método⟩
-    private void start(List children) {
+    private void start() {
         match(TokenType.PSTART);
         StartInput start = new StartInput();
         symbolTable.setStart(start);
@@ -354,14 +355,14 @@ public class Parser {
 
 
     // ⟨Lista-Definiciones⟩ ::= ⟨Struct⟩ ⟨Lista-Definiciones⟩ | ⟨Impl⟩ ⟨Lista-Definiciones⟩ | lambda
-    private void listaDefiniciones(List children) {
+    private void listaDefiniciones() {
         Set<TokenType> followListaDefiniciones = new HashSet<>(Set.of(TokenType.PSTART));
         if (onFirst(actualToken, first("struct"))) {
             struct();
-            listaDefiniciones(children);
+            listaDefiniciones();
         } else if (onFirst(actualToken, first("impl"))) {
             impl();
-            listaDefiniciones(children);
+            listaDefiniciones();
         } else if (followListaDefiniciones.contains(actualToken.getType())) {
             // lambda
         } else {
@@ -599,22 +600,20 @@ public class Parser {
     }
     // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
     // | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
-    private MetodoNode metodo(int pos) {
+    private void metodo(int pos) {
         boolean isStatic = false;
-        MetodoNode metodoNode;
         if (actualToken.getLexeme().equals("st")) {
             match(TokenType.PST);
             isStatic = true;
-            metodoNode = metodoPrima(isStatic, pos);
+            metodoPrima(isStatic, pos);
         } else if (actualToken.getLexeme().equals("fn")) {
-            metodoNode = metodoPrima(isStatic, pos);
+            metodoPrima(isStatic, pos);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-        return metodoNode;
     }
 
-    private MetodoNode metodoPrima(boolean isStatic, int pos) {
+    private void metodoPrima(boolean isStatic, int pos) {
         match(TokenType.PFN);
         String name = actualToken.getLexeme();
         Token methodToken = actualToken;
@@ -649,8 +648,9 @@ public class Parser {
         declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
-        MetodoNode metodoNode = new MetodoNode(symbolTable.actualMethod, bloque);
-        return metodoNode;
+
+        childrenBlocks.add(bloque); // agrego el bloque a la lista de hijos
+
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
@@ -666,11 +666,11 @@ public class Parser {
         if (onFirst(actualToken, first("N6"))) {
             N6();
             bloqueMetodoPrimaPrima(sent);
-            bloqueMetodoNode = new BloqueMetodoNode(sent);
+            bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         } else if (onFirst(actualToken, first("N7"))) {
             N7(sent);
             match(TokenType.RBRACE);
-            bloqueMetodoNode = new BloqueMetodoNode(sent);
+            bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {

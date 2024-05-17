@@ -8,4 +8,8 @@ public class LiteralNode extends OperandoNode {
     public LiteralNode(Token token){
         this.token = token;
     }
+
+    public void print() {
+        System.out.print(token.getLexeme());
+    }
 }

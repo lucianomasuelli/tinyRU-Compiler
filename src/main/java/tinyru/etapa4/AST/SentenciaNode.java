@@ -1,5 +1,8 @@
 package tinyru.etapa4.AST;
 
-public class SentenciaNode {
+public abstract class SentenciaNode {
+
+    public void print() {
+    }
 
 }

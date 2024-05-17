@@ -1,18 +1,26 @@
 package tinyru.etapa4.AST;
 
+import java.util.List;
+
 public class AbstractSyntaxTree {
-    private ProgramNode root;
+    private List<BloqueNode> children;
 
-    public AbstractSyntaxTree(ProgramNode root) {
-        this.root = root;
+    public AbstractSyntaxTree(List<BloqueNode> children) {
+        this.children = children;
     }
 
-    public ProgramNode getRoot() {
-        return root;
+    public List<BloqueNode> getRoot() {
+        return children;
     }
 
-    public void setRoot(ProgramNode root) {
-        this.root = root;
+    public void setRoot(List<BloqueNode> children) {
+        this.children = children;
+    }
+
+    public void print() {
+        for (BloqueNode node : children) {
+            node.print();
+        }
     }
 
 }

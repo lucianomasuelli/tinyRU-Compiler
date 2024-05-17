@@ -16,4 +16,12 @@ public class ExpBinNode extends ExpresionNode {
         this.op = op;
         this.expRight = expRight;
     }
+
+    public void print() {
+        System.out.print("(");
+        expLeft.print();
+        System.out.print(" " + op.getLexeme() + " ");
+        expRight.print();
+        System.out.print(")");
+    }
 }
