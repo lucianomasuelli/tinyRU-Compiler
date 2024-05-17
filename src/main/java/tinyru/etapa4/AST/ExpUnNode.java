@@ -1,19 +1,16 @@
 package tinyru.etapa4.AST;
 
-public class ExpUnNode extends ExpMulNode{
-    OperandoNode operando;
-    OpUnitarioNode opUnitario;
-    ExpUnNode expUn;
+import tinyru.etapa1.Token;
+
+public class ExpUnNode extends ExpresionNode{
+    ExpresionNode expRight;
+    Token op;
 
     public ExpUnNode(){
     }
 
-    public ExpUnNode(OperandoNode operando){
-        this.operando = operando;
-    }
-
-    public ExpUnNode(OpUnitarioNode opUnitario, ExpUnNode expUn){
-        this.opUnitario = opUnitario;
-        this.expUn = expUn;
+    public ExpUnNode(ExpresionNode expRight, Token op){
+        this.expRight = expRight;
+        this.op = op;
     }
 }

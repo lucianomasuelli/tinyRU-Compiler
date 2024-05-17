@@ -1,4 +1,6 @@
 package tinyru.etapa4.AST;
 
-public class OperandoNode extends ExpUnNode {
+import tinyru.etapa1.Token;
+
+public class OperandoNode extends ExpresionNode {
 }

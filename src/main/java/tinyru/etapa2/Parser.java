@@ -1090,113 +1090,122 @@ public class Parser {
     }
 
     // ⟨ExpOr⟩ ::= ⟨ExpAnd⟩⟨ExpOr⟩’
-    private ExpOrNode expOr(){
-        ExpOrNode expOr = new ExpOrNode();
+    private ExpresionNode expOr(){
+        ExpresionNode expOr;
         expOr = expAnd();
-        expOrPrima();
-        return expOr;
+        return expOrPrima(expOr);
     }
 
     // ⟨ExpOr⟩’ ::= || ⟨ExpAnd⟩⟨ExpOr⟩’ | λ
-    private void expOrPrima(){
+    private ExpresionNode expOrPrima(ExpresionNode expLeft){
         Set<String> followExpOrPrima = new HashSet<>(Set.of(")", ";", "]", ","));
+        ExpBinNode expOr;
         if (actualToken.getLexeme().equals("||")){
+            Token opOr = actualToken;
             match(TokenType.OR);
-            expAnd();
-            expOrPrima();
+            ExpresionNode expRight = expAnd();
+            expOr = new ExpBinNode(expLeft, opOr, expRight);
+            expOrPrima(expOr);
         } else {
             if (followExpOrPrima.contains(actualToken.getLexeme())){
                 // lambda
-                return;
+                return expLeft;
             } else {
                 throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
+        return expOr;
     }
     // ⟨ExpAnd⟩ ::= ⟨ExpIgual⟩⟨ExpAnd⟩’
-    private ExpAndNode expAnd(){
-        ExpAndNode expAnd;
+    private ExpresionNode expAnd(){
+        ExpresionNode expAnd;
         expAnd = expIgual();
-        expAndPrima();
-        return expAnd;
+        return expAndPrima(expAnd);
     }
     // ⟨ExpAnd⟩’ ::= && ⟨ExpIgual⟩⟨ExpAnd⟩’ | λ
-    private void expAndPrima() {
+    private ExpresionNode expAndPrima(ExpresionNode expLeft) {
         Set<String> followExpAndPrima = new HashSet<>(Set.of("||", ")", ";", "]", ","));
+        ExpBinNode expAnd;
         if (actualToken.getLexeme().equals("&&")){
+            Token opAnd = actualToken;
             match(TokenType.AND);
-            expIgual();
-            expAndPrima();
+            ExpresionNode expRight = expIgual();
+            expAnd = new ExpBinNode(expLeft, opAnd, expRight);
+            expAndPrima(expAnd);
         } else {
             if (followExpAndPrima.contains(actualToken.getLexeme())){
                 // lambda
-                return;
+                return expLeft;
             } else {
                 throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
+        return expAnd;
     }
     // ⟨ExpIgual⟩ ::= ⟨ExpCompuesta⟩⟨ExpIgual⟩’
-    private ExpIgualNode expIgual(){
-        ExpIgualNode expIgual;
+    private ExpresionNode expIgual(){
+        ExpresionNode expIgual;
         expIgual = expCompuesta();
-        expIgualPrima();
-        return expIgual;
+        return expIgualPrima(expIgual);
     }
     // ⟨ExpIgual⟩’::= ⟨OpIgual⟩⟨ExpCompuesta⟩⟨ExpIgual⟩’ | λ
-    private void expIgualPrima() {
+    private ExpresionNode expIgualPrima(ExpresionNode expLeft) {
         Set<String> followExpIgualPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", ","));
+        ExpBinNode expIgual;
         if ( onFirst(actualToken, first("op_igual"))){
-            opIgual();
-            expCompuesta();
-            expIgualPrima();
+            Token opIgual = opIgual();
+            ExpresionNode expRight = expCompuesta();
+            expIgual = new ExpBinNode(expLeft, opIgual, expRight);
+            expIgualPrima(expIgual);
         } else {
             if (followExpIgualPrima.contains(actualToken.getLexeme())){
                 // lambda
-                return;
+                return expLeft;
             } else {
                 throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
+        return expIgual;
     }
     // ⟨ExpCompuesta⟩ ::= ⟨ExpAd ⟩ ⟨ExpCompuesta⟩’
-    private ExpCompNode expCompuesta(){
-        ExpCompNode expComp;
+    private ExpresionNode expCompuesta(){
+        ExpresionNode expComp;
         expComp = expAd();
-        expCompuestaPrima();
-        return expComp;
+        return expCompuestaPrima(expComp);
     }
     // ⟨ExpCompuesta⟩’::= ⟨OpCompuesto⟩ ⟨ExpAd ⟩ | λ
-    private void expCompuestaPrima() {
+    private ExpresionNode expCompuestaPrima(ExpresionNode expLeft) {
         Set<String> followExpCompuestaPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", ","));
+        ExpBinNode expComp;
         if (onFirst(actualToken, first("op_compuesto"))){
-            opCompuesto();
-            expAd();
+            Token opComp = opCompuesto();
+            ExpresionNode expRight = expAd();
+            expComp = new ExpBinNode(expLeft, opComp, expRight);
         } else {
             if (followExpCompuestaPrima.contains(actualToken.getLexeme())){
                 // lambda
-                return;
+                return expLeft;
             } else {
                 throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         }
-
+        return expComp;
     }
     // ⟨ExpAd⟩ ::= ⟨ExpMul⟩⟨ExpAd⟩’
-    private ExpAdNode expAd(){
-        ExpAdNode expAd;
+    private ExpresionNode expAd(){
+        ExpresionNode expAd;
         expAd = expMul();
         return expAdPrima(expAd);
     }
     // ⟨ExpAd⟩’ ::= ⟨OpAd⟩ ⟨ExpMul⟩⟨ExpAd⟩’ | λ
     // follow = {&&,||,),;,],==,!=,<,>,<=,>=,,}
-    private ExpAdNode expAdPrima(ExpAdNode expLeft) {
+    private ExpresionNode expAdPrima(ExpresionNode expLeft) {
         Set<String> followExpAdPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", ","));
-        ExpAdNode expAd;
+        ExpBinNode expAd;
         if (onFirst(actualToken, first("op_ad"))){
-            OpAdNode opAd = opAd();
-            ExpMulNode expRight = expMul();
-            expAd = new ExpAdNode(expLeft, opAd, expRight);
+            Token opAd = opAd();
+            ExpresionNode expRight = expMul();
+            expAd = new ExpBinNode(expLeft, opAd, expRight);
             expAdPrima(expAd);
         } else {
             if (followExpAdPrima.contains(actualToken.getLexeme())){
@@ -1209,19 +1218,19 @@ public class Parser {
         return expAd;
     }
     // ⟨ExpMul⟩ ::= ⟨ExpUn⟩⟨ExpMul⟩’
-    private ExpMulNode expMul(){
-        ExpMulNode expMul;
+    private ExpresionNode expMul(){
+        ExpresionNode expMul;
         expMul = expUn();
         return expMulPrima(expMul);
     }
     // ⟨ExpMul⟩’ ::= ⟨OpMul⟩⟨ExpUn⟩⟨ExpMul⟩’ | λ
-    private ExpMulNode expMulPrima(ExpMulNode expLeft) {
+    private ExpresionNode expMulPrima(ExpresionNode expLeft) {
         Set<String> followExpMulPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", ","));
-        ExpMulNode expMul;
+        ExpBinNode expMul;
         if (onFirst(actualToken, first("op_mul"))){
-            OpMulNode opMul = opMul();
-            ExpUnNode expUnRight = expUn();
-            expMul = new ExpMulNode(expLeft, opMul, expUnRight);
+            Token opMul = opMul();
+            ExpresionNode expUnRight = expUn();
+            expMul = new ExpBinNode(expLeft, opMul, expUnRight);
             expMulPrima(expMul);
         } else {
             if (followExpMulPrima.contains(actualToken.getLexeme())){
@@ -1234,24 +1243,23 @@ public class Parser {
         return expMul;
     }
     // ⟨ExpUn⟩ ::= ⟨OpUnario⟩ ⟨ExpUn⟩ | ⟨Operando⟩
-    private ExpUnNode expUn(){
-        ExpUnNode expUn = null;
-        OpUnitarioNode opUn;
+    private ExpresionNode expUn(){
+        ExpresionNode expUn = null;
+        Token opUn;
         if (onFirst(actualToken, first("op_unario"))){
             opUn = opUnario();
-            ExpUnNode newExpUn = expUn();
-            expUn = new ExpUnNode(opUn, newExpUn);
-
+            ExpresionNode newExpUn = expUn();
+            expUn = new ExpUnNode(newExpUn, opUn);
         } else if (onFirst(actualToken, first("operando"))){
-            OperandoNode op = operando();
-            expUn = new ExpUnNode(op);
+            expUn = operando();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
         return expUn;
     }
     // ⟨OpIgual ⟩ ::= == | !=
-    private void opIgual(){
+    private Token opIgual(){
+        Token opIg = actualToken;
         if (actualToken.getLexeme().equals("==")){
             match(TokenType.IGUAL);
         } else if (actualToken.getLexeme().equals("!=")){
@@ -1259,9 +1267,11 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return opIg;
     }
     // ⟨OpCompuesto⟩ ::= < | > | <= | >=
-    private void opCompuesto(){
+    private Token opCompuesto(){
+        Token opComp = actualToken;
         if (actualToken.getLexeme().equals("<")){
             match(TokenType.MENOR);
         } else if (actualToken.getLexeme().equals(">")){
@@ -1273,10 +1283,11 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return opComp;
     }
     // ⟨OpAd ⟩ ::= + | -
-    private OpAdNode opAd(){
-        OpAdNode opAd = new OpAdNode(actualToken);
+    private Token opAd(){
+        Token opAd = actualToken;
         if (actualToken.getLexeme().equals("+")){
             match(TokenType.SUM);
         } else if (actualToken.getLexeme().equals("-")){
@@ -1287,8 +1298,8 @@ public class Parser {
         return opAd;
     }
     // ⟨OpUnario⟩ ::= + | - | ! | ++ |--
-    private OpUnitarioNode opUnario(){
-        OpUnitarioNode opUn = new OpUnitarioNode(actualToken);
+    private Token opUnario(){
+        Token opUn = actualToken;
         if (actualToken.getLexeme().equals("+")){
             match(TokenType.SUM);
         } else if (actualToken.getLexeme().equals("-")){
@@ -1305,8 +1316,8 @@ public class Parser {
         return opUn;
     }
     // ⟨OpMul ⟩ ::= * | / | %
-    private OpMulNode opMul(){
-        OpMulNode opMul = new OpMulNode(actualToken);
+    private Token opMul(){
+        Token opMul = actualToken;
         if (actualToken.getLexeme().equals("*")){
             match(TokenType.PROD);
         } else if (actualToken.getLexeme().equals("/")){
@@ -1324,7 +1335,7 @@ public class Parser {
         if (onFirst(actualToken, first("literal"))){
             op = literal();
         } else if (onFirst(actualToken, first("primario"))){
-            primario();
+            op = primario();
             N12Prima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -1368,24 +1379,18 @@ public class Parser {
     }
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
     private LiteralNode literal(){
-        LiteralNode literal;
+        LiteralNode literal = new LiteralNode(actualToken);
         if (actualToken.getType() == TokenType.PNIL){
-            literal = new NilLiteralNode();
             match(TokenType.PNIL);
         } else if (actualToken.getType() == TokenType.PTRUE){
-            literal = new TrueLiteralNode();
             match(TokenType.PTRUE);
         } else if (actualToken.getType() == TokenType.PFALSE){
-            literal = new FalseLiteralNode();
             match(TokenType.PFALSE);
         } else if (actualToken.getType() == TokenType.NUM){
-            literal = new IntLiteralNode(actualToken);
             match(TokenType.NUM);
         } else if (actualToken.getType() == TokenType.STRING){
-            literal = new StrLiteralNode(actualToken);
             match(TokenType.STRING);
         } else if (actualToken.getType() == TokenType.CHAR){
-            literal = new CharLiteralNode(actualToken);
             match(TokenType.CHAR);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
@@ -1393,13 +1398,14 @@ public class Parser {
         return literal;
     }
     //⟨Primario⟩ ::= ⟨ExpresionParentizada⟩ | ⟨AccesoSelf ⟩ | ⟨Primario⟩’ | ⟨Llamada-Método-Estático⟩ | ⟨Llamada-Constructor ⟩
-    private void primario(){
+    private OperandoNode primario(){
+        OperandoNode op = null;
         if (onFirst(actualToken, first("expresion_parentizada"))){
             expresionParentizada();
         } else if (onFirst(actualToken, first("acceso_self"))){
             accesoSelf();
         } else if (onFirst(actualToken, first("primario'"))){
-            primarioPrima();
+            op = primarioPrima();
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
             llamadaMetodoEstatico();
         } else if (onFirst(actualToken, first("llamada_constructor"))){
@@ -1407,20 +1413,26 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return op;
     }
     //⟨Primario⟩’ ::= id ⟨Primario⟩’’
     // {.,&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,,}
-    private void primarioPrima(){
+    private PrimarioNode primarioPrima(){
+        PrimarioNode primario;
+        Token id = actualToken;
         match(TokenType.ID);
-        primarioPrimaPrima();
+        primario = primarioPrimaPrima(id);
+        return primario;
     }
 
     //⟨Primario⟩’’ ::= ⟨AccesoVar⟩’ | ⟨Llamada-Método⟩’ | lambda
-    private void primarioPrimaPrima(){
+    private PrimarioNode primarioPrimaPrima(Token id){
+        PrimarioNode primario = null;
         Set<TokenType> followPrimarioPrimaPrima = new HashSet<>(Set.of(TokenType.DOT, TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.COMMA));
         if (onFirst(actualToken, first("acceso_var'"))){
+            primario = new VariableNode(id);
             accesoVarPrima();
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
             llamadaMetodoPrima();
@@ -1429,6 +1441,7 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return primario;
     }
     // ⟨ExpresionParentizada⟩ ::= ( ⟨Expresion⟩ ) N12’
     private void expresionParentizada(){
