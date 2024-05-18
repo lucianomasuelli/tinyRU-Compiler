@@ -18,7 +18,9 @@ public class ASTTest {
             Lexer lexer = new Lexer("src/test/resources/etapa3/test1.ru");
             Parser parser = new Parser(lexer);
             ast = parser.analyze();
+            SymbolTable table = parser.getSymbolTable();
             ast.print();
+            ast.check(table);
 
         } catch (IOException e) {
             System.out.println(e.getMessage());

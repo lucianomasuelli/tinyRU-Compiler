@@ -1,5 +1,7 @@
 package tinyru.etapa4.AST;
 
+import tinyru.etapa3.SymbolTable;
+
 public class AsigNode extends SentenciaNode {
     AccesoVarNode variable;
     ExpresionNode expr;
@@ -15,5 +17,11 @@ public class AsigNode extends SentenciaNode {
         System.out.print(" = ");
         expr.print();
         System.out.println(";");
+    }
+
+    public void check(SymbolTable st) {
+        String varType = variable.check(null, st);
+        //expr.check();
+        System.out.println("Asignacion: " + varType );
     }
 }

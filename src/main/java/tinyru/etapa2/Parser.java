@@ -10,10 +10,7 @@ import tinyru.etapa3.Exceptions.*;
 import tinyru.etapa4.AST.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Parser {
     Lexer lexer;
@@ -970,19 +967,22 @@ public class Parser {
 
     // ⟨Asignación⟩ ::= ⟨AccesoVar-Simple⟩ = ⟨Expresión⟩ | ⟨AccesoSelf-Simple⟩ = ⟨Expresión⟩
     private AsigNode asignacion() {
-        AsigNode asigNode = null;
+        AsigNode asigNode;
+        AccesoVarNode var;
+        ExpresionNode exp;
         if (onFirst(actualToken, first("acceso_var_simple"))){
-            AccVarSimpleNode var = accesoVarSimple();
+            var = accesoVarSimple();
             match(TokenType.ASSIGN);
-            ExpresionNode exp = expresion();
-            asigNode = new AsigNode(var, exp);
+            exp = expresion();
+
         } else if (onFirst(actualToken, first("acceso_self_simple"))) {
-            accesoSelfSimple();
+            var =  accesoSelfSimple();
             match(TokenType.ASSIGN);
-            expresion();
+            exp = expresion();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        asigNode = new AsigNode(var, exp);
         return asigNode;
     }
 
@@ -1006,17 +1006,18 @@ public class Parser {
 
     // ⟨AccesoVar-Simple⟩ ::= id ⟨AccesoVar-Simple⟩’
     private AccVarSimpleNode accesoVarSimple() {
-        AccVarSimpleNode var = new AccVarSimpleNode(actualToken);
+        AccVarSimpleNode var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
         match(TokenType.ID);
-        accesoVarSimplePrima();
+        accesoVarSimplePrima(var);
         return var;
     }
 
     // ⟨AccesoVar-Simple⟩’ ::= N10 | [ ⟨Expresión⟩ ] | λ
-    private void accesoVarSimplePrima() {
+    private void accesoVarSimplePrima(AccesoVarNode var) {
         Set<String> followAccesoVarSimplePrima = new HashSet<>(Set.of("="));
         if (onFirst(actualToken, first("N10"))) {
-            N10();
+            EncadenadoNode enc = N10();
+            var.setEncadenado(enc);
         } else if (actualToken.getLexeme().equals("[")) {
             match(TokenType.LBRACKET);
             expresion();
@@ -1030,51 +1031,60 @@ public class Parser {
     }
 
     // N10 ::= ⟨Encadenado-Simple⟩ N10’
-    private void N10() {
-        encadenadoSimple();
-        N10Prima();
+    private EncadenadoNode N10() {
+        AccesoVarNode enc = encadenadoSimple();
+        enc.setEncadenado(N10Prima());
+        return enc;
     }
 
     // N10’ ::= N10 | λ
-    private void N10Prima() {
+    private EncadenadoNode N10Prima() {
         Set<String> followN10Prima = new HashSet<>(Set.of("="));
+        EncadenadoNode enc = null;
         if (onFirst(actualToken, first("N10"))) {
-            N10();
+            enc = N10();
         } else if (followN10Prima.contains(actualToken.getLexeme())) {
             // lambda
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return enc;
     }
 
 
-    // ⟨AccesoSelf-Simple⟩ ::= self N11’
-    private void accesoSelfSimple() {
+    // ⟨AccesoSelf-Simple⟩ ::= self N10’
+    private AccesoVarNode accesoSelfSimple() {
+        AccSelfNode self = new AccSelfNode(actualToken, symbolTable.actualStruct.getName());
         match(TokenType.PSELF);
-        N11Prima();
+        EncadenadoNode enc = N10Prima();
+        self.setEncadenado(enc);
+        return self;
     }
 
     // N11 ::= ⟨Encadenado-Simple⟩ N11’
-    private void N11(){
-        encadenadoSimple();
-        N11Prima();
-    }
+//    private void N11(){
+//        encadenadoSimple();
+//        N11Prima();
+//    }
     // N11’ ::= N11 | λ
-    private void N11Prima(){
-        Set<String> followN11Prima = new HashSet<>(Set.of("="));
-        if (onFirst(actualToken, first("N11"))) {
-            N11();
-        } else if (followN11Prima.contains(actualToken.getLexeme())) {
-            // lambda
-            return;
-        } else {
-            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
-        }
-    }
+//    private void N11Prima(Stack<EncadenadoNode> encadenados){
+//        Set<String> followN11Prima = new HashSet<>(Set.of("="));
+//        if (onFirst(actualToken, first("N11"))) {
+//            N11(encadenados);
+//        } else if (followN11Prima.contains(actualToken.getLexeme())) {
+//            // lambda
+//            return;
+//        } else {
+//            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
+//        }
+//    }
+
     // ⟨Encadenado-Simple⟩ ::= . id
-    private void encadenadoSimple(){
+    private AccesoVarNode encadenadoSimple(){
         match(TokenType.DOT);
+        AccesoVarNode var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
         match(TokenType.ID);
+        return var;
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
     private void sentenciaSimple(){

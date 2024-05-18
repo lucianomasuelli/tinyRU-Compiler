@@ -1,8 +1,10 @@
 package tinyru.etapa4.AST;
 
+import tinyru.etapa3.SymbolTable;
+
 import java.util.List;
 
-public abstract class BloqueNode {
+public abstract class BloqueNode{
     protected String structName;
     protected List<SentenciaNode> sentencias;
 
@@ -16,4 +18,6 @@ public abstract class BloqueNode {
             sentencia.print();
         }
     }
+
+    public abstract void check(SymbolTable st);
 }

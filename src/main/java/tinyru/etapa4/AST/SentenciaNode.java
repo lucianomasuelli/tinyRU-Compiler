@@ -1,8 +1,11 @@
 package tinyru.etapa4.AST;
 
-public abstract class SentenciaNode {
+import tinyru.etapa3.SymbolTable;
 
-    public void print() {
-    }
+public abstract class SentenciaNode{
+
+    public void check(SymbolTable st) {}
+
+    public void print() {}
 
 }

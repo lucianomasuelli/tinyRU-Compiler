@@ -1,8 +1,15 @@
 package tinyru.etapa4.AST;
 
-public class ExpresionNode {
+import tinyru.etapa1.TokenType;
+
+public class ExpresionNode{
 
     public void print() {
 
     }
+
+    public TokenType getType() {
+        return null;
+    }
+
 }
