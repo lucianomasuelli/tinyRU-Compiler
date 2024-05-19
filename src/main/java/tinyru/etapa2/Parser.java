@@ -1466,12 +1466,17 @@ public class Parser {
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.COMMA));
         if (onFirst(actualToken, first("acceso_var'"))){
+            if (symbolTable.actualStruct != null) {
+                primario = new VariableNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                primario = new VariableNode(id);
+            }
             primario = new VariableNode(id);
             accesoVarPrima();
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
             llamadaMetodoPrima();
         } else if (followPrimarioPrimaPrima.contains(actualToken.getType())){
-            // lambda
+            primario = new VariableNode(id);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
