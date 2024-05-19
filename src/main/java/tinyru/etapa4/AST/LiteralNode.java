@@ -23,10 +23,10 @@ public class LiteralNode extends OperandoNode {
     public String check(SymbolTable st){
         String type = null;
         switch (token.getType()){
-            case PINT, NUM -> type = "Int";
-            case PSTR-> type =  "Str";
+            case NUM -> type = "Int";
+            case STRING-> type =  "Str";
             case PTRUE, PFALSE -> type =  "Bool";
-            case PCHAR-> type =  "Char";
+            case CHAR-> type =  "Char";
         }
         return type;
     }
