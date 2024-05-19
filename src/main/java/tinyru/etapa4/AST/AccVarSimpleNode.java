@@ -9,4 +9,8 @@ public class AccVarSimpleNode extends AccesoVarNode {
     public AccVarSimpleNode(Token token, String struct){
         super(token, struct);
     }
+
+    public AccVarSimpleNode(Token token) {
+        super(token);
+    }
 }

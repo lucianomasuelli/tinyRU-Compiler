@@ -50,6 +50,8 @@ public class MethodInput {
         return parameterTable.containsKey(name);
     }
 
+    public boolean fetchLocalVar(String name) { return localVarTable.containsKey(name); }
+
     public Hashtable<String, ParamInput> getParameterTable() {
         return parameterTable;
     }
@@ -57,6 +59,8 @@ public class MethodInput {
     public void addLocalVar(String name, VarInput localVar) {
         localVarTable.put(name, localVar);
     }
+
+    public VarInput getLocalVar(String name) { return localVarTable.get(name); }
 
     public void setReturnType(String returnType) {
         this.returnType = returnType;

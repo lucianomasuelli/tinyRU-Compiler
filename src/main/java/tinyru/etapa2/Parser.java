@@ -1006,7 +1006,14 @@ public class Parser {
 
     // ⟨AccesoVar-Simple⟩ ::= id ⟨AccesoVar-Simple⟩’
     private AccVarSimpleNode accesoVarSimple() {
-        AccVarSimpleNode var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
+        AccVarSimpleNode var;
+        if (symbolTable.actualStruct != null) {
+            var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
+            var.setMetodo(symbolTable.actualMethod.getName());
+        } else {
+            var = new AccVarSimpleNode(actualToken);
+
+        }
         match(TokenType.ID);
         accesoVarSimplePrima(var);
         return var;
