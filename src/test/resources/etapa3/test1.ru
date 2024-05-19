@@ -6,10 +6,10 @@ impl A {
     .(){}
     fn met1(Int a) -> Int {
         a = 2/3+4;
-        var = "holanda";
+        /? var = "holanda";
     }
 
-    fn met2() -> Int {
+    fn met2(Bool h) -> Int {
         h = true;
     }
 }
@@ -25,4 +25,8 @@ impl B {
 }
 
 
-start {}
+start {
+    Str var;
+    Int a,b;
+    var = "holanda";
+    }

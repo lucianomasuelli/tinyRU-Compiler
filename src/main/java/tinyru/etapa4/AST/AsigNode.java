@@ -21,7 +21,7 @@ public class AsigNode extends SentenciaNode {
 
     public void check(SymbolTable st) {
         String varType = variable.check(null, st);
-        //expr.check();
-        System.out.println("Asignacion: " + varType );
+        String expType = expr.check(st);
+        System.out.println("Asignacion: " + varType + " = " + expType);
     }
 }
