@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.Exceptions.TypesMismatchError;
 
 public class AsigNode extends SentenciaNode {
     AccesoVarNode variable;
@@ -22,6 +23,8 @@ public class AsigNode extends SentenciaNode {
     public void check(SymbolTable st) {
         String varType = variable.check(null, st);
         String expType = expr.check(st);
-        System.out.println("Asignacion: " + varType + " = " + expType);
+        if(!varType.equals(expType)){
+            throw new TypesMismatchError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
+        }
     }
 }

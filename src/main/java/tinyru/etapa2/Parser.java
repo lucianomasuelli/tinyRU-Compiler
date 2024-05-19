@@ -646,8 +646,9 @@ public class Parser {
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
 
-        childrenBlocks.add(bloque); // agrego el bloque a la lista de hijos
-
+        if(bloque != null){
+            childrenBlocks.add(bloque);
+        }
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’

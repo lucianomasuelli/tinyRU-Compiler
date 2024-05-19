@@ -21,6 +21,13 @@ public class LiteralNode extends OperandoNode {
 
     @Override
     public String check(SymbolTable st){
-        return token.getType().toString();
+        String type = null;
+        switch (token.getType()){
+            case PINT, NUM -> type = "Int";
+            case PSTR-> type =  "Str";
+            case PTRUE, PFALSE -> type =  "Bool";
+            case PCHAR-> type =  "Char";
+        }
+        return type;
     }
 }

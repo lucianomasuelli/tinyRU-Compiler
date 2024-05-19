@@ -1,5 +1,6 @@
 package tinyru.etapa4.AST;
 
+import tinyru.etapa3.Exceptions.SemanticError;
 import tinyru.etapa3.SymbolTable;
 
 import java.util.List;
@@ -21,14 +22,22 @@ public class AbstractSyntaxTree{
     }
 
     public void print() {
-        for (BloqueNode node : children) {
-            node.print();
+        if(children != null) {
+            for (BloqueNode node : children) {
+                node.print();
+            }
         }
     }
 
     public void check(SymbolTable st) {
-        for (BloqueNode node : children) {
-            node.check(st);
+        try {
+            if(children != null){
+                for (BloqueNode node : children) {
+                    node.check(st);
+                }
+            }
+        } catch (SemanticError e) {
+            System.out.println(e.getMessage());
         }
     }
 
