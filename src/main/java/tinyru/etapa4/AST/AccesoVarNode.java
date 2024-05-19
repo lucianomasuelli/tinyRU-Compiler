@@ -70,7 +70,7 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         String type = null;
         if(structType == null) {
             if (encadenado != null) {
-                type = encadenado.check(st.getStructTable().get(token.getLexeme()).getName(), st);
+                type = encadenado.check(st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType(), st);
             } else {
                 if (this.metodo == null ){ // Está en el start
                     if (!st.getStart().fetchAttribute(token.getLexeme())) {

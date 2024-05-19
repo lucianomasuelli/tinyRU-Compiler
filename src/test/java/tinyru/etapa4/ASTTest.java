@@ -22,7 +22,7 @@ public class ASTTest {
             ast.print();
             ast.check(table);
 
-        } catch (IOException e) {
+        } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
         }
     }
