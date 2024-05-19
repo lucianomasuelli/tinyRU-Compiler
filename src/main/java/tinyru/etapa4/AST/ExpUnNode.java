@@ -13,4 +13,9 @@ public class ExpUnNode extends ExpresionNode{
         this.expRight = expRight;
         this.op = op;
     }
+
+    public void print() {
+        System.out.print(op.getLexeme());
+        expRight.print();
+    }
 }
