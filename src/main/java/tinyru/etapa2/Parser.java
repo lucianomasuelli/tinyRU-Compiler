@@ -344,10 +344,18 @@ public class Parser {
         match(TokenType.PSTART);
         StartInput start = new StartInput();
         symbolTable.setStart(start);
-        bloqueMetodo();
+        symbolTable.actualMethod = null;
+        symbolTable.actualStruct = null;
+
+        BloqueMetodoNode bloque = bloqueMetodo();
+
         if (actualToken.getType() != TokenType.EOF) {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        if(bloque != null){
+            childrenBlocks.add(bloque);
+        }
+
     }
 
 
@@ -664,11 +672,19 @@ public class Parser {
         if (onFirst(actualToken, first("N6"))) {
             N6();
             bloqueMetodoPrimaPrima(sent);
-            bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+
+            if (symbolTable.actualStruct != null){
+                bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
+
         } else if (onFirst(actualToken, first("N7"))) {
             N7(sent);
             match(TokenType.RBRACE);
-            bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+
+            if (symbolTable.actualStruct != null){
+                bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
+
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {
