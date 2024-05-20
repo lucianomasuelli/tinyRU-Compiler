@@ -911,26 +911,30 @@ public class Parser {
             sentencia = asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            sentenciaSimple();
+            sentencia = new ExpresionParentizadaNode(sentenciaSimple());
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals("if")) {
+            Token pif = actualToken;
             match(TokenType.PIF);
             match(TokenType.LPAREN);
             ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
             SentenciaNode sent = sentencia();
-            sentenciaPrima();
+            SentenciaNode elseSent = sentenciaPrima();
+            sentencia = new IfNode(pif, expr, sent, elseSent);
         } else if (actualToken.getLexeme().equals("while")) {
+            Token pwhile = actualToken;
             match(TokenType.PWHILE);
             match(TokenType.LPAREN);
             ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
             SentenciaNode sent = sentencia();
+            sentencia = new WhileNode(pwhile,expr,sent);
         } else if (onFirst(actualToken, first("bloque"))) {
-            bloque();
+            sentencia = bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
             match(TokenType.PRET);
-            sentenciaPrimaPrima();
+            sentencia = sentenciaPrimaPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -939,47 +943,57 @@ public class Parser {
 
     // ⟨Sentencia⟩’ ::= else ⟨Sentencia⟩ | λ
     // follow = "}",";","if","while","ret","(","{","id","self","else"
-     private void sentenciaPrima() {
+     private SentenciaNode sentenciaPrima() {
+        SentenciaNode sent = null;
         Set<TokenType> followSentenciaPrima = new HashSet<>(Set.of(TokenType.RBRACE,TokenType.SEMICOLON, TokenType.PIF,
                 TokenType.PWHILE, TokenType.PRET, TokenType.LPAREN, TokenType.LBRACE, TokenType.ID, TokenType.PSELF, TokenType.PELSE));
         if (actualToken.getLexeme().equals("else")) {
             match(TokenType.PELSE);
-            sentencia();
+            sent = sentencia();
         } else if(followSentenciaPrima.contains(actualToken.getType())) {
             // lambda
         }
         else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return sent;
      }
 
     // ⟨Sentencia⟩’’ ::= ⟨Expresión⟩ ; | ;
-    private void sentenciaPrimaPrima() {
+    private SentenciaNode sentenciaPrimaPrima() {
+        ExpresionNode exp = null;
         if (onFirst(actualToken, first("expresion"))) {
-            expresion();
+            exp = expresion();
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return new ReturnNode(exp);
     }
     // ⟨Bloque⟩ ::= { ⟨Bloque⟩’
-    private void bloque() {
+    private BloqueRegularNode bloque() {
         match(TokenType.LBRACE);
-        bloquePrima();
+        return bloquePrima();
     }
 
     // ⟨Bloque⟩’ ::= N9 } | }
-    private void bloquePrima() {
+    private BloqueRegularNode bloquePrima() {
+        BloqueRegularNode bloque = null;
+        List<SentenciaNode> sent = new ArrayList<>();
         if (onFirst(actualToken, first("N9"))) {
-            N9();
+            N9(sent);
             match(TokenType.RBRACE);
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        if (symbolTable.actualStruct != null){
+            bloque = new BloqueRegularNode(sent,symbolTable.actualStruct.getName());
+        } else { bloque = new BloqueRegularNode(sent,null);}
+        return bloque;
     }
 
     // ⟨Asignación⟩ ::= ⟨AccesoVar-Simple⟩ = ⟨Expresión⟩ | ⟨AccesoSelf-Simple⟩ = ⟨Expresión⟩
@@ -1004,16 +1018,16 @@ public class Parser {
     }
 
     // N9 ::= ⟨Sentencia⟩N9’
-    private void N9() {
-        sentencia();
-        N9Prima();
+    private void N9(List<SentenciaNode> sent) {
+        sent.add(sentencia());
+        N9Prima(sent);
     }
 
     // N9’ ::=  N9 | λ
-    private void N9Prima() {
+    private void N9Prima(List<SentenciaNode> sent) {
         Set<String> followN9Prima = new HashSet<>(Set.of("}"));
         if (onFirst(actualToken, first("N9"))) {
-            N9();
+            N9(sent);
         } else if (followN9Prima.contains(actualToken.getLexeme())) {
             // lambda
         } else {
@@ -1111,10 +1125,12 @@ public class Parser {
         return var;
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
-    private void sentenciaSimple(){
+    private ExpresionNode sentenciaSimple(){
+        ExpresionNode exp;
         match(TokenType.LPAREN);
-        expresion();
+        exp = expresion();
         match(TokenType.RPAREN);
+        return exp;
     }
     // ⟨Expresión⟩ ::= ⟨ExpOr ⟩
     private ExpresionNode expresion(){

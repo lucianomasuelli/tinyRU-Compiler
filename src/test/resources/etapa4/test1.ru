@@ -22,6 +22,7 @@ impl B {
     fn met1(Int a) -> Int {
         Int b;
         a = ++ b;
+        ret a;
     }
 }
 
@@ -32,8 +33,10 @@ start {
     var = "holanda";
     if (var == "holanda") {
         a = 2;
-        b = 3;
        } else {
        a = 1;
-       b = 2;}
+       }
+    while (a != b){
+        (++a);
+    }
 }

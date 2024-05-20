@@ -15,7 +15,7 @@ public class ASTTest {
     void analyze() {
         try {
             AbstractSyntaxTree ast;
-            Lexer lexer = new Lexer("src/test/resources/etapa3/test1.ru");
+            Lexer lexer = new Lexer("src/test/resources/etapa4/test1.ru");
             Parser parser = new Parser(lexer);
             ast = parser.analyze();
             SymbolTable table = parser.getSymbolTable();

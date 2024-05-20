@@ -21,11 +21,12 @@ public class AsigNode extends SentenciaNode {
         System.out.println(";");
     }
 
-    public void check(SymbolTable st) {
+    public String check(SymbolTable st) {
         String varType = variable.check(null, st);
         String expType = expr.check(st);
         if(!varType.equals(expType)){
             throw new TypeAssignError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
         }
+        return "Asignación";
     }
 }

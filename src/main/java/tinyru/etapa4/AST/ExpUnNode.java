@@ -1,12 +1,19 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExpUnNode extends ExpresionNode{
     ExpresionNode expRight;
     Token op;
+
+    HashSet<TokenType> booleanTypes = new HashSet<TokenType>(Set.of(TokenType.AND,TokenType.DIF,TokenType.IGUAL,TokenType.MAYOR,TokenType.MAYORIGUAL,TokenType.MENOR,TokenType.MENORIGUAL,TokenType.OR));
+    String type;
 
     public ExpUnNode(){
     }
@@ -14,6 +21,11 @@ public class ExpUnNode extends ExpresionNode{
     public ExpUnNode(ExpresionNode expRight, Token op){
         this.expRight = expRight;
         this.op = op;
+        if (booleanTypes.contains(op.getType())) {
+            type = "Bool";
+        } else {
+            type = "Int";
+        }
     }
 
     public void print() {
@@ -24,7 +36,7 @@ public class ExpUnNode extends ExpresionNode{
     @Override
     public String check(SymbolTable st){
         String type = expRight.check(st);
-        if (op.getLexeme().equals('!')){
+        if (this.type.equals("Bool")){
             if (!type.equals("Bool")) {
                 throw new TypesMismatchError(type, "Bool", op.getLine(), op.getColumn());
             }
@@ -33,6 +45,6 @@ public class ExpUnNode extends ExpresionNode{
                 throw new TypesMismatchError(type, "Int", op.getLine(), op.getColumn());
             }
         }
-        return type;
+        return this.type;
     }
 }
