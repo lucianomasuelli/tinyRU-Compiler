@@ -1,7 +1,5 @@
 package tinyru.etapa4.Exceptions;
 
-import tinyru.etapa3.Exceptions.SemanticError;
-
 public class TypesMismatchError extends SemanticError {
 
     public TypesMismatchError(String type1, String type2, int line, int column){
