@@ -56,6 +56,15 @@ public class MethodInput {
         return parameterTable;
     }
 
+    public ParamInput getParameterByPosition(int position) {
+        for (ParamInput param : parameterTable.values()) {
+            if (param.getPosition() == position) {
+                return param;
+            }
+        }
+        return null;
+    }
+
     public void addLocalVar(String name, VarInput localVar) {
         localVarTable.put(name, localVar);
     }

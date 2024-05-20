@@ -24,6 +24,7 @@ public class ASTTest {
 
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

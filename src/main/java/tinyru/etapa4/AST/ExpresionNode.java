@@ -3,7 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
 
-public class ExpresionNode{
+public abstract class ExpresionNode{
     private String type;
 
     //Aca deberia inferir el tipo o reconocerlo durante la ejecución?
@@ -11,7 +11,6 @@ public class ExpresionNode{
     public void print() {
     }
 
-    //Retorna el tipo de la expresión
-    public String check(SymbolTable st){ return this.type; }
+    public abstract String check(SymbolTable st);
 
 }

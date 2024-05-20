@@ -5,4 +5,8 @@ import tinyru.etapa3.SymbolTable;
 
 public class OperandoNode extends ExpresionNode {
 
+    @Override
+    public String check(SymbolTable st) {
+        return "";
+    }
 }
