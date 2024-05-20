@@ -23,7 +23,7 @@ public class AsigNode extends SentenciaNode {
 
     public String check(SymbolTable st) {
         String varType = variable.check(null, st);
-        String expType = expr.check(st);
+        String expType = expr.check(null, st);
         if(!varType.equals(expType)){
             throw new TypeAssignError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
         }

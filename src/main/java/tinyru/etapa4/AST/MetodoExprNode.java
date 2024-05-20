@@ -38,4 +38,9 @@ public class MetodoExprNode extends PrimarioNode{
         }
         return type;
     }
+
+    @Override
+    public String check(SymbolTable st) {
+        return "";
+    }
 }

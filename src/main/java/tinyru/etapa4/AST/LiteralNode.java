@@ -15,6 +15,11 @@ public class LiteralNode extends OperandoNode {
         System.out.print(token.getLexeme());
     }
 
+    @Override
+    public String check(String structType, SymbolTable st) {
+        return check(st);
+    }
+
     public TokenType getType() {
         return token.getType();
     }

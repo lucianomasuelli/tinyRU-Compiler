@@ -34,6 +34,11 @@ public class ExpUnNode extends ExpresionNode{
     }
 
     @Override
+    public String check(String structType, SymbolTable st) {
+        return check(st);
+    }
+
+    @Override
     public String check(SymbolTable st){
         String type = expRight.check(st);
         if (this.type.equals("Bool")){

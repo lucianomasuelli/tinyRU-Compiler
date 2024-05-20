@@ -10,5 +10,6 @@ public abstract class PrimarioNode extends OperandoNode{
         this.token = token;
     }
 
-    public abstract String check(String type, SymbolTable st);
+
+
 }

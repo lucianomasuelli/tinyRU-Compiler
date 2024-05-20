@@ -1417,7 +1417,7 @@ public class Parser {
             primario = var;
             accesoVariableEncadenadoPrima(var);
         } else if(followLlamadaMetodoEncadenado_accVarEnc.contains(actualToken.getType())){
-            // lambda
+            primario = new VariableExprNode(id); //TODO: revisar si es correcto.
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }

@@ -13,6 +13,7 @@ public abstract class ExpresionNode{
     public void print() {
     }
 
+    public abstract String check(String structType, SymbolTable st);
     public abstract String check(SymbolTable st);
 
 }
