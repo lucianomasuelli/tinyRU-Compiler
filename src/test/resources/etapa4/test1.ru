@@ -1,16 +1,14 @@
-struct A{
-    Int a,b;
-}
+struct A{}
 
 impl A {
-    .(){}
-    fn met1(Int a) -> Int {
-        a = 2/3+4;
-        /? var = "holanda";
+    .(Int x){
+        Str w;
+        x = 1;
+        w = "hola";
     }
-
-    fn met2(Bool h) -> Int {
-        h = true;
+    fn met1(Int a) -> Int {
+        Str b;
+        a = 1 ;
     }
 }
 
@@ -19,24 +17,8 @@ struct B {
 
 impl B {
     .(){}
-    fn met1(Int a) -> Int {
-        Int b;
-        a = ++ b;
-        ret a;
-    }
 }
 
 
 start {
-    Str var;
-    Int a,b;
-    var = "holanda";
-    if (var == "holanda") {
-        a = 2;
-       } else {
-       a = 1;
-       }
-    while (a != b){
-        (++a);
-    }
 }

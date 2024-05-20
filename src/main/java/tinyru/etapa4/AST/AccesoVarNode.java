@@ -78,18 +78,37 @@ public abstract class AccesoVarNode extends EncadenadoNode {
                     } else {
                         type = st.getStart().getAttribute(token.getLexeme()).getType();
                     }
-                } else {
-                    //Reviso primero en las variables del metodo, luego los parametros y finalmente en el struct
-                    if (st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                        type = st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType();
-                    } else {
-                        if (st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                            type = st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType();
+                }
+                else {
+                    if(this.metodo == "Constructor") { // Está en el constructor
+                        //Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                        if (st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
+                            type = st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType();
                         } else {
-                            if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                            if (st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
+                                type = st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType();
+                            } else {
+                                if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
+                                type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
                             }
-                            type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
+                        }
+
+                    }
+                    else {
+                        //Reviso primero en las variables del metodo, luego los parametros y finalmente en el struct
+                        if (st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                            type = st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType();
+                        } else {
+                            if (st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                                type = st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType();
+                            } else {
+                                if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
+                                type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
+                            }
                         }
                     }
                 }

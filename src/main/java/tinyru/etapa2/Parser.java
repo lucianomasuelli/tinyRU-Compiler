@@ -564,6 +564,9 @@ public class Parser {
             pos++;
         }
         symbolTable.setCreatingConstructor(true);
+
+        symbolTable.actualMethod = new MethodInput("Constructor", false); // para luego diferenciar si se trata de un constructor o un método
+
         BloqueMetodoNode bloque = bloqueMetodo();
         symbolTable.setCreatingConstructor(false);
         symbolTable.actualStruct.setHasConstructor(true);
@@ -571,6 +574,9 @@ public class Parser {
         if(bloque != null){
             childrenBlocks.add(bloque);
         }
+
+        symbolTable.actualMethod = null;
+        symbolTable.actualConstructor = null;
     }
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
@@ -662,6 +668,7 @@ public class Parser {
         if(bloque != null){
             childrenBlocks.add(bloque);
         }
+        symbolTable.actualMethod = null;
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
@@ -768,18 +775,28 @@ public class Parser {
         for(Token t: declaredAttributes){
             VarInput v = new VarInput(t.getLexeme(), type,false);
             v.setPosition(pos);
-            if(symbolTable.getStart() != null) {
-                if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
-                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
-                }
-                symbolTable.getStart().addAttribute(t.getLexeme(), v);
-            } else {
-                if (symbolTable.actualMethod.getLocalVarTable().containsKey(t.getLexeme()) || symbolTable.actualMethod.getParameterTable().containsKey(t.getLexeme())) {
-                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
-                }
-                symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
 
+            if(symbolTable.actualConstructor == null){
+                if(symbolTable.getStart() != null) {
+                    if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
+                        throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                    }
+                    symbolTable.getStart().addAttribute(t.getLexeme(), v);
+                } else {
+                    if (symbolTable.actualMethod.getLocalVarTable().containsKey(t.getLexeme()) || symbolTable.actualMethod.getParameterTable().containsKey(t.getLexeme())) {
+                        throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                    }
+                    symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+
+                }
             }
+            else{
+                if(symbolTable.actualConstructor.fetchLocalVar(t.getLexeme()) || symbolTable.actualConstructor.fetchParameter(t.getLexeme())) {
+                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                }
+                symbolTable.actualConstructor.addLocalVar(t.getLexeme(),v);
+            }
+
             pos++;
 
         }

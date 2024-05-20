@@ -2,7 +2,7 @@ package tinyru.etapa3;
 
 import java.util.Hashtable;
 
-public class MethodInput {
+public class MethodInput{
     String name;
     String returnType;
     Boolean isStatic;
