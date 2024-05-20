@@ -8,6 +8,7 @@ import tinyru.etapa2.Exceptions.WrongTokenError;
 import tinyru.etapa3.*;
 import tinyru.etapa3.Exceptions.*;
 import tinyru.etapa4.AST.*;
+import tinyru.etapa2.Exceptions.InvalidReturnConstructorError;
 
 import java.io.IOException;
 import java.util.*;
@@ -562,10 +563,14 @@ public class Parser {
 
             pos++;
         }
-
-        bloqueMetodo();
+        symbolTable.setCreatingConstructor(true);
+        BloqueMetodoNode bloque = bloqueMetodo();
+        symbolTable.setCreatingConstructor(false);
         symbolTable.actualStruct.setHasConstructor(true);
         symbolTable.actualStruct.setConstructor(symbolTable.actualConstructor); // add constructor to struct
+        if(bloque != null){
+            childrenBlocks.add(bloque);
+        }
     }
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
@@ -674,7 +679,11 @@ public class Parser {
             bloqueMetodoPrimaPrima(sent);
 
             if (symbolTable.actualStruct != null){
-                bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                if (symbolTable.getCreatingConstructor()){
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), "constructor");
+                }else {
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                }
             } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
 
         } else if (onFirst(actualToken, first("N7"))) {
@@ -682,7 +691,11 @@ public class Parser {
             match(TokenType.RBRACE);
 
             if (symbolTable.actualStruct != null){
-                bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                if (symbolTable.getCreatingConstructor()){
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), "constructor");
+                }else {
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                }
             } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
 
         } else if (actualToken.getLexeme().equals("}")) {
@@ -933,6 +946,9 @@ public class Parser {
         } else if (onFirst(actualToken, first("bloque"))) {
             sentencia = bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
+            if (symbolTable.getCreatingConstructor()){
+                throw new InvalidReturnConstructorError(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
+            }
             match(TokenType.PRET);
             sentencia = sentenciaPrimaPrima();
         } else {

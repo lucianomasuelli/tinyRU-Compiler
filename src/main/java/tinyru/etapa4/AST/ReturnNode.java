@@ -9,6 +9,7 @@ public class ReturnNode extends SentenciaNode{
 
     public ReturnNode(ExpresionNode exp){
         this.exp = exp;
+        if (exp == null){ this.type = "void";}
     }
 
     public void print() {
