@@ -22,6 +22,7 @@ impl B {
     fn met1(Int a) -> Int {
         Int b;
         a = ++ b;
+        ret a;
     }
 }
 
@@ -35,4 +36,7 @@ start {
        } else {
        a = 1;
        }
+    while (a != b){
+        (++a);
+    }
 }

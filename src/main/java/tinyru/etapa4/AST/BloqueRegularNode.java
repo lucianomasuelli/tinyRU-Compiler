@@ -19,9 +19,10 @@ public class BloqueRegularNode extends SentenciaNode{
         }
     }
     @Override
-    public void check(SymbolTable st) {
+    public String check(SymbolTable st) {
         for (SentenciaNode sentencia : sentencias) {
             sentencia.check(st);
         }
+        return "Sentencia";
     }
 }

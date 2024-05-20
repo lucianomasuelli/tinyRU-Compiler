@@ -20,7 +20,8 @@ struct B {
 impl B {
     .(){}
     fn met1(Int a) -> Int {
-        a = ++6;
+        Int b;
+        a = ++ b;
     }
 }
 
@@ -29,4 +30,10 @@ start {
     Str var;
     Int a,b;
     var = "holanda";
-    }
+    if (var == "holanda") {
+        a = 2;
+        b = 3;
+       } else {
+       a = 1;
+       b = 2;}
+}

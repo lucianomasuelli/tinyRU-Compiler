@@ -1,11 +1,23 @@
 package tinyru.etapa4.AST;
 
+import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
+import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.Exceptions.TypesMismatchError;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static tinyru.etapa1.TokenType.*;
+
 public class IfNode extends SentenciaNode {
+    Token token;
     ExpresionNode condicional;
     SentenciaNode cuerpo;
     SentenciaNode sentElse;
 
-    public IfNode(ExpresionNode condicional, SentenciaNode cuerpo, SentenciaNode sino) {
+    public IfNode(Token token, ExpresionNode condicional, SentenciaNode cuerpo, SentenciaNode sino) {
+        this.token = token;
         this.condicional = condicional;
         this.cuerpo = cuerpo;
         this.sentElse = sino;
@@ -22,5 +34,18 @@ public class IfNode extends SentenciaNode {
             sentElse.print();
             System.out.println("}");
         }
+    }
+
+    @Override
+    public String check(SymbolTable st){
+        String type = condicional.check(st);
+        if (!type.equals("Bool")){
+            throw new TypesMismatchError(token.getLexeme(), "Bool", token.getLine(), token.getColumn());
+        }
+        cuerpo.check(st);
+        if (sentElse != null) {
+            sentElse.check(st);
+        }
+        return type;
     }
 }

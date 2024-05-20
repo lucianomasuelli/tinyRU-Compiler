@@ -4,7 +4,8 @@ import tinyru.etapa3.SymbolTable;
 
 public abstract class SentenciaNode{
 
-    public void check(SymbolTable st) {}
+    String type;
+    public String check(SymbolTable st) {return this.type;}
 
     public void print() {}
 

@@ -911,27 +911,30 @@ public class Parser {
             sentencia = asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            sentenciaSimple();
+            sentencia = new ExpresionParentizadaNode(sentenciaSimple());
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals("if")) {
+            Token pif = actualToken;
             match(TokenType.PIF);
             match(TokenType.LPAREN);
             ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
             SentenciaNode sent = sentencia();
             SentenciaNode elseSent = sentenciaPrima();
-            sentencia = new IfNode(expr, sent, elseSent);
+            sentencia = new IfNode(pif, expr, sent, elseSent);
         } else if (actualToken.getLexeme().equals("while")) {
+            Token pwhile = actualToken;
             match(TokenType.PWHILE);
             match(TokenType.LPAREN);
             ExpresionNode expr = expresion();
             match(TokenType.RPAREN);
             SentenciaNode sent = sentencia();
+            sentencia = new WhileNode(pwhile,expr,sent);
         } else if (onFirst(actualToken, first("bloque"))) {
             sentencia = bloque();
         } else if (actualToken.getLexeme().equals("ret")) {
             match(TokenType.PRET);
-            sentenciaPrimaPrima();
+            sentencia = sentenciaPrimaPrima();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -957,15 +960,17 @@ public class Parser {
      }
 
     // ⟨Sentencia⟩’’ ::= ⟨Expresión⟩ ; | ;
-    private void sentenciaPrimaPrima() {
+    private SentenciaNode sentenciaPrimaPrima() {
+        ExpresionNode exp = null;
         if (onFirst(actualToken, first("expresion"))) {
-            expresion();
+            exp = expresion();
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals(";")) {
             match(TokenType.SEMICOLON);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return new ReturnNode(exp);
     }
     // ⟨Bloque⟩ ::= { ⟨Bloque⟩’
     private BloqueRegularNode bloque() {
@@ -1120,10 +1125,12 @@ public class Parser {
         return var;
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
-    private void sentenciaSimple(){
+    private ExpresionNode sentenciaSimple(){
+        ExpresionNode exp;
         match(TokenType.LPAREN);
-        expresion();
+        exp = expresion();
         match(TokenType.RPAREN);
+        return exp;
     }
     // ⟨Expresión⟩ ::= ⟨ExpOr ⟩
     private ExpresionNode expresion(){

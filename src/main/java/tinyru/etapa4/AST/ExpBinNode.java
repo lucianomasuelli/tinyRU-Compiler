@@ -1,14 +1,21 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
+import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ExpBinNode extends ExpresionNode {
 
     ExpresionNode expLeft;
     Token op;
     ExpresionNode expRight;
+
+    HashSet<TokenType> booleanTypes = new HashSet<TokenType>(Set.of(TokenType.AND,TokenType.DIF,TokenType.IGUAL,TokenType.MAYOR,TokenType.MAYORIGUAL,TokenType.MENOR,TokenType.MENORIGUAL,TokenType.OR));
+    String type;
 
     public ExpBinNode(){
     }
@@ -17,6 +24,11 @@ public class ExpBinNode extends ExpresionNode {
         this.expLeft = expLeft;
         this.op = op;
         this.expRight = expRight;
+        if (booleanTypes.contains(op.getType())) {
+            type = "Bool";
+        } else {
+            type = "Int";
+        }
     }
 
     public void print() {
@@ -33,7 +45,7 @@ public class ExpBinNode extends ExpresionNode {
         String typeLeft = expLeft.check(st);
         String typeRigth = expRight.check(st);
         if (typeLeft.equals(typeRigth)){
-            return typeLeft;
+            return this.type;
         }else {
             throw new TypesMismatchError(typeLeft, typeRigth, op.getLine(), op.getColumn());
         }
