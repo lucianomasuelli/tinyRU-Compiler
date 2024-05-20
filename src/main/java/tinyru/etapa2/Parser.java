@@ -562,10 +562,14 @@ public class Parser {
 
             pos++;
         }
-
-        bloqueMetodo();
+        symbolTable.setCreatingConstructor(true);
+        BloqueMetodoNode bloque = bloqueMetodo();
+        symbolTable.setCreatingConstructor(false);
         symbolTable.actualStruct.setHasConstructor(true);
         symbolTable.actualStruct.setConstructor(symbolTable.actualConstructor); // add constructor to struct
+        if(bloque != null){
+            childrenBlocks.add(bloque);
+        }
     }
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
@@ -674,7 +678,11 @@ public class Parser {
             bloqueMetodoPrimaPrima(sent);
 
             if (symbolTable.actualStruct != null){
-                bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                if (symbolTable.getCreatingConstructor()){
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), "constructor");
+                }else {
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                }
             } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
 
         } else if (onFirst(actualToken, first("N7"))) {

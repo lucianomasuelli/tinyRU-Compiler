@@ -12,6 +12,8 @@ public class SymbolTable {
     private Hashtable<String, StructInput> structTable = new Hashtable<>();
     private StartInput start;
 
+    private Boolean creatingConstructor = false;
+
     public SymbolTable() {
         addStructIO();
         addObject();
@@ -20,6 +22,14 @@ public class SymbolTable {
         addString();
         addBool();
         addChar();
+    }
+
+    public Boolean getCreatingConstructor() {
+        return creatingConstructor;
+    }
+
+    public void setCreatingConstructor(Boolean creatingConstructor) {
+        this.creatingConstructor = creatingConstructor;
     }
 
     public void setStart(StartInput start) {
