@@ -660,8 +660,12 @@ public class Parser {
         symbolTable.actualMethod.setLine(methodToken.getLine());
         symbolTable.actualMethod.setColumn(methodToken.getColumn());
 
-        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
-        declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
+//        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
+//        declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
+        if (symbolTable.actualStruct.fetchMethod(symbolTable.actualMethod.getName())) {
+            throw new MethodAlreadyDeclaredError(symbolTable.actualStruct, symbolTable.actualMethod.getName(),
+                    symbolTable.actualMethod.getLine(), symbolTable.actualMethod.getColumn());
+        }
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
 

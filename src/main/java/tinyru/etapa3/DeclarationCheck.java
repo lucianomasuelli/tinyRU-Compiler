@@ -26,6 +26,12 @@ public class DeclarationCheck {
             noStructCheck(struct);
             typesCheck(struct);
             checkConstructorParams(struct);
+
+            // checks all the methods of the struct
+            for (String key2 : struct.getMethodTable().keySet()) {
+                MethodInput method = struct.getMethodTable().get(key2);
+                methodCheck(struct, method);
+            }
         }
 
         //check if the type of the attributes of start are correct
@@ -208,9 +214,9 @@ public class DeclarationCheck {
 
     // Check if the method is already declared
     public void methodCheck(StructInput actualStruct, MethodInput method) {
-        if (actualStruct.fetchMethod(method.getName())) {
-            throw new MethodAlreadyDeclaredError(actualStruct, method.getName(), method.getLine(), method.getColumn());
-        }
+//        if (actualStruct.fetchMethod(method.getName())) {
+//            throw new MethodAlreadyDeclaredError(actualStruct, method.getName(), method.getLine(), method.getColumn());
+//        }
         for (String v: method.getLocalVarTable().keySet()){
             VarInput var = method.getLocalVarTable().get(v);
             checkVarType(var);
