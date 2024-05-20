@@ -1508,7 +1508,7 @@ public class Parser {
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
             primario = llamadaMetodoPrima(id);
         } else if (followPrimarioPrimaPrima.contains(actualToken.getType())){
-            primario = new VariableExprNode(id);
+            primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }

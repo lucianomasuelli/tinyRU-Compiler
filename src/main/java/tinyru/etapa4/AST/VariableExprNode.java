@@ -46,13 +46,19 @@ public class VariableExprNode extends PrimarioNode{
                 }
             }
             else {
+                // chequea si la variable está definida en las variables locales del método
+                if(st.getStructTable().get(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                    type = st.getStructTable().get(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType();
+                }
+                else{
+                    if (st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
+                        type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
+                    }
+                    else {
+                        throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                    }
+                }
 
-                if (st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
-                    type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
-                }
-                else {
-                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
-                }
             }
         } else {
             if(encadenado != null){
@@ -78,6 +84,6 @@ public class VariableExprNode extends PrimarioNode{
 
     @Override
     public String check(SymbolTable st) {
-        return "";
+        return check(null, st);
     }
 }
