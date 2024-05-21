@@ -5,11 +5,13 @@ import tinyru.etapa3.SymbolTable;
 
 public abstract class PrimarioNode extends OperandoNode{
     protected Token token;
+    protected String metodo;
+    protected String struct;
 
-    public PrimarioNode(Token token){
+    public PrimarioNode(Token token, String metodo, String struct){
         this.token = token;
+        this.metodo = metodo;
+        this.struct = struct;
     }
-
-
 
 }

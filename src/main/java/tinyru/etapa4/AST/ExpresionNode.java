@@ -16,4 +16,8 @@ public abstract class ExpresionNode{
     public abstract String check(String structType, SymbolTable st);
     public abstract String check(SymbolTable st);
 
+    public String getType() {
+        return type;
+    }
+
 }

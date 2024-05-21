@@ -5,15 +5,15 @@ import tinyru.etapa3.SymbolTable;
 
 import java.util.List;
 
-public class MetodoExprNode extends PrimarioNode{
-    private PrimarioNode encadenado;
+public class MetodoExprNode extends VarMetEncNode{
+    private VarMetEncNode encadenado;
     private List<ExpresionNode> argActuales;
 
-    public MetodoExprNode(Token token) {
-        super(token);
+    public MetodoExprNode(Token token, String metodo, String struct) {
+        super(token, metodo, struct);
     }
 
-    public void setEncadenado(PrimarioNode encadenado) {
+    public void setEncadenado(VarMetEncNode encadenado) {
         this.encadenado = encadenado;
     }
 

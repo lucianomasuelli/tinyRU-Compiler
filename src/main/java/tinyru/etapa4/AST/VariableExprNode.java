@@ -4,22 +4,15 @@ import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.AttrNotFoundError;
 
-public class VariableExprNode extends PrimarioNode{
-    private String metodo = null;
-    private String struct = null;
-    private PrimarioNode encadenado;
+public class VariableExprNode extends VarMetEncNode{
+    private VarMetEncNode encadenado;
     private ExpresionNode arrayAccess = null;
 
-    public VariableExprNode(Token token){
-        super(token);
-    }
     public VariableExprNode(Token token, String struct, String metodo){
-        super(token);
-        this.struct = struct;
-        this.metodo = metodo;
+        super(token, metodo, struct);
     }
 
-    public void setEncadenado(PrimarioNode encadenado){
+    public void setEncadenado(VarMetEncNode encadenado){
         this.encadenado = encadenado;
     }
 

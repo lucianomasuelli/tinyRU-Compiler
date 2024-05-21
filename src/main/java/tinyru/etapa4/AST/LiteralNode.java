@@ -20,8 +20,8 @@ public class LiteralNode extends OperandoNode {
         return check(st);
     }
 
-    public TokenType getType() {
-        return token.getType();
+    public String getType() {
+        return check(null);
     }
 
     @Override
