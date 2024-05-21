@@ -583,18 +583,18 @@ public class Parser {
     private void atributo() {
         ArrayList<Token> atributosDeclarados = new ArrayList<>();
         VarInput v;
-        Boolean pri;
+        Boolean visibility;
         String type;
         if (actualToken.getLexeme().equals("pri")) {
             match(TokenType.PPRI);
-            pri = true;
+            visibility = false;
             type = tipo();
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
 
         } else if (onFirst(actualToken, first("tipo"))) {
             type = tipo();
-            pri = false;
+            visibility = true;
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
         } else {
@@ -602,7 +602,7 @@ public class Parser {
         }
         int pos = symbolTable.actualStruct.getAttributeTable().size();
         for(Token t: atributosDeclarados){
-            v = new VarInput(t.getLexeme(),type,pri);
+            v = new VarInput(t.getLexeme(),type,visibility);
             v.setLine(t.getLine());
             v.setColumn(t.getColumn());
             v.setPosition(pos);
@@ -979,7 +979,7 @@ public class Parser {
 
     // ⟨Sentencia⟩’ ::= else ⟨Sentencia⟩ | λ
     // follow = "}",";","if","while","ret","(","{","id","self","else"
-     private SentenciaNode sentenciaPrima() {
+    private SentenciaNode sentenciaPrima() {
         SentenciaNode sent = null;
         Set<TokenType> followSentenciaPrima = new HashSet<>(Set.of(TokenType.RBRACE,TokenType.SEMICOLON, TokenType.PIF,
                 TokenType.PWHILE, TokenType.PRET, TokenType.LPAREN, TokenType.LBRACE, TokenType.ID, TokenType.PSELF, TokenType.PELSE));
@@ -993,7 +993,7 @@ public class Parser {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
         return sent;
-     }
+    }
 
     // ⟨Sentencia⟩’’ ::= ⟨Expresión⟩ ; | ;
     private SentenciaNode sentenciaPrimaPrima() {
@@ -1079,7 +1079,6 @@ public class Parser {
             var.setMetodo(symbolTable.actualMethod.getName());
         } else {
             var = new AccVarSimpleNode(actualToken);
-
         }
         match(TokenType.ID);
         accesoVarSimplePrima(var);
@@ -1488,7 +1487,7 @@ public class Parser {
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
             llamadaMetodoEstatico(); // TODO
         } else if (onFirst(actualToken, first("llamada_constructor"))){
-           op =  llamadaConstructor();
+            op =  llamadaConstructor();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1611,10 +1610,10 @@ public class Parser {
     private LlamadaConstructorNode llamadaConstructorPrima(Token token){
         LlamadaConstructorNode llamada;
         if (actualToken.getType() == TokenType.STRUCTID){ // Llamada a constructor
-            match(TokenType.STRUCTID);
+            Token idStruct = match(TokenType.STRUCTID);
             List<ExpresionNode> args = argumentosActuales();
             VarMetEncNode enc = N12Prima();
-            llamada = new LlamadaConstructor(token,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), args, enc);
+            llamada = new LlamadaConstructor(token,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), idStruct.getLexeme(), args, enc);
         } else if (onFirst(actualToken, first("tipo_primitivo"))){ // Declaración de arreglo
             String type = tipoPrimitivo();
             match(TokenType.LBRACKET);

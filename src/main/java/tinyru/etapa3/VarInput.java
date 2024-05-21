@@ -8,6 +8,7 @@ public class VarInput {
     private String type;
     private int line;
     private int column;
+    private boolean isInherited = false;
 
     private Boolean visibility;
 
@@ -17,7 +18,7 @@ public class VarInput {
         this.name = name;
         this.type = type;
         this.visibility = visibility;
-        this.position = 0; //TODO agregar que calcule la posición relativa
+        this.position = 0;
     }
 
     public VarInput(String name, String type, Boolean visibility, int position) {
@@ -33,6 +34,14 @@ public class VarInput {
 
     public String getType() {
         return type;
+    }
+
+    public void setInherited(boolean isInherited) {
+        this.isInherited = isInherited;
+    }
+
+    public boolean getInherited() {
+        return isInherited;
     }
 
     public boolean getVisibility() {

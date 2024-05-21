@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa3.VarInput;
 import tinyru.etapa4.Exceptions.AttrNotFoundError;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public abstract class AccesoVarNode extends EncadenadoNode {
     private EncadenadoNode encadenado;
     private String struct;
     private String metodo;
+    private Boolean visible = true;
 
     public AccesoVarNode(Token token, String struct){
         this.token = token;
@@ -44,6 +46,10 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         encadenado = enc;
     }
 
+    public void setVisibility(Boolean visible){
+        this.visible = visible;
+    }
+
 
     public Token getToken() {
         return token;
@@ -54,7 +60,6 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         if(encadenado != null){
             type = encadenado.getType();
         }else {
-            //TODO: El tipo se extrae de la tabla de simbolos
             type = token.getType().toString();
         }
         return type;
@@ -133,6 +138,15 @@ public abstract class AccesoVarNode extends EncadenadoNode {
                             } else {
                                 if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
                                     throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
+                                else {
+                                    //TODO: Verifica si el atributo es heredado y visible.
+                                    VarInput attribute = st.getStructTable().get(this.struct).getAttribute(token.getLexeme());
+                                    if(attribute.getInherited()) {
+                                        if(!attribute.getVisibility()) {
+                                            throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                        }
+                                    }
                                 }
                                 type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
                             }

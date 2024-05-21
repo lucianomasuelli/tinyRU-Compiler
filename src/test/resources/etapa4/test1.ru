@@ -1,4 +1,6 @@
-struct A{}
+struct A{
+    pri Int x;
+}
 
 impl A {
     .(Int x){
@@ -9,17 +11,19 @@ impl A {
         Array Int c;
         a = 1;
         c = new Int [6 + 7 * a];
+        /? d = new B();
     }
 }
 
-struct B {
-    Int x;
+struct B:A {
+    pri Int y;
 }
 
 impl B {
     .(){}
     fn met2() -> Int {
         B b;
+        x = 3;
     }
 }
 
