@@ -4,6 +4,8 @@ import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.TypeAssignError;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
 
+import java.util.Objects;
+
 public class AsigNode extends SentenciaNode {
     AccesoVarNode variable;
     ExpresionNode expr;
@@ -25,7 +27,12 @@ public class AsigNode extends SentenciaNode {
         String varType = variable.check(null, st);
         String expType = expr.check(null, st);
         if(!varType.equals(expType)){
-            throw new TypeAssignError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
+            //Chequea si expType hereda de varType
+            if(!st.isSubType(expType, varType)){// Si no hereda
+                if(!expType.equals("Nil")) {
+                    throw new TypeAssignError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
+                }
+            }
         }
         return "Asignación";
     }

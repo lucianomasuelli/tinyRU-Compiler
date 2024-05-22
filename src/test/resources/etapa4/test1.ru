@@ -1,32 +1,37 @@
-struct A{
-    pri Int x;
+/? Prueba una asiganciones sobre vars de tipo clase
+/? Ejercita un poco mas las expresiones tambien y el uso de la clase Object
+
+struct A {
+    B a1;
 }
-
-impl A {
-    .(Int x){
-
+impl A{
+    fn m1(B p1)->void
+    {
+        A v1;
+        Object v2;
+        v1 = p1;
+        /? a1 = (p1);
+        v1 = new C();
+        p1 = nil;
+        v2 = new Object();
+        v2 = p1;
+        /? v1 = self;
+        
     }
-    fn met1(Int a) -> Int {
-        A d;
-        Array Int c;
-        a = 1;
-        c = new Int [6 + 7 * a];
-        d = new B(c);
-    }
+    
+    fn m2()->void
+    {}
+    .(){}
 }
 
-struct B:A {
-    pri Int y;
-}
 
+struct B : A{}
 impl B {
-    .(Int g){}
-    fn met2() -> Int {
-        B b;
-        y = 3;
-    }
+    .(){}
 }
 
+struct C : B{}
+impl C{.(){ }}
 
-start {
-}
+
+start{}

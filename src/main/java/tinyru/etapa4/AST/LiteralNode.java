@@ -32,6 +32,7 @@ public class LiteralNode extends OperandoNode {
             case STRING-> type =  "Str";
             case PTRUE, PFALSE -> type =  "Bool";
             case CHAR-> type =  "Char";
+            case PNIL -> type =  "Nil";
         }
         return type;
     }
