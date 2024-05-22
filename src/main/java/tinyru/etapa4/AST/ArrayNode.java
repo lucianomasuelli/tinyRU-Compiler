@@ -41,4 +41,9 @@ public class ArrayNode extends LlamadaConstructorNode{
         };
         return type;
     }
+
+    @Override
+    public String jsonify(){
+        return "{\"Array\": {\"nombre\": " + token.getLexeme() + ", \"metodo\": \"" + metodo + "\", \"struct\": \"" + struct + "\", \"primitiveType\": \"" + primitiveType + "\", \"size\": " + size.jsonify() + "}}";
+    }
 }
