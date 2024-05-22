@@ -7,15 +7,8 @@ struct A {
 impl A{
     fn m1(B p1)->void
     {
-        A v1;
-        Object v2;
-        v1 = p1;
-        a1 = (p1);
-        v1 = new C();
-        p1 = nil;
-        v2 = new Object();
-        v2 = p1;
-        v1 = self.a1;
+        Int j;
+        j = B.m3();
         
     }
     
@@ -28,9 +21,13 @@ impl A{
 struct B : A{}
 impl B {
     .(){}
+    st fn m3()-> Int { }
 }
 
-struct C : B{}
+struct C : B{
+    Int g;
+    Str h;
+}
 impl C{.(){ }}
 
 

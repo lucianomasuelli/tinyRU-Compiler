@@ -1485,7 +1485,7 @@ public class Parser {
         } else if (onFirst(actualToken, first("primario'"))){
             op = primarioPrima();
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
-            llamadaMetodoEstatico(); // TODO
+            op = llamadaMetodoEstatico();
         } else if (onFirst(actualToken, first("llamada_constructor"))){
             op =  llamadaConstructor();
         } else {
@@ -1578,13 +1578,13 @@ public class Parser {
     }
 
     // ⟨Llamada-Método⟩ ::= id ⟨Llamada-Método⟩’
-    private void llamadaMetodo(){
+    private MetodoExprNode llamadaMetodo(){
         Token id = actualToken;
         match(TokenType.ID);
-        llamadaMetodoPrima(id);
+        return llamadaMetodoPrima(id);
     }
     // ⟨Llamada-Método⟩’ ::= ⟨Argumentos-Actuales⟩ N12’
-    private PrimarioNode llamadaMetodoPrima(Token id){
+    private MetodoExprNode llamadaMetodoPrima(Token id){
         MetodoExprNode metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         List<ExpresionNode> args =  argumentosActuales();
         metodo.setArgActuales(args);
@@ -1593,11 +1593,12 @@ public class Parser {
         return metodo;
     }
     // ⟨Llamada-Método-Estático⟩ ::= idStruct . ⟨Llamada-Método⟩N12’
-    private void llamadaMetodoEstatico(){
-        match(TokenType.STRUCTID);
+    private LlamadaMetodoEstaticoNode llamadaMetodoEstatico(){
+        Token token = match(TokenType.STRUCTID);
         match(TokenType.DOT);
-        llamadaMetodo();
-        N12Prima();
+        MetodoExprNode met = llamadaMetodo();
+        VarMetEncNode enc = N12Prima();
+        return new LlamadaMetodoEstaticoNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), token.getLexeme(), met, enc);
     }
     // ⟨Llamada-Constructor ⟩ ::= new ⟨Llamada-Constructor ⟩’
     private LlamadaConstructorNode llamadaConstructor(){

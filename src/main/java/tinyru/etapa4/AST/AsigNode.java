@@ -29,7 +29,7 @@ public class AsigNode extends SentenciaNode {
         if(!varType.equals(expType)){
             //Chequea si expType hereda de varType
             if(!st.isSubType(expType, varType)){// Si no hereda
-                if(!expType.equals("Nil")) {
+                if(!expType.equals("Nil") && !expType.equals("void")) {
                     throw new TypeAssignError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
                 }
             }

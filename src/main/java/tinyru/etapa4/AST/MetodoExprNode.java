@@ -9,8 +9,8 @@ public class MetodoExprNode extends VarMetEncNode{
     private VarMetEncNode encadenado;
     private List<ExpresionNode> argActuales;
 
-    public MetodoExprNode(Token token, String metodo, String struct) {
-        super(token, metodo, struct);
+    public MetodoExprNode(Token token, String struct, String metodo) {
+        super(token,metodo, struct);
     }
 
     public void setEncadenado(VarMetEncNode encadenado) {
@@ -19,6 +19,13 @@ public class MetodoExprNode extends VarMetEncNode{
 
     public void setArgActuales(List<ExpresionNode> argActuales) {
         this.argActuales = argActuales;
+    }
+
+    public Token getToken() {
+        return token;
+    }
+    public String getName() {
+        return token.getLexeme();
     }
 
 
@@ -31,6 +38,7 @@ public class MetodoExprNode extends VarMetEncNode{
         String metodo = token.getLexeme();
         String type = null;
         if (encadenado != null) {
+            structType = st.getStruct(structType).getMethod(metodo).getReturnType();
             type = encadenado.check(structType, st); //TODO
         }else{
             // el tipo es el valor de retorno del método
@@ -41,6 +49,6 @@ public class MetodoExprNode extends VarMetEncNode{
 
     @Override
     public String check(SymbolTable st) {
-        return "";
+        return check(null, st);
     }
 }
