@@ -1,5 +1,7 @@
 package tinyru.etapa3;
 
+import tinyru.etapa1.Token;
+
 import java.util.Hashtable;
 
 public class MethodInput{
@@ -113,5 +115,14 @@ public class MethodInput{
 
     public Hashtable<String, VarInput> getLocalVarTable() {
         return localVarTable;
+    }
+
+    public ParamInput getParamByPosition(int i) {
+        for (ParamInput param : parameterTable.values()) {
+            if (param.getPosition() == i) {
+                return param;
+            }
+        }
+        return null;
     }
 }

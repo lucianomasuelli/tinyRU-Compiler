@@ -14,4 +14,13 @@ public abstract class PrimarioNode extends OperandoNode{
         this.struct = struct;
     }
 
+    public PrimarioNode(Token token, String metodo){
+        this.token = token;
+        this.metodo = metodo;
+    }
+
+    public PrimarioNode(Token token){
+        this.token = token;
+    }
+
 }

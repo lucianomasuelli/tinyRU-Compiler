@@ -16,6 +16,13 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
         this.idStruct = idStruct;
     }
 
+    public LlamadaMetodoEstaticoNode(Token token, String idStruct, MetodoExprNode llamadaMetodo, VarMetEncNode encadenado) {
+        super(token);
+        this.llamadaMetodo = llamadaMetodo;
+        this.encadenado = encadenado;
+        this.idStruct = idStruct;
+    }
+
     @Override
     public String check(String structType, SymbolTable st) {
         return check(st);

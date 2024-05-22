@@ -26,6 +26,12 @@ public class AsigNode extends SentenciaNode {
     public String check(SymbolTable st) {
         String varType = variable.check(null, st);
         String expType = expr.check(null, st);
+        //Chequea si varType es un tipo primitivo
+        if(varType.equals("Int") || varType.equals("Char") || varType.equals("Bool") || varType.equals("Str")){
+            if(expType.equals("Nil")){
+                throw new TypesMismatchError(varType, expType, variable.getToken().getLine(), variable.getToken().getColumn());
+            }
+        }
         if(!varType.equals(expType)){
             //Chequea si expType hereda de varType
             if(!st.isSubType(expType, varType)){// Si no hereda
