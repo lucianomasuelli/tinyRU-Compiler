@@ -14,4 +14,16 @@ public class SentSimpleNode extends SentenciaNode {
     public String check(SymbolTable st) {
         return expresion.check(st);
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"SentSimpleNode\": {\n";
+        json += "\"expresion\": ";
+        json += expresion.jsonify();
+        json += "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

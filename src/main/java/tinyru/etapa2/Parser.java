@@ -706,7 +706,7 @@ public class Parser {
                 }else {
                     bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
                 }
-            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
+            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,"start", "start");}
 
         } else if (actualToken.getLexeme().equals("}")) {
             match(TokenType.RBRACE);
@@ -1127,7 +1127,7 @@ public class Parser {
 
     // ⟨AccesoSelf-Simple⟩ ::= self N10’
     private AccesoVarNode accesoSelfSimple() {
-        AccSelfNode self = new AccSelfNode(actualToken, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+        AccSelfNode self = new AccSelfNode(actualToken, symbolTable.actualStruct.getName());
         match(TokenType.PSELF);
         EncadenadoNode enc = N10Prima();
         self.setEncadenado(enc);
