@@ -117,7 +117,7 @@ public class JSONGenerator {
         json += "\t}\n";
         json += "}\n";
         //añade el start
-        createJSON(json);
+        createJSON(json+"ts");
         return json;
     }
 
@@ -166,6 +166,7 @@ public class JSONGenerator {
         json += "}\n";
         json += "}\n";
         json += "}\n";
+        createJSON(json+".ast");
         return json;
     }
 
