@@ -6,6 +6,7 @@ import tinyru.etapa2.Exceptions.ParserError;
 import tinyru.etapa2.Parser;
 import tinyru.etapa3.JSONGenerator;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.AST.AbstractSyntaxTree;
 
 import java.io.IOException;
 
@@ -21,8 +22,9 @@ public class SemanticExecutor extends Executor {
         try {
             lexer = new Lexer(filePath);
             Parser parser = new Parser(lexer);
-            parser.analyze();
+            AbstractSyntaxTree ast = parser.analyze();
             SymbolTable table = parser.getSymbolTable();
+            ast.check(table);
             //printTable(table);
 
             //obtain the filename without the path
@@ -33,16 +35,12 @@ public class SemanticExecutor extends Executor {
 
             JSONGenerator json = new JSONGenerator(fileName);
             json.jasonifyST(table);
+            json.jasonifyAST(ast, table);
 
-            System.out.println("CORRECTO: ANÁLISIS SEMÁNTICO - DECLARACIONES");
+            System.out.println("CORRECTO: ANÁLISIS SEMÁNTICO - SENTENCIAS");
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-
-        } catch (LexerError | ParserError e) {
+        } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
-            System.exit(1);
-
         }
     }
 }

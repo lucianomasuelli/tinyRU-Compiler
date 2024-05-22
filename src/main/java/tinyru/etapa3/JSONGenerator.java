@@ -117,7 +117,7 @@ public class JSONGenerator {
         json += "\t}\n";
         json += "}\n";
         //añade el start
-        createJSON(json+"ts");
+        createJSON(json,".ts");
         return json;
     }
 
@@ -166,13 +166,13 @@ public class JSONGenerator {
         json += "}\n";
         json += "}\n";
         json += "}\n";
-        createJSON(json+".ast");
+        createJSON(json,".ast");
         return json;
     }
 
-    public void createJSON(String json){
+    public void createJSON(String json, String ext){
         try {
-            FileWriter myWriter = new FileWriter(filename + ".json");
+            FileWriter myWriter = new FileWriter(filename + ext + ".json");
             myWriter.write(json);
             myWriter.close();
         } catch (IOException e) {
