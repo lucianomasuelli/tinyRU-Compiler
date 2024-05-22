@@ -12,4 +12,9 @@ public abstract class LlamadaConstructorNode extends PrimarioNode{
     public LlamadaConstructorNode(Token token) {
         super(token);
     }
+
+    @Override
+    public String jsonify(){
+        return "{\"LlamadaConstructor\": {\"nombre\": " + token.getLexeme() + ", \"metodo\": \"" + metodo + "\", \"struct\": \"" + struct + "\"}}";
+    }
 }

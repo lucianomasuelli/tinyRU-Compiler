@@ -38,4 +38,15 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
         else
             return encadenado.check(llamadaMetodo.check(idStruct,st), st);
     }
+
+    @Override
+    public String jsonify(){
+        String json;
+        if(encadenado == null){
+            json = "{\"LlamadaMetodoEstatico\": {\"nombre\": " + token.getLexeme() + ", \"metodo\": " + llamadaMetodo.jsonify() + ", \"struct\": \"" + idStruct + "\"}}";
+        }else{
+            json = "{\"LlamadaMetodoEstatico\": {\"nombre\": " + token.getLexeme() + ", \"metodo\": " + llamadaMetodo.jsonify() + ", \"struct\": \"" + idStruct + "\", \"encadenado\": " + encadenado.jsonify() + "}}";
+        }
+        return json;
+    }
 }

@@ -59,4 +59,25 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
     public String check(String type, SymbolTable st) {
         return check(st);
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{";
+        json += "\"node\": \"LlamadaConstructor\",";
+        json += "\"idStruct\": \"" + idStruct + "\",";
+        json += "\"metodo\": \"" + metodo + "\",";
+        json += "\"args\": [";
+        for (ExpresionNode arg : args) {
+            json += arg.jsonify() + ",";
+        }
+        if (args.size() > 0) {
+            json = json.substring(0, json.length() - 1);
+        }
+        json += "]";
+        if (encadenado != null) {
+            json += ",\"encadenado\": " + encadenado.jsonify();
+        }
+        json += "}";
+        return json;
+    }
 }

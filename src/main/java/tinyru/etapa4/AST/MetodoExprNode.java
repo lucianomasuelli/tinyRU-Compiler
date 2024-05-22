@@ -78,4 +78,25 @@ public class MetodoExprNode extends VarMetEncNode{
     public String check(SymbolTable st) {
         return check(null, st);
     }
+
+    @Override
+    public String jsonify(){
+        String json;
+        if(encadenado == null){
+            json = "{\"MetodoExpr\": {\"nombre\": " + token.getLexeme() + ", \"args\": [";
+            for (ExpresionNode arg : argActuales) {
+                json += arg.jsonify() + ",";
+            }
+            json = json.substring(0, json.length() - 1);
+            json += "]}}";
+        }else{
+            json = "{\"MetodoExpr\": {\"nombre\": " + token.getLexeme() + ", \"args\": [";
+            for (ExpresionNode arg : argActuales) {
+                json += arg.jsonify() + ",";
+            }
+            json = json.substring(0, json.length() - 1);
+            json += "], \"encadenado\": " + encadenado.jsonify() + "}}";
+        }
+        return json;
+    }
 }

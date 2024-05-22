@@ -167,4 +167,20 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         }
         return type;
     }
+
+    @Override
+    public String jsonify() {
+        String json = "{\n";
+        json += "\"AccesoVarNode\": {\n";
+        json += "\"id\": " + token.getLexeme() + ",\n";
+        json += "\"struct\": " + struct + ",\n";
+        json += "\"metodo\": " + metodo + ",\n";
+        json += "\"visibility\": " + visible + ",\n";
+        if(encadenado != null) {
+            json += "\"Encadenado\": " + encadenado.jsonify() + "\n";
+        }
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }
