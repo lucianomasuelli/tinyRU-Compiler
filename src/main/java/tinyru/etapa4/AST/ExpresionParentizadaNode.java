@@ -34,4 +34,12 @@ public class ExpresionParentizadaNode extends PrimarioNode{
         return expresion.check(st);
     }
 
+    @Override
+    public String jsonify() {
+        return "{\n" +
+                "\"tipo\": \"ExpresionParentizada\",\n" +
+                "\"expresion\": " + expresion.jsonify() + "\n" +
+                "}";
+    }
+
 }

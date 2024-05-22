@@ -13,4 +13,14 @@ public class AccVarSimpleNode extends AccesoVarNode {
     public AccVarSimpleNode(Token token) {
         super(token);
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"AccVarSimpleNode\": {\n";
+        json += "\"id\": " + getToken().getLexeme() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

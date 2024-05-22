@@ -36,4 +36,24 @@ public class LiteralNode extends OperandoNode {
         }
         return type;
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"LiteralNode\": {\n";
+        json += "\"tipo\": ";
+        String type = null;
+        switch (token.getType()){
+            case NUM -> type = "Int";
+            case STRING-> type =  "Str";
+            case PTRUE, PFALSE -> type =  "Bool";
+            case CHAR-> type =  "Char";
+        }
+        json += type;
+        json+= "\n";
+        json += "\"valor\": \"" + token.getLexeme() + "\",\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

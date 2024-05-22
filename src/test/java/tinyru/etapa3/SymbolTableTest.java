@@ -19,7 +19,7 @@ class SymbolTableTest {
             SymbolTable table = parser.getSymbolTable();
             //printTable(table);
             JSONGenerator json = new JSONGenerator("test1.ru");
-            String jsonText = json.jasonify(table);
+            String jsonText = json.jasonifyST(table);
             System.out.println(jsonText);
         } catch (IOException e) {
             System.out.println(e.getMessage());

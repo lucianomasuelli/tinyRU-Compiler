@@ -55,4 +55,16 @@ public class ExpBinNode extends ExpresionNode {
             throw new TypesMismatchError(typeLeft, typeRigth, op.getLine(), op.getColumn());
         }
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"ExpBinNode\": {\n";
+        json += "\"expLeft\": " + expLeft.jsonify() + ",\n";
+        json += "\"op\": " + op.getLexeme()   + ",\n";
+        json += "\"expRight\": " + expRight.jsonify() + "\n";
+        json += "}\n";
+        json += "}";
+        return json;
+    }
 }

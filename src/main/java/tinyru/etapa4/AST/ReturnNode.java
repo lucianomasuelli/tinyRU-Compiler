@@ -41,4 +41,14 @@ public class ReturnNode extends SentenciaNode{
         this.type = type;
         return type;
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"ReturnNode\": {\n";
+        json += "\"exp\": " + exp.jsonify() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

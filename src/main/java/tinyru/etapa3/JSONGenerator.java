@@ -1,9 +1,12 @@
 package tinyru.etapa3;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.AST.AbstractSyntaxTree;
+import tinyru.etapa4.AST.BloqueNode;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Struct;
 
 public class JSONGenerator {
     private String filename;
@@ -13,7 +16,7 @@ public class JSONGenerator {
     }
 
     //Crea el json
-    public String jasonify(SymbolTable st){
+    public String jasonifyST(SymbolTable st){
         String json;
         json = "{\n";
         json += "\"nombre\": \"" + this.filename + "\",\n";
@@ -115,6 +118,54 @@ public class JSONGenerator {
         json += "}\n";
         //añade el start
         createJSON(json);
+        return json;
+    }
+
+    public String jasonifyAST(AbstractSyntaxTree ast, SymbolTable st){
+        String json = "{\n";
+        json += "\"nombre\": \"" + this.filename + "\",\n";
+        json += "\"structs\": [\n";
+        for (String key : st.getStructTable().keySet()) {
+            StructInput s = st.getStructTable().get(key);
+            json += "\t{\n";
+            json += "\t\"nombre\": \"" + key + "\",\n";
+            json += "\t],\n";
+            json += "\t\"metodos\": [\n";
+            for (String key2 : s.getMethodTable().keySet()) {
+
+                json += "\t\t{\n";
+                json += "\t\t\"nombre\": \"" + key2 + "\",\n";
+                json += "\t\t\"bloque\": [\n";
+                BloqueNode bloque = ast.getMethod(key, key2);
+                if (bloque != null) {
+                    json += bloque.jsonify();
+
+                }
+                json += "\t\t],\n";
+                json += "\t\t},\n";
+            }
+            json += "\t],\n";
+            json += "\t\"constructor\": {\n";
+            json += "\t\t\"bloque\": [\n";
+            BloqueNode bloque = ast.getMethod(key, "constructor");
+            if (bloque != null) {
+                json += bloque.jsonify();
+            }
+            json += "\t\t]\n";
+            json += "} \n";
+        }
+        json += "],\n";
+        json += "\"start\": {\n";
+        json += "\t\"Bloque\": {\n";
+        json += "\t\t\"sentencia\": [\n";
+        BloqueNode bloque = ast.getMethod("start","start");
+        if (bloque != null){
+            json += bloque.jsonify();
+        }
+        json += "]\n";
+        json += "}\n";
+        json += "}\n";
+        json += "}\n";
         return json;
     }
 

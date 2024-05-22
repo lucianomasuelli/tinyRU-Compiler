@@ -6,9 +6,8 @@ import tinyru.etapa3.SymbolTable;
 
 public class AccSelfNode extends AccesoVarNode {
 
-    public AccSelfNode(Token token, String struct, String metodo){
+    public AccSelfNode(Token token, String struct){
         super(token, struct);
-        this.metodo = metodo;
     }
 
     public String check(String structId, SymbolTable st){
@@ -20,4 +19,14 @@ public class AccSelfNode extends AccesoVarNode {
         }
         return type;
     }
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"AccSelfNode\": {\n";
+        json += "\"id\": " + getToken().getLexeme() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
+
 }

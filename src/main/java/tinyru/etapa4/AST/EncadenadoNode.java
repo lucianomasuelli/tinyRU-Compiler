@@ -11,4 +11,6 @@ public abstract class EncadenadoNode{
 
     public abstract String getType();
 
+    public abstract String jsonify();
+
 }

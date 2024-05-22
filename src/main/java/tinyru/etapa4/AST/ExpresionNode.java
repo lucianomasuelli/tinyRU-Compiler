@@ -20,4 +20,7 @@ public abstract class ExpresionNode{
         return type;
     }
 
+
+    public String jsonify(){return "";}
+
 }

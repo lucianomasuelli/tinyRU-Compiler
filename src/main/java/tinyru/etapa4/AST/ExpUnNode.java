@@ -52,4 +52,14 @@ public class ExpUnNode extends ExpresionNode{
         }
         return this.type;
     }
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"ExpUnNode\": {\n";
+        json += "\"op\": " + op.getLexeme() + ",\n";
+        json += "\"expRight\": " + expRight.jsonify() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }
