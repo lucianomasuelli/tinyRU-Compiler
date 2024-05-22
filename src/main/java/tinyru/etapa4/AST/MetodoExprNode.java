@@ -54,8 +54,10 @@ public class MetodoExprNode extends VarMetEncNode{
             structType = st.getStruct(structType).getMethod(metodo).getReturnType();
             type = encadenado.check(structType, st); //TODO
         }else{
+            if(structType == null){
+                structType = struct;
+            }
             // verifica los argumentos
-
             MethodInput method = st.getStruct(structType).getMethod(token.getLexeme());
             if (method.getParameterTable().size() != argActuales.size()) {
                 throw new ArgsMismatchError(argActuales.size(), method.getParameterTable().size(), token.getLine(), token.getColumn());

@@ -1127,7 +1127,7 @@ public class Parser {
 
     // ⟨AccesoSelf-Simple⟩ ::= self N10’
     private AccesoVarNode accesoSelfSimple() {
-        AccSelfNode self = new AccSelfNode(actualToken, symbolTable.actualStruct.getName());
+        AccSelfNode self = new AccSelfNode(actualToken, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         match(TokenType.PSELF);
         EncadenadoNode enc = N10Prima();
         self.setEncadenado(enc);

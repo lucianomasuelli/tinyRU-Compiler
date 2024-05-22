@@ -11,9 +11,9 @@ import java.util.Stack;
 
 public abstract class AccesoVarNode extends EncadenadoNode {
     private Token token;
-    private EncadenadoNode encadenado;
-    private String struct;
-    private String metodo;
+    protected EncadenadoNode encadenado;
+    protected String struct;
+    protected String metodo;
     private Boolean visible = true;
 
     public AccesoVarNode(Token token, String struct){
