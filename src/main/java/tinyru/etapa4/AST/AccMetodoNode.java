@@ -5,7 +5,6 @@ import tinyru.etapa3.SymbolTable;
 
 public class AccMetodoNode extends EncadenadoNode{
 
-
     @Override
     public String check(String type, SymbolTable st) {
         return null;
@@ -14,5 +13,13 @@ public class AccMetodoNode extends EncadenadoNode{
     @Override
     public String getType() {
         return "";
+    }
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"AccMetodoNode\": {\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
     }
 }

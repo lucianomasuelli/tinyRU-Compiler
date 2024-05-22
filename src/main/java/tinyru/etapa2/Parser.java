@@ -684,7 +684,7 @@ public class Parser {
                 }else {
                     bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
                 }
-            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,null, null);}
+            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,"start", "start");}
 
         } else if (onFirst(actualToken, first("N7"))) {
             N7(sent);

@@ -10,4 +10,14 @@ public class AccSelfNode extends AccesoVarNode {
         super(token, struct);
     }
 
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"AccSelfNode\": {\n";
+        json += "\"id\": " + getToken().getLexeme() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
+
 }

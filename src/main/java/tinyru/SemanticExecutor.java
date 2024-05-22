@@ -32,7 +32,7 @@ public class SemanticExecutor extends Executor {
             fileName = fileName.substring(0, fileName.length() - 3);
 
             JSONGenerator json = new JSONGenerator(fileName);
-            json.jasonify(table);
+            json.jasonifyST(table);
 
             System.out.println("CORRECTO: ANÁLISIS SEMÁNTICO - DECLARACIONES");
 

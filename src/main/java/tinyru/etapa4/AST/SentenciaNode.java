@@ -9,4 +9,6 @@ public abstract class SentenciaNode{
 
     public void print() {}
 
+    public abstract String jsonify();
+
 }

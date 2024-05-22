@@ -16,4 +16,7 @@ public class ExpresionNode{
     //Retorna el tipo de la expresión
     public String check(SymbolTable st){ return this.type; }
 
+
+    public String jsonify(){return "";}
+
 }

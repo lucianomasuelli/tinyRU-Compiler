@@ -25,4 +25,18 @@ public class BloqueRegularNode extends SentenciaNode{
         }
         return "Sentencia";
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"BloqueRegularNode\": {\n";
+        json += "\"sentencias\": [";
+        for (SentenciaNode sentencia : sentencias) {
+            json += sentencia.jsonify() + ",\n";
+        }
+        json += "]\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

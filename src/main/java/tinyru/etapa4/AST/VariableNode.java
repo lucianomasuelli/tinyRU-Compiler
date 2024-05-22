@@ -30,4 +30,14 @@ public class VariableNode extends PrimarioNode{
             return st.getStart().getAttribute(token.getLexeme()).getType();
         }
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"VariableNode\": {\n";
+        json += "\"nombre\": " + token.getLexeme() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

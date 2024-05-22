@@ -48,4 +48,18 @@ public class IfNode extends SentenciaNode {
         }
         return type;
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"IfNode\": {\n";
+        json += "\"condicional\": " + condicional.jsonify() + ",\n";
+        json += "\"cuerpo\": " + cuerpo.jsonify() + ",\n";
+        if (sentElse != null) {
+            json += "\"sino\": " + sentElse.jsonify() + "\n";
+        }
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

@@ -28,4 +28,15 @@ public class AsigNode extends SentenciaNode {
         }
         return "Asignación";
     }
+
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"AsigNode\": {\n";
+        json += "\"variable\": " + variable.jsonify() + ",\n";
+        json += "\"expr\": " + expr.jsonify() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
 }

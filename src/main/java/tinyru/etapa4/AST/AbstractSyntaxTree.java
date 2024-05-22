@@ -29,6 +29,20 @@ public class AbstractSyntaxTree{
         }
     }
 
+    public BloqueNode getMethod(String struct, String name) {
+        for (BloqueNode node : children) {
+            if (node.getMethodName().equals(name) && node.getStructName().equals(struct)){
+                return node;
+            }
+        }
+        return null;
+    }
+
+    public String toJSON(){
+        String json = "";
+        return json;
+    }
+
     public void check(SymbolTable st) {
         try {
             if(children != null){

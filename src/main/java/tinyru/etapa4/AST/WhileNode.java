@@ -41,4 +41,15 @@ public class WhileNode extends SentenciaNode {
         return type;
     }
 
+    @Override
+    public String jsonify(){
+        String json = "{\n";
+        json += "\"WhileNode\": {\n";
+        json += "\"condicional\": " + condicional.jsonify() + ",\n";
+        json += "\"cuerpo\": " + cuerpo.jsonify() + "\n";
+        json += "}\n";
+        json += "}\n";
+        return json;
+    }
+
 }
