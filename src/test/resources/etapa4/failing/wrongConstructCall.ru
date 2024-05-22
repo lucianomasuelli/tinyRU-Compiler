@@ -1,3 +1,5 @@
+/? hace una llamada a constructor con argumentos de tipo incorrecto.
+
 struct A{
     pri Int x;
 }
@@ -21,10 +23,6 @@ struct B:A {
 
 impl B {
     .(Int g){}
-    fn met2() -> Int {
-        B b;
-        y = 3;
-    }
 }
 
 

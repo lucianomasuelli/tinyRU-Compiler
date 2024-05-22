@@ -1614,6 +1614,7 @@ public class Parser {
             List<ExpresionNode> args = argumentosActuales();
             VarMetEncNode enc = N12Prima();
             llamada = new LlamadaConstructor(token,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), idStruct.getLexeme(), args, enc);
+
         } else if (onFirst(actualToken, first("tipo_primitivo"))){ // Declaración de arreglo
             String type = tipoPrimitivo();
             match(TokenType.LBRACKET);

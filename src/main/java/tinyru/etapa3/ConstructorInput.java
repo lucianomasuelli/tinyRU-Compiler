@@ -30,6 +30,15 @@ public class ConstructorInput {
         return constructorParams.containsKey(name);
     }
 
+    public ParamInput getParamByPosition(int position) {
+        for (ParamInput param : constructorParams.values()) {
+            if (param.getPosition() == position) {
+                return param;
+            }
+        }
+        return null;
+    }
+
     public Hashtable<String, ParamInput> getConstructorParams() {
         return constructorParams;
     }
