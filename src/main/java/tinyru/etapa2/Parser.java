@@ -944,7 +944,7 @@ public class Parser {
             sentencia = asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            sentencia = new ExpresionParentizadaNode(sentenciaSimple());
+            sentencia = sentenciaSimple();
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals("if")) {
             Token pif = actualToken;
@@ -1142,12 +1142,12 @@ public class Parser {
         return var;
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
-    private ExpresionNode sentenciaSimple(){
+    private SentSimpleNode sentenciaSimple(){
         ExpresionNode exp;
         match(TokenType.LPAREN);
         exp = expresion();
         match(TokenType.RPAREN);
-        return exp;
+        return new SentSimpleNode(exp);
     }
     // ⟨Expresión⟩ ::= ⟨ExpOr ⟩
     private ExpresionNode expresion(){
@@ -1479,9 +1479,9 @@ public class Parser {
     private OperandoNode primario(){
         OperandoNode op = null;
         if (onFirst(actualToken, first("expresion_parentizada"))){
-            expresionParentizada(); // TODO
+            op = expresionParentizada();
         } else if (onFirst(actualToken, first("acceso_self"))){
-            accesoSelf(); // TODO
+            op = accesoSelf();
         } else if (onFirst(actualToken, first("primario'"))){
             op = primarioPrima();
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
@@ -1533,22 +1533,20 @@ public class Parser {
         return primario;
     }
     // ⟨ExpresionParentizada⟩ ::= ( ⟨Expresion⟩ ) N12’
-    private void expresionParentizada(){
+    private ExpresionParentizadaNode expresionParentizada(){
         match(TokenType.LPAREN);
-        expresion();
+        ExpresionNode exp = expresion();
         match(TokenType.RPAREN);
-        N12Prima();
+        VarMetEncNode enc = N12Prima();
+        return new ExpresionParentizadaNode(null, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), exp, enc);
     }
     // ⟨AccesoSelf ⟩ ::= self N12’
-    private void accesoSelf(){
-        match(TokenType.PSELF);
-        N12Prima();
+    private SelfExprNode accesoSelf(){
+        Token token = match(TokenType.PSELF);
+        VarMetEncNode enc = N12Prima();
+        return new SelfExprNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), enc);
     }
-    // ⟨AccesoVar ⟩ ::= id ⟨AccesoVar⟩’
-//    private void accesoVar(){
-//        match(TokenType.ID);
-//        accesoVarPrima();
-//    }
+
     // ⟨AccesoVar ⟩’ ::= N12 | [ ⟨Expresión⟩ ] N12 | λ | [ ⟨Expresión⟩ ]
     // follow  = {.,&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,,}
     private void accesoVarPrima(VariableExprNode var){
