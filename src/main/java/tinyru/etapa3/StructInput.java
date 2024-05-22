@@ -2,6 +2,7 @@ package tinyru.etapa3;
 
 import java.util.Hashtable;
 import tinyru.etapa3.VarInput;
+import tinyru.etapa4.Exceptions.AttrNotFoundError;
 
 
 public class StructInput {

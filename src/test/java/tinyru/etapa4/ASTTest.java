@@ -15,16 +15,16 @@ public class ASTTest {
     void analyze() {
         try {
             AbstractSyntaxTree ast;
-            JSONGenerator js = new JSONGenerator("src/test/resources/etapa4/test1.ru");
             Lexer lexer = new Lexer("src/test/resources/etapa4/test1.ru");
             Parser parser = new Parser(lexer);
             ast = parser.analyze();
             SymbolTable table = parser.getSymbolTable();
-            //ast.print();
-            //ast.check(table);
-            System.out.println(js.jasonifyAST(ast,table));
-        } catch (IOException e) {
+            ast.print();
+            ast.check(table);
+
+        } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
+            e.printStackTrace();
         }
     }
 }

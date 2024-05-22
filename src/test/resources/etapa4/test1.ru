@@ -1,42 +1,5 @@
-struct A{
-    Int a,b;
-}
+/? Prueba basica de ejecucion, imprime 12345 por pantalla
 
-impl A {
-    .(){}
-    fn met1(Int a) -> Int {
-        a = 2/3+4;
-        /? var = "holanda";
-    }
-
-    fn met2(Bool h) -> Int {
-        h = true;
-    }
-}
-
-struct B {
-}
-
-impl B {
-    .(){}
-    fn met1(Int a) -> Int {
-        Int b;
-        a = ++ b;
-        ret a;
-    }
-}
-
-
-start {
-    Str var;
-    Int a,b;
-    var = "holanda";
-    if (var == "holanda") {
-        a = 2;
-       } else {
-       a = 1;
-       }
-    while (a != b){
-        (++a);
-    }
-}
+start{
+    (IO.out_int(12345));
+   }

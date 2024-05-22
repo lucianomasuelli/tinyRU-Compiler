@@ -1,8 +1,10 @@
 package tinyru.etapa3;
 
+import tinyru.etapa1.Token;
+
 import java.util.Hashtable;
 
-public class MethodInput {
+public class MethodInput{
     String name;
     String returnType;
     Boolean isStatic;
@@ -56,6 +58,15 @@ public class MethodInput {
         return parameterTable;
     }
 
+    public ParamInput getParameterByPosition(int position) {
+        for (ParamInput param : parameterTable.values()) {
+            if (param.getPosition() == position) {
+                return param;
+            }
+        }
+        return null;
+    }
+
     public void addLocalVar(String name, VarInput localVar) {
         localVarTable.put(name, localVar);
     }
@@ -104,5 +115,14 @@ public class MethodInput {
 
     public Hashtable<String, VarInput> getLocalVarTable() {
         return localVarTable;
+    }
+
+    public ParamInput getParamByPosition(int i) {
+        for (ParamInput param : parameterTable.values()) {
+            if (param.getPosition() == i) {
+                return param;
+            }
+        }
+        return null;
     }
 }

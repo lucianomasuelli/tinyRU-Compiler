@@ -4,7 +4,7 @@ import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
 
-public class ExpresionNode{
+public abstract class ExpresionNode{
     private String type;
     private Token token;
 
@@ -13,8 +13,12 @@ public class ExpresionNode{
     public void print() {
     }
 
-    //Retorna el tipo de la expresión
-    public String check(SymbolTable st){ return this.type; }
+    public abstract String check(String structType, SymbolTable st);
+    public abstract String check(SymbolTable st);
+
+    public String getType() {
+        return type;
+    }
 
 
     public String jsonify(){return "";}

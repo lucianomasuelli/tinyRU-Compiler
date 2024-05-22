@@ -40,6 +40,11 @@ public class ExpBinNode extends ExpresionNode {
     }
 
     @Override
+    public String check(String structType, SymbolTable st) {
+        return check(st);
+    }
+
+
     public String check(SymbolTable st){
 
         String typeLeft = expLeft.check(st);

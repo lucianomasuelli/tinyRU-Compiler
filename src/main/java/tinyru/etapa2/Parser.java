@@ -564,6 +564,9 @@ public class Parser {
             pos++;
         }
         symbolTable.setCreatingConstructor(true);
+
+        symbolTable.actualMethod = new MethodInput("Constructor", false); // para luego diferenciar si se trata de un constructor o un método
+
         BloqueMetodoNode bloque = bloqueMetodo();
         symbolTable.setCreatingConstructor(false);
         symbolTable.actualStruct.setHasConstructor(true);
@@ -571,24 +574,27 @@ public class Parser {
         if(bloque != null){
             childrenBlocks.add(bloque);
         }
+
+        symbolTable.actualMethod = null;
+        symbolTable.actualConstructor = null;
     }
 
     // ⟨Atributo⟩ ::= pri ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ; | ⟨Tipo⟩ ⟨Lista-Declaración-Variables⟩ ;
     private void atributo() {
         ArrayList<Token> atributosDeclarados = new ArrayList<>();
         VarInput v;
-        Boolean pri;
+        Boolean visibility;
         String type;
         if (actualToken.getLexeme().equals("pri")) {
             match(TokenType.PPRI);
-            pri = true;
+            visibility = false;
             type = tipo();
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
 
         } else if (onFirst(actualToken, first("tipo"))) {
             type = tipo();
-            pri = false;
+            visibility = true;
             listaDeclaracionVariables(atributosDeclarados);
             match(TokenType.SEMICOLON);
         } else {
@@ -596,7 +602,7 @@ public class Parser {
         }
         int pos = symbolTable.actualStruct.getAttributeTable().size();
         for(Token t: atributosDeclarados){
-            v = new VarInput(t.getLexeme(),type,pri);
+            v = new VarInput(t.getLexeme(),type,visibility);
             v.setLine(t.getLine());
             v.setColumn(t.getColumn());
             v.setPosition(pos);
@@ -608,6 +614,7 @@ public class Parser {
         }
 
     }
+
     // ⟨Método⟩ ::= st fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
     // | fn idMetAt ⟨Argumentos-Formales⟩ -> ⟨Tipo-Método⟩ ⟨Bloque-Método⟩
     private void metodo(int pos) {
@@ -654,14 +661,17 @@ public class Parser {
         symbolTable.actualMethod.setLine(methodToken.getLine());
         symbolTable.actualMethod.setColumn(methodToken.getColumn());
 
-        DeclarationCheck declarationCheck = new DeclarationCheck(symbolTable);
-        declarationCheck.methodCheck(symbolTable.actualStruct, symbolTable.actualMethod);
+        if (symbolTable.actualStruct.fetchMethod(symbolTable.actualMethod.getName())) {
+            throw new MethodAlreadyDeclaredError(symbolTable.actualStruct, symbolTable.actualMethod.getName(),
+                    symbolTable.actualMethod.getLine(), symbolTable.actualMethod.getColumn());
+        }
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
 
         if(bloque != null){
             childrenBlocks.add(bloque);
         }
+        symbolTable.actualMethod = null;
     }
 
     //⟨Bloque-Método⟩ ::= { ⟨Bloque-Método⟩’
@@ -768,18 +778,28 @@ public class Parser {
         for(Token t: declaredAttributes){
             VarInput v = new VarInput(t.getLexeme(), type,false);
             v.setPosition(pos);
-            if(symbolTable.getStart() != null) {
-                if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
-                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
-                }
-                symbolTable.getStart().addAttribute(t.getLexeme(), v);
-            } else {
-                if (symbolTable.actualMethod.getLocalVarTable().containsKey(t.getLexeme()) || symbolTable.actualMethod.getParameterTable().containsKey(t.getLexeme())) {
-                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
-                }
-                symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
 
+            if(symbolTable.actualConstructor == null){
+                if(symbolTable.getStart() != null) {
+                    if (symbolTable.getStart().getAttributeTable().containsKey(t.getLexeme())) {
+                        throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                    }
+                    symbolTable.getStart().addAttribute(t.getLexeme(), v);
+                } else {
+                    if (symbolTable.actualMethod.getLocalVarTable().containsKey(t.getLexeme()) || symbolTable.actualMethod.getParameterTable().containsKey(t.getLexeme())) {
+                        throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                    }
+                    symbolTable.actualMethod.addLocalVar(t.getLexeme(),v);
+
+                }
             }
+            else{
+                if(symbolTable.actualConstructor.fetchLocalVar(t.getLexeme()) || symbolTable.actualConstructor.fetchParameter(t.getLexeme())) {
+                    throw new VarAlreadyDeclaredError(t.getLexeme(), t.getLine(), t.getColumn());
+                }
+                symbolTable.actualConstructor.addLocalVar(t.getLexeme(),v);
+            }
+
             pos++;
 
         }
@@ -924,7 +944,7 @@ public class Parser {
             sentencia = asignacion();
             match(TokenType.SEMICOLON);
         } else if (onFirst(actualToken, first("sentencia_simple"))) {
-            sentencia = new ExpresionParentizadaNode(sentenciaSimple());
+            sentencia = sentenciaSimple();
             match(TokenType.SEMICOLON);
         } else if (actualToken.getLexeme().equals("if")) {
             Token pif = actualToken;
@@ -949,8 +969,8 @@ public class Parser {
             if (symbolTable.getCreatingConstructor()){
                 throw new InvalidReturnConstructorError(symbolTable.actualStruct.getName(), actualToken.getLine(), actualToken.getColumn());
             }
-            match(TokenType.PRET);
-            sentencia = sentenciaPrimaPrima();
+            Token token = match(TokenType.PRET);
+            sentencia = sentenciaPrimaPrima(token);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -959,7 +979,7 @@ public class Parser {
 
     // ⟨Sentencia⟩’ ::= else ⟨Sentencia⟩ | λ
     // follow = "}",";","if","while","ret","(","{","id","self","else"
-     private SentenciaNode sentenciaPrima() {
+    private SentenciaNode sentenciaPrima() {
         SentenciaNode sent = null;
         Set<TokenType> followSentenciaPrima = new HashSet<>(Set.of(TokenType.RBRACE,TokenType.SEMICOLON, TokenType.PIF,
                 TokenType.PWHILE, TokenType.PRET, TokenType.LPAREN, TokenType.LBRACE, TokenType.ID, TokenType.PSELF, TokenType.PELSE));
@@ -973,10 +993,10 @@ public class Parser {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
         return sent;
-     }
+    }
 
     // ⟨Sentencia⟩’’ ::= ⟨Expresión⟩ ; | ;
-    private SentenciaNode sentenciaPrimaPrima() {
+    private SentenciaNode sentenciaPrimaPrima(Token token) {
         ExpresionNode exp = null;
         if (onFirst(actualToken, first("expresion"))) {
             exp = expresion();
@@ -986,7 +1006,7 @@ public class Parser {
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
-        return new ReturnNode(exp);
+        return new ReturnNode(token, exp, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
     }
     // ⟨Bloque⟩ ::= { ⟨Bloque⟩’
     private BloqueRegularNode bloque() {
@@ -1059,7 +1079,6 @@ public class Parser {
             var.setMetodo(symbolTable.actualMethod.getName());
         } else {
             var = new AccVarSimpleNode(actualToken);
-
         }
         match(TokenType.ID);
         accesoVarSimplePrima(var);
@@ -1115,24 +1134,6 @@ public class Parser {
         return self;
     }
 
-    // N11 ::= ⟨Encadenado-Simple⟩ N11’
-//    private void N11(){
-//        encadenadoSimple();
-//        N11Prima();
-//    }
-    // N11’ ::= N11 | λ
-//    private void N11Prima(Stack<EncadenadoNode> encadenados){
-//        Set<String> followN11Prima = new HashSet<>(Set.of("="));
-//        if (onFirst(actualToken, first("N11"))) {
-//            N11(encadenados);
-//        } else if (followN11Prima.contains(actualToken.getLexeme())) {
-//            // lambda
-//            return;
-//        } else {
-//            throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
-//        }
-//    }
-
     // ⟨Encadenado-Simple⟩ ::= . id
     private AccesoVarNode encadenadoSimple(){
         match(TokenType.DOT);
@@ -1141,16 +1142,16 @@ public class Parser {
         return var;
     }
     // ⟨Sentencia-Simple⟩ ::= (⟨Expresión⟩)
-    private ExpresionNode sentenciaSimple(){
+    private SentSimpleNode sentenciaSimple(){
         ExpresionNode exp;
         match(TokenType.LPAREN);
         exp = expresion();
         match(TokenType.RPAREN);
-        return exp;
+        return new SentSimpleNode(exp);
     }
     // ⟨Expresión⟩ ::= ⟨ExpOr ⟩
     private ExpresionNode expresion(){
-        ExpresionNode exp = new ExpresionNode();
+        ExpresionNode exp;
         exp = expOr();
         return exp;
     }
@@ -1409,39 +1410,55 @@ public class Parser {
         return op;
     }
     // N12 ::= . id ⟨Llamada-Método-Enc-Acceso-Var-Enc⟩
-    private void N12(){
+    private VarMetEncNode N12(){
         match(TokenType.DOT);
+        Token id = actualToken;
         match(TokenType.ID);
-        llamadaMetodoEncadenado_accVarEnc();
+        return llamadaMetodoEncadenado_accVarEnc(id);
     }
+
     //⟨Llamada-Método-Enc-Acceso-Var-Enc⟩ ::= ⟨Llamada-Método-Encadenado⟩’ | ⟨Acceso-Variable-Encadenado⟩’
     //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
-    private void llamadaMetodoEncadenado_accVarEnc(){
+    private VarMetEncNode llamadaMetodoEncadenado_accVarEnc(Token id){
         Set<TokenType> followLlamadaMetodoEncadenado_accVarEnc = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
+
+        VarMetEncNode primario = null;
         if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
-            llamadaMetodoEncadenadoPrima();
+            MetodoExprNode metodo;
+            if(symbolTable.actualStruct != null){
+                metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                metodo = new MetodoExprNode(id, "start", null);
+            }
+            primario = metodo;
+            llamadaMetodoEncadenadoPrima(metodo);
         } else if (onFirst(actualToken, first("acceso_variable_encadenado'"))){
-            accesoVariableEncadenadoPrima();
+            VariableExprNode var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            primario = var;
+            accesoVariableEncadenadoPrima(var);
         } else if(followLlamadaMetodoEncadenado_accVarEnc.contains(actualToken.getType())){
-            // lambda
+            primario = new VariableExprNode(id, symbolTable.actualStruct.getName(),symbolTable.actualMethod.getName());
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return primario;
     }
+
     // N12’ ::= N12 | λ
     // follow = {&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
-    private void N12Prima(){
+    private VarMetEncNode N12Prima(){
         Set<String> followN12Prima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "%", ".", ","));
+        VarMetEncNode primario = null;
         if (onFirst(actualToken, first("N12"))){
-            N12();
+            primario = N12();
         } else if (followN12Prima.contains(actualToken.getLexeme())){
             // lambda
-            return;
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return primario;
     }
     // ⟨Literal ⟩ ::= nil | true | false | intLiteral | StrLiteral | charLiteral
     private LiteralNode literal(){
@@ -1467,15 +1484,15 @@ public class Parser {
     private OperandoNode primario(){
         OperandoNode op = null;
         if (onFirst(actualToken, first("expresion_parentizada"))){
-            expresionParentizada();
+            op = expresionParentizada();
         } else if (onFirst(actualToken, first("acceso_self"))){
-            accesoSelf();
+            op = accesoSelf();
         } else if (onFirst(actualToken, first("primario'"))){
             op = primarioPrima();
         } else if (onFirst(actualToken, first("llamada_metodo_estatico"))){
-            llamadaMetodoEstatico();
+            op = llamadaMetodoEstatico();
         } else if (onFirst(actualToken, first("llamada_constructor"))){
-            llamadaConstructor();
+            op =  llamadaConstructor();
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1497,111 +1514,155 @@ public class Parser {
         Set<TokenType> followPrimarioPrimaPrima = new HashSet<>(Set.of(TokenType.DOT, TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.COMMA));
+
         if (onFirst(actualToken, first("acceso_var'"))){
+            VariableExprNode var;
             if (symbolTable.actualStruct != null) {
-                primario = new VariableNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
             } else {
-                primario = new VariableNode(id);
+                var = new VariableExprNode(id);
             }
-            primario = new VariableNode(id);
-            accesoVarPrima();
+            primario = var;
+            accesoVarPrima(var);
+
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
-            llamadaMetodoPrima();
+            primario = llamadaMetodoPrima(id);
         } else if (followPrimarioPrimaPrima.contains(actualToken.getType())){
-            primario = new VariableNode(id);
+            if(symbolTable.actualStruct != null){
+                primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            }
+            else {
+                primario = new VariableExprNode(id, "start", null);
+            }
+
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+
         return primario;
     }
     // ⟨ExpresionParentizada⟩ ::= ( ⟨Expresion⟩ ) N12’
-    private void expresionParentizada(){
+    private ExpresionParentizadaNode expresionParentizada(){
         match(TokenType.LPAREN);
-        expresion();
+        ExpresionNode exp = expresion();
         match(TokenType.RPAREN);
-        N12Prima();
+        VarMetEncNode enc = N12Prima();
+        return new ExpresionParentizadaNode(null, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), exp, enc);
     }
     // ⟨AccesoSelf ⟩ ::= self N12’
-    private void accesoSelf(){
-        match(TokenType.PSELF);
-        N12Prima();
+    private SelfExprNode accesoSelf(){
+        Token token = match(TokenType.PSELF);
+        VarMetEncNode enc = N12Prima();
+        return new SelfExprNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), enc);
     }
-    // ⟨AccesoVar ⟩ ::= id ⟨AccesoVar⟩’
-    private void accesoVar(){
-        match(TokenType.ID);
-        accesoVarPrima();
-    }
+
     // ⟨AccesoVar ⟩’ ::= N12 | [ ⟨Expresión⟩ ] N12 | λ | [ ⟨Expresión⟩ ]
     // follow  = {.,&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,,}
-    private void accesoVarPrima(){
+    private void accesoVarPrima(VariableExprNode var){
         Set<String> followAccesoVarPrima = new HashSet<>(Set.of("&&", "||", ")", ";", "]", "==", "!=", "<", ">", "<=", ">=", "+", "-", "*", "/", "%", ",", "."));
+
+        //VariableExprNode var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         if (actualToken.getLexeme().equals("[")){
             match(TokenType.LBRACKET);
-            expresion();
+            ExpresionNode exp = expresion();
             match(TokenType.RBRACKET);
+            var.setArrayAccess(exp);
+
             if (onFirst(actualToken, first("N12"))){
-                N12();
+                VarMetEncNode enc = N12();
+                var.setEncadenado(enc);
             } else if (followAccesoVarPrima.contains(actualToken.getLexeme())){
                 // lambda
-                return;
             } else {
                 throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
             }
         } else if (onFirst(actualToken, first("N12"))){
-            N12();
+            VarMetEncNode enc = N12();
+            var.setEncadenado(enc);
         } else if (followAccesoVarPrima.contains(actualToken.getLexeme())){
             // lambda
-            return;
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
     }
+
     // ⟨Llamada-Método⟩ ::= id ⟨Llamada-Método⟩’
-    private void llamadaMetodo(){
+    private MetodoExprNode llamadaMetodo(){
+        Token id = actualToken;
         match(TokenType.ID);
-        llamadaMetodoPrima();
+        return llamadaMetodoPrima(id);
     }
     // ⟨Llamada-Método⟩’ ::= ⟨Argumentos-Actuales⟩ N12’
-    private void llamadaMetodoPrima(){
-        argumentosActuales();
-        N12Prima();
+    private MetodoExprNode llamadaMetodoPrima(Token id){
+        MetodoExprNode metodo;
+        if(symbolTable.actualStruct != null) {
+            metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+        }
+        else {
+            metodo = new MetodoExprNode(id, "start", null);
+        }
+
+        List<ExpresionNode> args =  argumentosActuales();
+        metodo.setArgActuales(args);
+        VarMetEncNode enc = N12Prima();
+        metodo.setEncadenado(enc);
+        return metodo;
     }
     // ⟨Llamada-Método-Estático⟩ ::= idStruct . ⟨Llamada-Método⟩N12’
-    private void llamadaMetodoEstatico(){
-        match(TokenType.STRUCTID);
+    private LlamadaMetodoEstaticoNode llamadaMetodoEstatico(){
+        Token token = match(TokenType.STRUCTID);
         match(TokenType.DOT);
-        llamadaMetodo();
-        N12Prima();
+        MetodoExprNode met = llamadaMetodo();
+        VarMetEncNode enc = N12Prima();
+        if(symbolTable.actualStruct != null){
+            return new LlamadaMetodoEstaticoNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), token.getLexeme(), met, enc);
+        }
+        else {
+            return new LlamadaMetodoEstaticoNode(token, "start", null, token.getLexeme(), met, enc);
+        }
+
     }
     // ⟨Llamada-Constructor ⟩ ::= new ⟨Llamada-Constructor ⟩’
-    private void llamadaConstructor(){
-        match(TokenType.PNEW);
-        llamadaConstructorPrima();
+    private LlamadaConstructorNode llamadaConstructor(){
+        Token token = match(TokenType.PNEW);
+        return llamadaConstructorPrima(token);
     }
     // ⟨Llamada-Constructor ⟩’ ::= idStruct ⟨Argumentos-Actuales⟩ N12’| ⟨Tipo-Primitivo⟩ [ ⟨Expresion⟩ ]
-    private void llamadaConstructorPrima(){
-        if (actualToken.getType() == TokenType.STRUCTID){
-            match(TokenType.STRUCTID);
-            argumentosActuales();
-            N12Prima();
-        } else if (onFirst(actualToken, first("tipo_primitivo"))){
-            tipoPrimitivo();
+    private LlamadaConstructorNode llamadaConstructorPrima(Token token){
+        LlamadaConstructorNode llamada;
+        if (actualToken.getType() == TokenType.STRUCTID){ // Llamada a constructor
+            Token idStruct = match(TokenType.STRUCTID);
+            List<ExpresionNode> args = argumentosActuales();
+            VarMetEncNode enc = N12Prima();
+            if(symbolTable.actualStruct != null){
+                llamada = new LlamadaConstructor(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), idStruct.getLexeme(), args, enc);
+            }
+            else {
+                llamada = new LlamadaConstructor(token, "start", null, idStruct.getLexeme(), args, enc);
+            }
+
+        } else if (onFirst(actualToken, first("tipo_primitivo"))){ // Declaración de arreglo
+            String type = tipoPrimitivo();
             match(TokenType.LBRACKET);
-            expresion();
+            ExpresionNode exp = expresion();
             match(TokenType.RBRACKET);
+            llamada = new ArrayNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), type, exp);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
+        return llamada;
     }
     // ⟨Argumentos-Actuales⟩ ::= ( ⟨Argumentos-Actuales⟩’
-    private void argumentosActuales(){
+    private List<ExpresionNode> argumentosActuales(){
+        List<ExpresionNode> args = new ArrayList<>();
         match(TokenType.LPAREN);
-        argumentosActualesPrima();
+        argumentosActualesPrima(args);
+        return args;
     }
     // ⟨Argumentos-Actuales⟩’ ::= ⟨Lista-Expresiones⟩ ) | )
-    private void argumentosActualesPrima(){
+    private void argumentosActualesPrima(List<ExpresionNode> args){
         if (onFirst(actualToken, first("lista_expresiones"))){
-            listaExpresiones();
+            listaExpresiones(args);
             match(TokenType.RPAREN);
         } else if (actualToken.getLexeme().equals(")")){
             match(TokenType.RPAREN);
@@ -1610,17 +1671,18 @@ public class Parser {
         }
     }
     // ⟨Lista-Expresiones⟩ ::= ⟨Expresión⟩ ⟨Lista-Expresiones⟩’
-    private void listaExpresiones(){
-        expresion();
-        listaExpresionesPrima();
+    private void listaExpresiones(List<ExpresionNode> exps){
+        ExpresionNode exp = expresion();
+        exps.add(exp);
+        listaExpresionesPrima(exps);
     }
     // ⟨Lista-Expresiones⟩’ ::= , ⟨Lista-Expresiones⟩ | λ
     // follow = {)}
-    private void listaExpresionesPrima(){
+    private void listaExpresionesPrima(List<ExpresionNode> exps){
         Set<String> followListaExpresionesPrima = new HashSet<>(Set.of(")"));
         if (actualToken.getLexeme().equals(",")){
             match(TokenType.COMMA);
-            listaExpresiones();
+            listaExpresiones(exps);
         } else if (followListaExpresionesPrima.contains(actualToken.getLexeme())){
             // lambda
             return;
@@ -1629,16 +1691,18 @@ public class Parser {
         }
     }
     // ⟨Llamada-Método-Encadenado⟩ ::= id ⟨Llamada-Método-Encadenado⟩’
-    private void llamadaMetodoEncadenado(){
-        match(TokenType.ID);
-        llamadaMetodoEncadenadoPrima();
-    }
+//    private void llamadaMetodoEncadenado(){
+//        match(TokenType.ID);
+//        llamadaMetodoEncadenadoPrima();
+//    }
     // ⟨Llamada-Método-Encadenado⟩’ ::= ⟨Argumentos-Actuales⟩ N12 | ⟨Argumentos-Actuales⟩
-    private void llamadaMetodoEncadenadoPrima(){
+    private void llamadaMetodoEncadenadoPrima(MetodoExprNode metodo){
         if (onFirst(actualToken, first("argumentos_actuales"))){
-            argumentosActuales();
+            List<ExpresionNode> args = argumentosActuales();
+            metodo.setArgActuales(args);
             if(onFirst(actualToken, first("N12"))){
-                N12();
+                VarMetEncNode enc = N12();
+                metodo.setEncadenado(enc);
             } else {
                 return;
             }
@@ -1647,23 +1711,26 @@ public class Parser {
         }
     }
     // ⟨Acceso-Variable-Encadenado⟩ ::= id ⟨Acceso-Variable-Encadenado⟩’
-    private void accesoVariableEncadenado(){
-        match(TokenType.ID);
-        accesoVariableEncadenadoPrima();
-    }
+//    private void accesoVariableEncadenado(){
+//        match(TokenType.ID);
+//        accesoVariableEncadenadoPrima();
+//    }
     // ⟨Acceso-Variable-Encadenado⟩’ ::=  [⟨Expresion⟩] N12’ | N12’
     //{&&,||,),;,],==,!=,<,>,<=,>=,+,-,*,/,%,.,,}
-    private void accesoVariableEncadenadoPrima(){
+    private void accesoVariableEncadenadoPrima(VariableExprNode var){
         Set<TokenType> followAccesoVariableEncadenadoPrima = new HashSet<>(Set.of(TokenType.AND, TokenType.OR, TokenType.RPAREN, TokenType.SEMICOLON, TokenType.RBRACKET,
                 TokenType.IGUAL, TokenType.DIF, TokenType.MENOR, TokenType.MAYOR, TokenType.MENORIGUAL, TokenType.MAYORIGUAL, TokenType.SUM, TokenType.RESTA, TokenType.PROD,
                 TokenType.DIV, TokenType.MOD, TokenType.DOT, TokenType.COMMA));
         if (actualToken.getLexeme().equals("[")){
             match(TokenType.LBRACKET);
-            expresion();
+            ExpresionNode exp = expresion();
             match(TokenType.RBRACKET);
-            N12Prima();
+            var.setArrayAccess(exp);
+            VarMetEncNode enc = N12Prima();
+            var.setEncadenado(enc);
         } else if (onFirst(actualToken, first("N12'"))){
-            N12Prima();
+            VarMetEncNode enc = N12Prima();
+            var.setEncadenado(enc);
         } else if (followAccesoVariableEncadenadoPrima.contains(actualToken.getType())){
             // lambda
         } else {

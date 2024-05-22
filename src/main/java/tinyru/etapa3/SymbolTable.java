@@ -7,7 +7,7 @@ import java.util.Hashtable;
 public class SymbolTable {
     public StructInput actualStruct;
     public MethodInput actualMethod = new MethodInput(null, null);
-    public ConstructorInput actualConstructor = new ConstructorInput();
+    public ConstructorInput actualConstructor = null;
 
     private Hashtable<String, StructInput> structTable = new Hashtable<>();
     private StartInput start;
@@ -56,6 +56,21 @@ public class SymbolTable {
         return structTable;
     }
 
+    public Boolean isSubType(String subType, String superType) {
+        StructInput subStruct = getStruct(subType);
+        StructInput superStruct = getStruct(superType);
+        if (subStruct == null || superStruct == null) {
+            return false;
+        }
+        if (subType.equals(superType)) {
+            return true;
+        }
+        if (subStruct.getInheritanceName() == null) {
+            return false;
+        }
+        return isSubType(subStruct.getInheritanceName(), superType);
+    }
+
     public void addStructIO() {
         StructInput structIO = new StructInput();
         structIO.setName("IO");
@@ -63,6 +78,8 @@ public class SymbolTable {
         structIO.setIsDeclared(true);
 
         structIO.setInheritanceName("Object");
+
+        structIO.setConstructor(new ConstructorInput());
 
         MethodInput methodInput1 = new MethodInput("out_str",true);
         methodInput1.addParameter("s", new ParamInput("s", "Str"));
@@ -141,6 +158,7 @@ public class SymbolTable {
         object.setHasImpl(true);
         object.setIsDeclared(true);
         structTable.put("Object", object);
+        object.setConstructor(new ConstructorInput());
     }
 
     public void addArray(){
@@ -148,6 +166,8 @@ public class SymbolTable {
         array.setName("Array");
         array.setHasImpl(true);
         array.setIsDeclared(true);
+        array.setInheritanceName("Object");
+        array.setConstructor(new ConstructorInput());
 
         MethodInput methodInput1 = new MethodInput("length",false);
         methodInput1.setReturnType("Int");
@@ -162,6 +182,7 @@ public class SymbolTable {
         intType.setIsDeclared(true);
         intType.setName("Int");
         structTable.put("Int", intType);
+        intType.setConstructor(new ConstructorInput());
 
     }
 
@@ -170,6 +191,8 @@ public class SymbolTable {
         stringType.setHasImpl(true);
         stringType.setIsDeclared(true);
         stringType.setName("Str");
+        stringType.setInheritanceName("Object");
+        stringType.setConstructor(new ConstructorInput());
 
         MethodInput methodInput1 = new MethodInput("length",false);
         methodInput1.setPosition(0);
@@ -192,6 +215,8 @@ public class SymbolTable {
         boolType.setIsDeclared(true);
         boolType.setName("Bool");
         structTable.put("Bool", boolType);
+        boolType.setConstructor(new ConstructorInput());
+
     }
 
     public void addChar(){
@@ -200,6 +225,7 @@ public class SymbolTable {
         charType.setIsDeclared(true);
         charType.setName("Char");
         structTable.put("Char", charType);
+        charType.setConstructor(new ConstructorInput());
     }
 }
 
