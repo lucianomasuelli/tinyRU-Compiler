@@ -8,4 +8,8 @@ public abstract class LlamadaConstructorNode extends PrimarioNode{
     public LlamadaConstructorNode(Token token, String metodo, String struct) {
         super(token, metodo, struct);
     }
+
+    public LlamadaConstructorNode(Token token) {
+        super(token);
+    }
 }

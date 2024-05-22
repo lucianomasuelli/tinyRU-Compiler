@@ -1426,7 +1426,12 @@ public class Parser {
 
         VarMetEncNode primario = null;
         if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
-            MetodoExprNode metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            MetodoExprNode metodo;
+            if(symbolTable.actualStruct != null){
+                metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                metodo = new MetodoExprNode(id, "start", null);
+            }
             primario = metodo;
             llamadaMetodoEncadenadoPrima(metodo);
         } else if (onFirst(actualToken, first("acceso_variable_encadenado'"))){
@@ -1511,21 +1516,25 @@ public class Parser {
                 TokenType.DIV, TokenType.MOD, TokenType.COMMA));
 
         if (onFirst(actualToken, first("acceso_var'"))){
-//            if (symbolTable.actualStruct != null) {
-//                primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
-//            } else {
-//                primario = new VariableExprNode(id);
-//            }
-            //primario = new VariableExprNode(id);
-
-            VariableExprNode var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            VariableExprNode var;
+            if (symbolTable.actualStruct != null) {
+                var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                var = new VariableExprNode(id);
+            }
             primario = var;
             accesoVarPrima(var);
 
         } else if (onFirst(actualToken, first("llamada_metodo'"))){
             primario = llamadaMetodoPrima(id);
         } else if (followPrimarioPrimaPrima.contains(actualToken.getType())){
-            primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            if(symbolTable.actualStruct != null){
+                primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            }
+            else {
+                primario = new VariableExprNode(id, "start", null);
+            }
+
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }
@@ -1590,7 +1599,7 @@ public class Parser {
             metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         }
         else {
-            metodo = new MetodoExprNode(id);
+            metodo = new MetodoExprNode(id, "start", null);
         }
 
         List<ExpresionNode> args =  argumentosActuales();
@@ -1609,7 +1618,7 @@ public class Parser {
             return new LlamadaMetodoEstaticoNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), token.getLexeme(), met, enc);
         }
         else {
-            return new LlamadaMetodoEstaticoNode(token, token.getLexeme(), met, enc);
+            return new LlamadaMetodoEstaticoNode(token, "start", null, token.getLexeme(), met, enc);
         }
 
     }
@@ -1625,7 +1634,12 @@ public class Parser {
             Token idStruct = match(TokenType.STRUCTID);
             List<ExpresionNode> args = argumentosActuales();
             VarMetEncNode enc = N12Prima();
-            llamada = new LlamadaConstructor(token,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), idStruct.getLexeme(), args, enc);
+            if(symbolTable.actualStruct != null){
+                llamada = new LlamadaConstructor(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), idStruct.getLexeme(), args, enc);
+            }
+            else {
+                llamada = new LlamadaConstructor(token, "start", null, idStruct.getLexeme(), args, enc);
+            }
 
         } else if (onFirst(actualToken, first("tipo_primitivo"))){ // Declaración de arreglo
             String type = tipoPrimitivo();

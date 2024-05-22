@@ -11,4 +11,8 @@ public abstract class VarMetEncNode extends PrimarioNode{
     public VarMetEncNode(Token token, String metodo) {
         super(token, metodo);
     }
+
+    public VarMetEncNode(Token token) {
+        super(token);
+    }
 }

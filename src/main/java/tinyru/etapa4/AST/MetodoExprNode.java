@@ -18,8 +18,8 @@ public class MetodoExprNode extends VarMetEncNode{
         super(token,metodo, struct);
     }
 
-    public MetodoExprNode(Token token, String metodo) {
-        super(token,metodo);
+    public MetodoExprNode(Token token, String struct) {
+        super(token,struct);
     }
 
     public MetodoExprNode(Token token) {

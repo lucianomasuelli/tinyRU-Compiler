@@ -12,6 +12,10 @@ public class VariableExprNode extends VarMetEncNode{
         super(token, metodo, struct);
     }
 
+    public VariableExprNode(Token token){
+        super(token);
+    }
+
     public void setEncadenado(VarMetEncNode encadenado){
         this.encadenado = encadenado;
     }
@@ -31,28 +35,36 @@ public class VariableExprNode extends VarMetEncNode{
         if(structType == null) {
             if (encadenado != null) { //Tiene encadenado
                 // Busca la variable en los atributos del struct
-                if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
-                    type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
+                if(this.struct == null){ // Está en el start
+                    if(st.getStart().fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStart().getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        throw new AttrNotFoundError(token.getLexeme(), null, token.getLine(), token.getColumn());
+                    }
                 } else {
-                    if(this.metodo == "Constructor") {
-                        if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
+                    if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        if(this.metodo == "Constructor") {
+                            if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
                             } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
                             }
                         }
-                    }
-                    else {
-                        if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                        else {
+                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
                             } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
                             }
                         }
                     }
@@ -61,7 +73,7 @@ public class VariableExprNode extends VarMetEncNode{
             } else { // NO tiene encadenado
                 if (this.metodo == null ){ // Está en el start
                     if (!st.getStart().fetchAttribute(token.getLexeme())) {
-                        throw new AttrNotFoundError(token.getLexeme(), null, token.getLine(), token.getColumn());
+                        throw new AttrNotFoundError(token.getLexeme(), "Start", token.getLine(), token.getColumn());
                     } else {
                         type = st.getStart().getAttribute(token.getLexeme()).getType();
                     }

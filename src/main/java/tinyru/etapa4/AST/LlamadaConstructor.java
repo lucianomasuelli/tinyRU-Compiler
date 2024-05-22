@@ -20,6 +20,13 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
         this.idStruct = idStruct;
     }
 
+    public LlamadaConstructor(Token token, String idStruct, List<ExpresionNode> args, VarMetEncNode encadenado){
+        super(token);
+        this.args = args;
+        this.encadenado = encadenado;
+        this.idStruct = idStruct;
+    }
+
 
     @Override
     public String check(SymbolTable st) {
