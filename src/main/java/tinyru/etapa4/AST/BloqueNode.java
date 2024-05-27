@@ -21,6 +21,10 @@ public abstract class BloqueNode{
         }
     }
 
+    public List<SentenciaNode> getSentencias() {
+        return sentencias;
+    }
+
     public String getMethodName() {
         return methodName;
     }

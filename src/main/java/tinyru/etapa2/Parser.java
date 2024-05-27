@@ -668,9 +668,9 @@ public class Parser {
 
         symbolTable.actualStruct.addMethod(name, symbolTable.actualMethod);
 
-        if(bloque != null){
-            childrenBlocks.add(bloque);
-        }
+
+        childrenBlocks.add(bloque);
+
         symbolTable.actualMethod = null;
     }
 
@@ -709,6 +709,13 @@ public class Parser {
             } else { bloqueMetodoNode = new BloqueMetodoNode(sent,"start", "start");}
 
         } else if (actualToken.getLexeme().equals("}")) {
+            if (symbolTable.actualStruct != null){
+                if (symbolTable.getCreatingConstructor()){
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), "constructor");
+                }else {
+                    bloqueMetodoNode = new BloqueMetodoNode(sent,symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                }
+            } else { bloqueMetodoNode = new BloqueMetodoNode(sent,"start", "start");}
             match(TokenType.RBRACE);
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());

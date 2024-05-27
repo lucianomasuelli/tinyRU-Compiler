@@ -19,14 +19,14 @@ public class ASTTest {
             Parser parser = new Parser(lexer);
             ast = parser.analyze();
             SymbolTable table = parser.getSymbolTable();
-            ast.print();
+            //ast.print();
             ast.check(table);
             JSONGenerator jsonGenerator = new JSONGenerator("ast");
-            System.out.println(jsonGenerator.jasonifyAST(ast,table));
+            //System.out.println(jsonGenerator.jasonifyAST(ast,table));
 
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());
-            //e.printStackTrace();
+            e.printStackTrace();
         }
     }
 }

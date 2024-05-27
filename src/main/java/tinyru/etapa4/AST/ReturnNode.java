@@ -28,13 +28,26 @@ public class ReturnNode extends SentenciaNode{
 
     @Override
     public String check(SymbolTable st){
-        String type = exp.check(st);
+        String type;
+        if(exp != null){
+            type = exp.check(st);
+        }
+        else{
+            type = "Nil";
+        }
 
         String methodReturn = st.getStruct(struct).getMethod(metodo).getReturnType();
         if(!methodReturn.equals(type)){
             if(methodReturn.equals("Int") || methodReturn.equals("Char") || methodReturn.equals("Bool") || methodReturn.equals("Str")){
                 if(type.equals("Nil")){
                     throw new ReturnTypeError(type, methodReturn, token.getLine(), token.getColumn());
+                }
+            }
+            else{
+                if(methodReturn.equals("void")){
+                    if(type != "Nil"){
+                        throw new ReturnTypeError(type, methodReturn, token.getLine(), token.getColumn());
+                    }
                 }
             }
         }

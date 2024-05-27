@@ -2,6 +2,7 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa3.Exceptions.SemanticError;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.Exceptions.MissingReturnError;
 
 import java.util.List;
 
@@ -47,7 +48,21 @@ public class AbstractSyntaxTree{
         try {
             if(children != null){
                 for (BloqueNode node : children) {
-                    node.check(st);
+                    if(!node.getSentencias().isEmpty()){
+                        node.check(st);
+                    }
+                    else {
+                        //si no es el constructor
+                        if(!node.getMethodName().equals("constructor")){
+                            if(!node.getStructName().equals("start")){
+                                if(!(st.getStruct(node.getStructName()).getMethod(node.getMethodName()).getReturnType().equals("void"))){
+                                    // Si el metodo no tiene sentencias y no es de tipo void, entonces no tiene return
+                                    throw new MissingReturnError(node.getMethodName(), st.getStruct(node.getStructName()).getMethod(node.getMethodName()).getLine(),
+                                            st.getStruct(node.getStructName()).getMethod(node.getMethodName()).getColumn());
+                                }
+                            }
+                        }
+                    }
                 }
             }
         } catch (SemanticError e) {
