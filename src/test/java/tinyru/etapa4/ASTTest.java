@@ -6,6 +6,7 @@ import tinyru.etapa2.Parser;
 import tinyru.etapa3.JSONGenerator;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.AST.AbstractSyntaxTree;
+import tinyru.etapa5.CodeGenerator;
 
 import java.io.IOException;
 
