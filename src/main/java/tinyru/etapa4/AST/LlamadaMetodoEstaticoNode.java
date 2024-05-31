@@ -2,7 +2,9 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.Exceptions.MethodNotFoundError;
 import tinyru.etapa4.Exceptions.StaticCallError;
+import tinyru.etapa4.Exceptions.StructNotFoundError;
 
 public class LlamadaMetodoEstaticoNode extends PrimarioNode{
     private String idStruct;
@@ -30,9 +32,17 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
 
     @Override
     public String check(SymbolTable st) {
+
+        if(!st.fetchStruct(idStruct)){
+            throw new StructNotFoundError(idStruct, token.getLine(), token.getColumn());
+        }
+        if(!st.getStruct(idStruct).fetchMethod(llamadaMetodo.getName())){
+            throw new MethodNotFoundError(idStruct, llamadaMetodo.getName(), token.getLine(), token.getColumn());
+        }
         if(!st.getStruct(idStruct).getMethod(llamadaMetodo.getName()).getIsStatic()){
             throw new StaticCallError(idStruct, llamadaMetodo.getName(), token.getLine(), token.getColumn());
         }
+
         if(encadenado == null)
             return llamadaMetodo.check(idStruct,st);
         else
