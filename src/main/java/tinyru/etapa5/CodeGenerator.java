@@ -61,18 +61,5 @@ public class CodeGenerator {
         return dataSection.toString() + textSection.toString();
     }
 
-    public static void main(String[] args) {
-        CodeGenerator codeGenerator = new CodeGenerator();
 
-        // Agrega datos a la sección .data
-        codeGenerator.addData("msg", "Hola, mundo\n");
-        codeGenerator.addVariable("x", 5);
-
-        // Genera instrucciones en la sección .text
-        codeGenerator.generatePrintInstruction("msg");
-        codeGenerator.generateExitInstruction();
-
-        // Imprime el código generado
-        System.out.println(codeGenerator.getCode());
-    }
 }

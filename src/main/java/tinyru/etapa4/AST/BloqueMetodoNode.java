@@ -16,21 +16,34 @@ public class BloqueMetodoNode extends  BloqueNode{
 
     @Override
     public void check(SymbolTable st) {
-        String returnType = st.getStruct(structName).getMethod(methodName).getReturnType();
-        boolean ret = false;
-        for (SentenciaNode sentencia : sentencias) {
-            if(!returnType.equals("void")){
-                //verifica si es de tipo ReturnNode
-                if(sentencia instanceof ReturnNode) {
-                    ret = true;
-                }
+        if (structName.equals("start")) {
+            for (SentenciaNode sentencia : sentencias) {
+                sentencia.check(st);
             }
-            sentencia.check(st);
         }
-        if(ret == false && !returnType.equals("void")){
-            int methodLine = st.getStruct(structName).getMethod(methodName).getLine();
-            int methodColumn = st.getStruct(structName).getMethod(methodName).getColumn();
-            throw new MissingReturnError(methodName, methodLine, methodColumn);
+        else{
+            String returnType;
+            if(methodName.equals("constructor")){
+                returnType = "void";
+            }
+            else{
+                returnType = st.getStruct(structName).getMethod(methodName).getReturnType();
+            }
+            boolean ret = false;
+            for (SentenciaNode sentencia : sentencias) {
+                if(!returnType.equals("void")){
+                    //verifica si es de tipo ReturnNode
+                    if(sentencia instanceof ReturnNode) {
+                        ret = true;
+                    }
+                }
+                sentencia.check(st);
+            }
+            if(ret == false && !returnType.equals("void")){
+                int methodLine = st.getStruct(structName).getMethod(methodName).getLine();
+                int methodColumn = st.getStruct(structName).getMethod(methodName).getColumn();
+                throw new MissingReturnError(methodName, methodLine, methodColumn);
+            }
         }
     }
 
