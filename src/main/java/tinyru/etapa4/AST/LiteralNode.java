@@ -24,6 +24,14 @@ public class LiteralNode extends OperandoNode {
         return check(null);
     }
 
+    public Token getToken() {
+        return token;
+    }
+
+    public String getLiteral() {
+        return token.getLexeme();
+    }
+
     @Override
     public String check(SymbolTable st){
         String type = null;

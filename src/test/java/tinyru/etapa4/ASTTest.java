@@ -24,6 +24,9 @@ public class ASTTest {
             ast.check(table);
             JSONGenerator jsonGenerator = new JSONGenerator("ast");
             //System.out.println(jsonGenerator.jasonifyAST(ast,table));
+            CodeGenerator codeGenerator = new CodeGenerator(ast);
+            codeGenerator.generateCode();
+            System.out.println(codeGenerator.getCode());
 
         } catch (IOException | RuntimeException e) {
             System.out.println(e.getMessage());

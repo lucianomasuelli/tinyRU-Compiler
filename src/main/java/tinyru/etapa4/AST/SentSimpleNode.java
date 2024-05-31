@@ -26,4 +26,8 @@ public class SentSimpleNode extends SentenciaNode {
         json += "}\n";
         return json;
     }
+
+    public ExpresionNode getExpresion() {
+        return expresion;
+    }
 }

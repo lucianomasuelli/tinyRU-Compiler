@@ -41,6 +41,11 @@ public class MetodoExprNode extends VarMetEncNode{
         return token.getLexeme();
     }
 
+    public List<ExpresionNode> getArgActuales() {
+        return argActuales;
+    }
+
+
 
     public void addArgActual(ExpresionNode argActual) {
         this.argActuales.add(argActual);
@@ -99,4 +104,5 @@ public class MetodoExprNode extends VarMetEncNode{
         }
         return json;
     }
+
 }

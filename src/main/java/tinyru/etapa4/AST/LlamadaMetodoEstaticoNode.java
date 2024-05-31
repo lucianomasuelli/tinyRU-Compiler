@@ -59,4 +59,13 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
         }
         return json;
     }
+
+    public VarMetEncNode getEncadenado() {
+        return encadenado;
+    }
+
+    public MetodoExprNode getMetodo() {
+        return llamadaMetodo;
+    }
+
 }

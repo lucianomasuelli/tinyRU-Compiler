@@ -2,7 +2,9 @@ package tinyru.etapa5;
 import tinyru.etapa4.AST.AbstractSyntaxTree;
 import tinyru.etapa4.AST.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CodeGenerator {
@@ -26,9 +28,21 @@ public class CodeGenerator {
     public void generateCode() {
         for (BloqueNode node : ast.getRoot()) {
             for(SentenciaNode sentencia : node.getSentencias()){
-
+                if(sentencia instanceof SentSimpleNode sentSimple){
+                    if(sentSimple.getExpresion() instanceof LlamadaMetodoEstaticoNode llamadaMetodoEstatico){
+                        if(llamadaMetodoEstatico.getEncadenado() == null){
+                            List<ExpresionNode> args = llamadaMetodoEstatico.getMetodo().getArgActuales();
+                            if(args.getFirst() instanceof LiteralNode literalNode) {
+                                String data = literalNode.getLiteral();
+                                addData("msg", data);
+                                generatePrintInstruction("msg");
+                            }
+                        }
+                    }
+                }
             }
         }
+        generateExitInstruction();
     }
 
 
