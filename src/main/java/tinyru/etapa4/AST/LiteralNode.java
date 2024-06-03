@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public class LiteralNode extends OperandoNode {
     Token token;
@@ -63,5 +64,10 @@ public class LiteralNode extends OperandoNode {
         json += "}\n";
         json += "}\n";
         return json;
+    }
+
+    @Override
+    public String generateCode() {
+        return getLiteral();
     }
 }

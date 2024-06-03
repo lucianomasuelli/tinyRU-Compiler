@@ -60,6 +60,14 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
         return json;
     }
 
+    @Override
+    public String generateCode() {
+        if(encadenado == null)
+            return llamadaMetodo.generateCode();
+        else
+            return llamadaMetodo.generateCode() + encadenado.generateCode();
+    }
+
     public VarMetEncNode getEncadenado() {
         return encadenado;
     }

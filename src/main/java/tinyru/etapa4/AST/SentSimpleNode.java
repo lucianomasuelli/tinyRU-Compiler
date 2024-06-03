@@ -27,6 +27,11 @@ public class SentSimpleNode extends SentenciaNode {
         return json;
     }
 
+    @Override
+    public String generateCode() {
+        return expresion.generateCode();
+    }
+
     public ExpresionNode getExpresion() {
         return expresion;
     }

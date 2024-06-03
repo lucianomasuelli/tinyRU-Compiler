@@ -35,4 +35,12 @@ public abstract class BloqueNode{
     public abstract String jsonify();
 
     public abstract void check(SymbolTable st);
+
+    public String generateCode() {
+        String code = "";
+        for (SentenciaNode sentencia : sentencias) {
+            code = sentencia.generateCode();
+        }
+        return code;
+    }
 }

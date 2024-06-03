@@ -11,4 +11,5 @@ public abstract class SentenciaNode{
 
     public abstract String jsonify();
 
+    public abstract String generateCode();
 }

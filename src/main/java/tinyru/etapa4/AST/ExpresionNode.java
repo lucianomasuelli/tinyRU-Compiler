@@ -23,4 +23,5 @@ public abstract class ExpresionNode{
 
     public String jsonify(){return "";}
 
+    public abstract String generateCode();
 }

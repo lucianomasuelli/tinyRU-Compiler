@@ -11,13 +11,11 @@ public class CodeGenerator {
     private StringBuilder dataSection;
     private StringBuilder textSection;
     private Set<String> dataLabels;
-    private AbstractSyntaxTree ast;
 
-    public CodeGenerator(AbstractSyntaxTree ast) {
+    public CodeGenerator() {
         this.dataSection = new StringBuilder();
         this.textSection = new StringBuilder();
         this.dataLabels = new HashSet<>();
-        this.ast = ast;
 
         // Inicia las secciones
         this.dataSection.append(".data\n");
@@ -26,24 +24,26 @@ public class CodeGenerator {
 
 
     public void generateCode() {
-        for (BloqueNode node : ast.getRoot()) {
-            for(SentenciaNode sentencia : node.getSentencias()){
-                if(sentencia instanceof SentSimpleNode sentSimple){
-                    if(sentSimple.getExpresion() instanceof LlamadaMetodoEstaticoNode llamadaMetodoEstatico){
-                        if(llamadaMetodoEstatico.getEncadenado() == null){
-                            List<ExpresionNode> args = llamadaMetodoEstatico.getMetodo().getArgActuales();
-                            if(args.getFirst() instanceof LiteralNode literalNode) {
-                                String data = literalNode.getLiteral();
-                                addData("msg", data);
-                                generatePrintInstruction("msg");
-                            }
-                        }
-                    }
-                }
-            }
-        }
+//        for (BloqueNode node : ast.getRoot()) {
+//            for(SentenciaNode sentencia : node.getSentencias()){
+//                if(sentencia instanceof SentSimpleNode sentSimple){
+//                    if(sentSimple.getExpresion() instanceof LlamadaMetodoEstaticoNode llamadaMetodoEstatico){
+//                        if(llamadaMetodoEstatico.getEncadenado() == null){
+//                            List<ExpresionNode> args = llamadaMetodoEstatico.getMetodo().getArgActuales();
+//                            if(args.getFirst() instanceof LiteralNode literalNode) {
+//                                String data = literalNode.getLiteral();
+//                                addData("msg", data);
+//                                generatePrintInstruction("msg");
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
         generateExitInstruction();
     }
+
+
 
 
     public void addData(String label, String data) {

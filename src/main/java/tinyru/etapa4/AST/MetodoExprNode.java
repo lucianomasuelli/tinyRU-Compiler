@@ -105,4 +105,9 @@ public class MetodoExprNode extends VarMetEncNode{
         return json;
     }
 
+    @Override
+    public String generateCode() {
+
+    }
+
 }

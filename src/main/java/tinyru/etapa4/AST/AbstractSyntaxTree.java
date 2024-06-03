@@ -70,4 +70,12 @@ public class AbstractSyntaxTree{
         }
     }
 
+    public String generateCode(){
+        String code = "";
+        for (BloqueNode node : children) {
+            code = node.generateCode();
+        }
+        return code;
+    }
+
 }
