@@ -67,7 +67,7 @@ public class LiteralNode extends OperandoNode {
     }
 
     @Override
-    public String generateCode() {
-        return getLiteral();
+    public void generateCode(CodeGenerator cg) {
+        cg.loadImmediateValueToRegister("t0", token.getLexeme());
     }
 }

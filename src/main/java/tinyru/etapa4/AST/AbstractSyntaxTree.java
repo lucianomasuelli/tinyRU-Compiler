@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa3.Exceptions.SemanticError;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.MissingReturnError;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.List;
 
@@ -70,10 +71,10 @@ public class AbstractSyntaxTree{
         }
     }
 
-    public String generateCode(){
+    public String generateCode(CodeGenerator cg){
         String code = "";
         for (BloqueNode node : children) {
-            code = node.generateCode();
+            code = node.generateCode(cg);
         }
         return code;
     }

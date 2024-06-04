@@ -6,6 +6,7 @@ import tinyru.etapa3.ParamInput;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.ArgsMismatchError;
 import tinyru.etapa4.Exceptions.WrongArgTypeError;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.Hashtable;
 import java.util.List;
@@ -106,8 +107,29 @@ public class MetodoExprNode extends VarMetEncNode{
     }
 
     @Override
-    public String generateCode() {
+    public String generateCode(CodeGenerator cd) {
 
+        String code = "sw $fp 0($sp) \n" +
+                "addiu $sp $sp -4\n";
+        /*# Llamado a aObj.sum()
+	# Guardamos el valor del fp actual en stack
+	sw $fp 0($sp)
+	addiu $sp $sp -4
+
+	# Guardamos argumentos
+	# No tiene xd
+
+	# Guardamos CIR de self (aObj)
+	la $t0, start_locvar_aObj # Cargamos el CIR de aObj
+	sw $t0 0($sp)
+	addiu $sp $sp -4
+
+	# Hacemos jump a la definición del método
+	la $t0, start_locvar_aObj # Cargamos el CIR de aObj
+	la $t0, 0($t0) # Cargamos VTable de A
+	la $t0, 0($t0) # Cargamos sum() según su índice dentro de A
+	jalr $t0*/
+        return ""; //TODO
     }
 
 }

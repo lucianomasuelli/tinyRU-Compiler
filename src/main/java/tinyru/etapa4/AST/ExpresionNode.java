@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public abstract class ExpresionNode{
     private String type;
@@ -23,5 +24,5 @@ public abstract class ExpresionNode{
 
     public String jsonify(){return "";}
 
-    public abstract String generateCode();
+    public abstract void generateCode(CodeGenerator cg);
 }

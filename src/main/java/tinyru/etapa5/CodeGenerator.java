@@ -1,21 +1,24 @@
 package tinyru.etapa5;
-import tinyru.etapa4.AST.AbstractSyntaxTree;
-import tinyru.etapa4.AST.*;
 
-import java.util.ArrayList;
+import tinyru.etapa3.StructInput;
+import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.AST.AbstractSyntaxTree;
+import tinyru.etapa4.AST.BloqueNode;
+
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class CodeGenerator {
     private StringBuilder dataSection;
     private StringBuilder textSection;
     private Set<String> dataLabels;
+    private Integer stackOffset;
 
     public CodeGenerator() {
         this.dataSection = new StringBuilder();
         this.textSection = new StringBuilder();
         this.dataLabels = new HashSet<>();
+        this.stackOffset = 0;
 
         // Inicia las secciones
         this.dataSection.append(".data\n");
@@ -43,7 +46,9 @@ public class CodeGenerator {
         generateExitInstruction();
     }
 
-
+    public Integer getStackOffset() {
+        return stackOffset;
+    }
 
 
     public void addData(String label, String data) {
@@ -75,5 +80,51 @@ public class CodeGenerator {
         return dataSection.toString() + textSection.toString();
     }
 
+    public void genAsigCode(String varCode, String exprCode){
+        textSection.append(varCode);
+        textSection.append(exprCode);
+    }
+
+    public int allocateStackSpace() {
+        textSection.append("addi $sp, $sp, -4\n"); // Decrementar el puntero de pila
+        textSection.append("sw $ra, ").append(stackOffset).append("($sp)\n");  // Guardar la dirección de retorno en el offset correcto
+        int currentOffset = stackOffset;
+        stackOffset += 4;
+        return currentOffset;
+    }
+
+    public void deallocateStackSpace() {
+        stackOffset -= 4;
+        textSection.append("lw $ra, ").append(stackOffset).append("($sp)\n"); // Cargar la dirección de retorno desde el offset correcto
+        textSection.append("addi $sp, $sp, 4\n"); // Incrementar el puntero de pila
+    }
+
+    public void loadImmediateValueToRegister(String register, String label) {
+        textSection.append("li ").append(register).append(", ").append(label).append("\n");
+    }
+
+    public void storeValueToStack(String register, int offset) {
+        textSection.append("sw ").append(register).append(", ").append(offset).append("($sp)\n");
+    }
+
+    public void addMethodLabels(SymbolTable st) {
+        for (String struct : st.getStructTable().keySet()) {
+            dataSection.append(struct).append("_vt").append(":\n");
+            StructInput s = st.getStructTable().get(struct);
+            for (String method : s.getMethodTable().keySet()) {
+                dataSection.append(".word ").append(struct).append("_").append(method).append("\n");
+                textSection.append(struct).append("_").append(method).append(":\n");
+            }
+            textSection.append(struct).append("_").append("constructor").append(":\n");
+        }
+        textSection.append("start_start:\n");
+    }
+
+    public void generateMethodDef(String struct, String method) {
+        textSection.append(struct).append("_").append(method).append(":\n");
+        textSection.append("move $fp, $sp\n");
+        textSection.append("sw $ra, 0($sp)\n");
+        textSection.append("addi $sp, $sp, -4\n");
+    }
 
 }

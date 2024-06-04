@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.TypeAssignError;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.Objects;
 
@@ -52,5 +53,13 @@ public class AsigNode extends SentenciaNode {
         json += "}\n";
         json += "}\n";
         return json;
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        int offset = variable.generateCode(cg);
+        expr.generateCode(cg);
+        cg.storeValueToStack("t0", offset);
+        cg.deallocateStackSpace();
     }
 }

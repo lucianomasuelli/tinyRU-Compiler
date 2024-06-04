@@ -1,9 +1,7 @@
 package tinyru.etapa4.AST;
 
-import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
-
-import java.util.Stack;
+import tinyru.etapa5.CodeGenerator;
 
 public abstract class EncadenadoNode{
 
@@ -12,5 +10,7 @@ public abstract class EncadenadoNode{
     public abstract String getType();
 
     public abstract String jsonify();
+
+    public abstract int generateCode(CodeGenerator cg);
 
 }

@@ -1,8 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
-import tinyru.etapa1.TokenType;
-import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public class AccVarSimpleNode extends AccesoVarNode {
 
@@ -22,5 +21,10 @@ public class AccVarSimpleNode extends AccesoVarNode {
         json += "}\n";
         json += "}\n";
         return json;
+    }
+
+    @Override
+    public int generateCode(CodeGenerator cg) {
+        return cg.allocateStackSpace();
     }
 }

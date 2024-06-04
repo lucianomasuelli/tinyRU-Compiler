@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public abstract class SentenciaNode{
 
@@ -11,5 +12,5 @@ public abstract class SentenciaNode{
 
     public abstract String jsonify();
 
-    public abstract String generateCode();
+    public abstract void generateCode(CodeGenerator cg);
 }

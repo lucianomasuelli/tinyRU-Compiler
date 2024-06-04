@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.List;
 
@@ -36,10 +37,10 @@ public abstract class BloqueNode{
 
     public abstract void check(SymbolTable st);
 
-    public String generateCode() {
+    public String generateCode(CodeGenerator cg) {
         String code = "";
         for (SentenciaNode sentencia : sentencias) {
-            code = sentencia.generateCode();
+            code = sentencia.generateCode(cg);
         }
         return code;
     }
