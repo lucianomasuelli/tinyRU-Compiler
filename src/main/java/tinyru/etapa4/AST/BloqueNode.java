@@ -39,6 +39,7 @@ public abstract class BloqueNode{
 
     public String generateCode(CodeGenerator cg) {
         String code = "";
+
         for (SentenciaNode sentencia : sentencias) {
             code = sentencia.generateCode(cg);
         }
