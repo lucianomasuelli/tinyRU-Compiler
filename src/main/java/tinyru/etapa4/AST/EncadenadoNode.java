@@ -11,6 +11,6 @@ public abstract class EncadenadoNode{
 
     public abstract String jsonify();
 
-    public abstract int generateCode(CodeGenerator cg);
+    public abstract void generateCode(CodeGenerator cg);
 
 }

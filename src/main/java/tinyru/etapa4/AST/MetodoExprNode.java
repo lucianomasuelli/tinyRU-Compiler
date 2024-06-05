@@ -2,13 +2,11 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
 import tinyru.etapa3.MethodInput;
-import tinyru.etapa3.ParamInput;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.ArgsMismatchError;
 import tinyru.etapa4.Exceptions.WrongArgTypeError;
 import tinyru.etapa5.CodeGenerator;
 
-import java.util.Hashtable;
 import java.util.List;
 
 public class MetodoExprNode extends VarMetEncNode{
@@ -108,20 +106,33 @@ public class MetodoExprNode extends VarMetEncNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
+        generateCode(cg, struct);
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg, String structCaller) {
+        // Llamado a un método
+        cg.getTextSection().append("# Llamado a ").append(token.getLexeme()).append("()\n");
         int numArgs = argActuales.size();
         // Pushea el frame pointer a la pila.
         cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
         cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
         // Guardamos argumentos en orden inverso
+        cg.getTextSection().append("# Guarda argumentos\n");
         for (int i = argActuales.size() - 1; i >= 0; i--) {
             argActuales.get(i).generateCode(cg); //TODO: ver que se genere bien este código
+            //Se espera que el resultado de la expresión esté en $a0
             cg.getTextSection().append("sw $a0 0($sp)\n"); // Guardamos el valor de la expresión en la pila
             cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
         }
 
+        //TODO: acá creo que se debería guardar el CIR de self
+
         // Llamamos a la función
-        cg.getTextSection().append("jal ").append(struct).append("_").append(token.getLexeme()).append("\n");
+        cg.getTextSection().append("# Jump a la definición del método\n");
+
+        cg.getTextSection().append("jal ").append(structCaller).append("_").append(token.getLexeme()).append("\n");
 
         cg.getTextSection().append("addiu $sp, $sp, ").append(4 * numArgs).append("\n"); // Incrementamos el puntero de pila
 

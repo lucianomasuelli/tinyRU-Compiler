@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.AttrNotFoundError;
+import tinyru.etapa5.CodeGenerator;
 
 public class VariableExprNode extends VarMetEncNode{
     private VarMetEncNode encadenado;
@@ -129,5 +130,39 @@ public class VariableExprNode extends VarMetEncNode{
     @Override
     public String check(SymbolTable st) {
         return check(null, st);
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg, String structCaller) {
+        if(encadenado != null){
+            encadenado.generateCode(cg, structCaller);
+        }
+        else {
+            //TODO
+        }
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        String type;
+        if(struct == null){
+            struct = "start";
+            type = cg.getSt().getStart().getAttribute(token.getLexeme()).getType();
+        }
+        else {
+            if(metodo == "Constructor"){
+                type = cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getType();
+            }
+            else {
+                type = cg.getSt().getStruct(struct).getMethod(metodo).getLocalVar(token.getLexeme()).getType();
+            }
+
+        }
+        if(encadenado != null){
+            encadenado.generateCode(cg, type);
+        }
+        else {
+            //TODO
+        }
     }
 }

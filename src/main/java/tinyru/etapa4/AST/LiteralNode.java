@@ -68,6 +68,9 @@ public class LiteralNode extends OperandoNode {
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        cg.loadImmediateValueToRegister("t0", token.getLexeme());
+        if(token.getType() == TokenType.NUM) {
+            cg.getTextSection().append("li $a0, ").append(token.getLexeme()).append("\n");
+        }
+        //TODO: ver para otros casos
     }
 }

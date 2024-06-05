@@ -13,22 +13,27 @@ public class CodeGenerator {
     private StringBuilder textSection;
     private Set<String> dataLabels;
     private Integer stackOffset;
+    private SymbolTable st;
 
-    public CodeGenerator() {
+    public CodeGenerator(SymbolTable st) {
         this.dataSection = new StringBuilder();
         this.textSection = new StringBuilder();
         this.dataLabels = new HashSet<>();
         this.stackOffset = 0;
+        this.st = st;
 
         // Inicia las secciones
         this.dataSection.append(".data\n");
-        this.textSection.append(".text\n.globl main\nmain:\n");
+        this.textSection.append(".text\n");
     }
 
     public StringBuilder getTextSection() {
         return textSection;
     }
 
+    public SymbolTable getSt() {
+        return st;
+    }
 
     public void generateCode() {
 //        for (BloqueNode node : ast.getRoot()) {

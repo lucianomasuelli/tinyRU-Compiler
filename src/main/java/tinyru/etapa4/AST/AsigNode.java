@@ -57,9 +57,10 @@ public class AsigNode extends SentenciaNode {
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        int offset = variable.generateCode(cg);
-        expr.generateCode(cg);
-        cg.storeValueToStack("t0", offset);
-        cg.deallocateStackSpace();
+        //TODO
+//        int offset = variable.generateCode(cg);
+//        expr.generateCode(cg);
+//        cg.storeValueToStack("t0", offset);
+//        cg.deallocateStackSpace();
     }
 }

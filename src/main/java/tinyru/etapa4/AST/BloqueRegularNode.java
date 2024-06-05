@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.List;
 
@@ -38,5 +39,10 @@ public class BloqueRegularNode extends SentenciaNode{
         json += "}\n";
         json += "}\n";
         return json;
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        //TODO
     }
 }

@@ -71,12 +71,12 @@ public class AbstractSyntaxTree{
         }
     }
 
-    public String generateCode(CodeGenerator cg){
-        String code = "";
+    public void generateCode(CodeGenerator cg){
         for (BloqueNode node : children) {
-            code = node.generateCode(cg);
+            if(!node.getSentencias().isEmpty()){
+                node.generateCode(cg);
+            }
         }
-        return code;
     }
 
 }

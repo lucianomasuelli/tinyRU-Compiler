@@ -5,6 +5,7 @@ import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.ArgsMismatchError;
 import tinyru.etapa4.Exceptions.StructNotFoundError;
 import tinyru.etapa4.Exceptions.WrongArgTypeError;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.List;
 
@@ -79,5 +80,10 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
         }
         json += "}";
         return json;
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+
     }
 }

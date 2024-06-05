@@ -2,6 +2,7 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public class SelfExprNode extends PrimarioNode{
 
@@ -24,5 +25,10 @@ public class SelfExprNode extends PrimarioNode{
         }else {
             return struct;
         }
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        //TODO
     }
 }

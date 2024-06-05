@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public class SentSimpleNode extends SentenciaNode {
     private ExpresionNode expresion;
@@ -28,8 +29,8 @@ public class SentSimpleNode extends SentenciaNode {
     }
 
     @Override
-    public String generateCode() {
-        return expresion.generateCode();
+    public void generateCode(CodeGenerator cg) {
+        expresion.generateCode(cg);
     }
 
     public ExpresionNode getExpresion() {

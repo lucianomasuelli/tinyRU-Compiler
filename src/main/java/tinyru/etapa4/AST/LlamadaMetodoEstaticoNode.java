@@ -5,6 +5,7 @@ import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.MethodNotFoundError;
 import tinyru.etapa4.Exceptions.StaticCallError;
 import tinyru.etapa4.Exceptions.StructNotFoundError;
+import tinyru.etapa5.CodeGenerator;
 
 public class LlamadaMetodoEstaticoNode extends PrimarioNode{
     private String idStruct;
@@ -61,11 +62,13 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
     }
 
     @Override
-    public String generateCode() {
+    public void generateCode(CodeGenerator cg) {
         if(encadenado == null)
-            return llamadaMetodo.generateCode();
-        else
-            return llamadaMetodo.generateCode() + encadenado.generateCode();
+            llamadaMetodo.generateCode(cg);
+        else {
+            llamadaMetodo.generateCode(cg);
+            encadenado.generateCode(cg);
+        }
     }
 
     public VarMetEncNode getEncadenado() {

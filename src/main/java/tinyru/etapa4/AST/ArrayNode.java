@@ -4,6 +4,7 @@ import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.ArraySizeError;
 import tinyru.etapa4.Exceptions.TypeDefinitionError;
+import tinyru.etapa5.CodeGenerator;
 
 public class ArrayNode extends LlamadaConstructorNode{
     private String primitiveType;
@@ -45,5 +46,10 @@ public class ArrayNode extends LlamadaConstructorNode{
     @Override
     public String jsonify(){
         return "{\"Array\": {\"nombre\": " + token.getLexeme() + ", \"metodo\": \"" + metodo + "\", \"struct\": \"" + struct + "\", \"primitiveType\": \"" + primitiveType + "\", \"size\": " + size.jsonify() + "}}";
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        //TODO
     }
 }

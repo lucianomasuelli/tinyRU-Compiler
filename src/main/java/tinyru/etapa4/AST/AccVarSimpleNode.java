@@ -24,7 +24,7 @@ public class AccVarSimpleNode extends AccesoVarNode {
     }
 
     @Override
-    public int generateCode(CodeGenerator cg) {
-        return cg.allocateStackSpace();
+    public void generateCode(CodeGenerator cg) {
+        cg.allocateStackSpace();
     }
 }

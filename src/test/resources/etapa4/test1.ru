@@ -1,24 +1,16 @@
-/? Asignación de tipo incorrecto accediendo a un método de una clase desde un objeto.
 
-struct A{
-}
-impl A{
+struct A{}
+
+impl A {
     .(){}
-    fn metodo1 (Str f) -> Str {
-        ret f;
-    }
-
-    fn m2 () -> void {
+    fn met1(Int a, Int b) -> Int {
+        ret a + b;
     }
 }
 
-struct B:A {
-    Int j;
+start {
+    A a;
+    Int res;
+    a = new A();
+    (a.met1(1, 2));
 }
-
-impl B{
-    .(){}
-    fn m1 (Str f, Int j) -> Int { ret 1;}
-}
-
-start {}

@@ -2,6 +2,7 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa5.CodeGenerator;
 
 public class ExpresionParentizadaNode extends PrimarioNode{
 
@@ -40,6 +41,11 @@ public class ExpresionParentizadaNode extends PrimarioNode{
                 "\"tipo\": \"ExpresionParentizada\",\n" +
                 "\"expresion\": " + expresion.jsonify() + "\n" +
                 "}";
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        expresion.generateCode(cg);
     }
 
 }

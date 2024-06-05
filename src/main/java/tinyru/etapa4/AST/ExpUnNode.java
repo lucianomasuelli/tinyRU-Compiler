@@ -4,6 +4,7 @@ import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
+import tinyru.etapa5.CodeGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,5 +62,10 @@ public class ExpUnNode extends ExpresionNode{
         json += "}\n";
         json += "}\n";
         return json;
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg) {
+        //TODO
     }
 }
