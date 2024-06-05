@@ -107,10 +107,25 @@ public class MetodoExprNode extends VarMetEncNode{
     }
 
     @Override
-    public String generateCode(CodeGenerator cd) {
+    public void generateCode(CodeGenerator cg) {
+        int numArgs = argActuales.size();
+        // Pushea el frame pointer a la pila.
+        cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
+        cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
-        String code = "sw $fp 0($sp) \n" +
-                "addiu $sp $sp -4\n";
+        // Guardamos argumentos en orden inverso
+        for (int i = argActuales.size() - 1; i >= 0; i--) {
+            argActuales.get(i).generateCode(cg); //TODO: ver que se genere bien este código
+            cg.getTextSection().append("sw $a0 0($sp)\n"); // Guardamos el valor de la expresión en la pila
+            cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
+        }
+
+        // Llamamos a la función
+        cg.getTextSection().append("jal ").append(struct).append("_").append(token.getLexeme()).append("\n");
+
+        cg.getTextSection().append("addiu $sp, $sp, ").append(4 * numArgs).append("\n"); // Incrementamos el puntero de pila
+
+
         /*# Llamado a aObj.sum()
 	# Guardamos el valor del fp actual en stack
 	sw $fp 0($sp)
@@ -129,7 +144,6 @@ public class MetodoExprNode extends VarMetEncNode{
 	la $t0, 0($t0) # Cargamos VTable de A
 	la $t0, 0($t0) # Cargamos sum() según su índice dentro de A
 	jalr $t0*/
-        return ""; //TODO
     }
 
 }

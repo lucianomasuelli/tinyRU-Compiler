@@ -25,6 +25,10 @@ public class CodeGenerator {
         this.textSection.append(".text\n.globl main\nmain:\n");
     }
 
+    public StringBuilder getTextSection() {
+        return textSection;
+    }
+
 
     public void generateCode() {
 //        for (BloqueNode node : ast.getRoot()) {
