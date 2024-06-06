@@ -14,6 +14,7 @@ public class CodeGenerator {
     private Set<String> dataLabels;
     private Integer stackOffset;
     private SymbolTable st;
+    private Integer ifCounter = 0;
 
     public CodeGenerator(SymbolTable st) {
         this.dataSection = new StringBuilder();
@@ -24,15 +25,25 @@ public class CodeGenerator {
 
         // Inicia las secciones
         this.dataSection.append(".data\n");
-        this.textSection.append(".text\n");
+        this.textSection.append(".text\n.globl main\n.globl _start\n");
+        this.textSection.append("_start:\njal main\n");
     }
 
     public StringBuilder getTextSection() {
         return textSection;
     }
 
+
     public SymbolTable getSt() {
         return st;
+    }
+
+    public void increaseIfCounter() {
+        ifCounter++;
+    }
+
+    public Integer getIfCounter() {
+        return ifCounter;
     }
 
     public void generateCode() {

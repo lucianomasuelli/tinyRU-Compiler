@@ -66,6 +66,32 @@ public class IfNode extends SentenciaNode {
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        cg.increaseIfCounter();
+        String ifLabel = "if_" + cg.getIfCounter();
+        String elseLabel = "else_" + cg.getIfCounter();
+        String endLabel = "end_if_" + cg.getIfCounter();
+
+        // Generar código para la condición
+        condicional.generateCode(cg);
+
+        // Saltar a la etiqueta "else" si la condición es falsa
+        cg.getTextSection().append("beqz $a0, ").append(elseLabel).append("\n");
+
+        // Generar código para el cuerpo del if
+        cuerpo.generateCode(cg);
+
+        // Saltar a la etiqueta "endIf" después de ejecutar el cuerpo del if
+        cg.getTextSection().append("j ").append(endLabel).append("\n");
+
+        // Colocar la etiqueta "else" antes del cuerpo del else
+        cg.getTextSection().append(elseLabel).append(":\n");
+
+        // Generar código para el cuerpo del else, si existe
+        if (sentElse != null) {
+            sentElse.generateCode(cg);
+        }
+
+        // Colocar la etiqueta "endIf" después del cuerpo del else
+        cg.getTextSection().append(endLabel).append(":\n");
     }
 }

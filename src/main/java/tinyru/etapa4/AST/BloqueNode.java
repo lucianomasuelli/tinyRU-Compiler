@@ -39,13 +39,13 @@ public abstract class BloqueNode{
 
     public void generateCode(CodeGenerator cg) {
         if(structName.equals("start")) {
-            cg.getTextSection().append(".text\n.globl main\nmain:\n");
+            cg.getTextSection().append("main:\n");
             // Genera el código de las sentencias
             for (SentenciaNode sentencia : sentencias) {
                 sentencia.generateCode(cg);
             }
         }
-        else{ // Genera el código de un método
+        else{ // Genera el código del bloque de un método
             cg.getTextSection().append(structName).append("_").append(methodName).append(":\n");
             cg.getTextSection().append("move $fp, $sp\n");  // Guarda el frame pointer
             cg.getTextSection().append("sw $ra, 0($sp)\n");  // Guarda el return address
@@ -57,7 +57,7 @@ public abstract class BloqueNode{
             }
 
             cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
-            cg.getTextSection().append("addiu $sp, $sp, 8\n");  // En el video mueve Z = 4*n+8 con n la cantidad de argumentos
+            cg.getTextSection().append("addiu $sp, $sp, 4\n");  // En el video mueve Z = 4*n+8 con n la cantidad de argumentos
             cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
             cg.getTextSection().append("jr $ra\n");  // Salta a la dirección de retorno
         }
