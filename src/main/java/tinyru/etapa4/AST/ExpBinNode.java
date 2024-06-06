@@ -79,7 +79,18 @@ public class ExpBinNode extends ExpresionNode {
         switch(op.getType()) {
             case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
             case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
+            case PROD -> cg.getTextSection().append("mul $a0, Sa0, St1\n");
+            //No se que onda la division tiene que romperse cuando es 0
+            case DIV -> cg.getTextSection().append("");
+            case MOD ->cg.getTextSection().append("");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
+            case DIF -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("not $a0, $a0\n");
+            case AND -> cg.getTextSection().append("and $a0, $a0, $t1\n");
+            case OR -> cg.getTextSection().append("or $a0, $a0, $t1\n");
+            case MAYOR -> cg.getTextSection().append("slt $a0, $a0, $t1\n");
+            case MAYORIGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("slt $t1, $a0, $t1\n").append("or $a0, $a0, $t1\n");
+            case MENOR -> cg.getTextSection().append("slt $a0, $t1, $a0\n");
+            case MENORIGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("slt $t1, $t1, $a0\n").append("or $a0, $a0, $t1\n");
         }
     }
 }
