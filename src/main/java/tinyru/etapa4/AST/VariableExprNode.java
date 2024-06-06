@@ -97,19 +97,7 @@ public class VariableExprNode extends VarMetEncNode{
 
                     }
                     else {
-                        //Reviso primero en las variables del metodo, luego los parametros y finalmente en el struct
-                        if (st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                            type = st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType();
-                        } else {
-                            if (st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                                type = st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType();
-                            } else {
-                                if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
-                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
-                                }
-                                type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
-                            }
-                        }
+                        type = getVarType(st);
                     }
                 }
             }
@@ -122,6 +110,24 @@ public class VariableExprNode extends VarMetEncNode{
                 type = encadenado.check(st.getStructTable().get(structType).getAttribute(token.getLexeme()).getType(), st);
             }else {
                 type = st.getStructTable().get(structType).getAttribute(token.getLexeme()).getType();
+            }
+        }
+        return type;
+    }
+
+    public String getVarType(SymbolTable st) {
+        String type = null;
+        //Reviso primero en las variables del metodo, luego los parametros y finalmente en el struct
+        if (st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+            type = st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType();
+        } else {
+            if (st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                type = st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType();
+            } else {
+                if (!st.getStructTable().get(this.struct).fetchAttribute(token.getLexeme())) {
+                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                }
+                type = st.getStructTable().get(this.struct).getAttribute(token.getLexeme()).getType();
             }
         }
         return type;
@@ -154,7 +160,7 @@ public class VariableExprNode extends VarMetEncNode{
                 type = cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getType();
             }
             else {
-                type = cg.getSt().getStruct(struct).getMethod(metodo).getLocalVar(token.getLexeme()).getType();
+                type = getVarType(cg.getSt());
             }
 
         }

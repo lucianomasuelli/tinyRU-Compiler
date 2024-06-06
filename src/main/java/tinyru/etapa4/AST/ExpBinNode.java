@@ -71,6 +71,15 @@ public class ExpBinNode extends ExpresionNode {
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        expLeft.generateCode(cg);
+        cg.getTextSection().append("sw $a0, 0($sp)\n");
+        cg.getTextSection().append("addiu $sp, $sp, -4\n");
+        expRight.generateCode(cg);
+        cg.getTextSection().append("lw $t1, 4($sp)\n");
+        switch(op.getType()) {
+            case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
+            case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
+            case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
+        }
     }
 }
