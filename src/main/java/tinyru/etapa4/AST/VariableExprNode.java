@@ -1,6 +1,7 @@
 package tinyru.etapa4.AST;
 
 import tinyru.etapa1.Token;
+import tinyru.etapa3.MethodInput;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.Exceptions.AttrNotFoundError;
 import tinyru.etapa5.CodeGenerator;
@@ -168,7 +169,30 @@ public class VariableExprNode extends VarMetEncNode{
             encadenado.generateCode(cg, type);
         }
         else {
-            //TODO
+            //tener en cuenta que el resultado siempre se guarda en $a0
+            if(struct == null){ // Está en el start
+                cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
+            }
+            else { // Está en un struct
+                if(metodo == "Constructor"){  // Está en el constructor
+                    cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                }
+                else {  // Está en un método
+                    MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
+                    if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
+                        cg.getTextSection().append("lw $a0, ").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
+                            cg.getTextSection().append("lw $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                        }
+                        else {  // Está en los atributos del struct //TODO: creo que esta opción no va acá
+                            //cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
+                        }
+                    }
+                }
+            }
+
         }
     }
 }

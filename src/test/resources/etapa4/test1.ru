@@ -15,5 +15,6 @@ impl A {
 }
 
 start {
-
+    A a;
+    (a.sum(8));
 }

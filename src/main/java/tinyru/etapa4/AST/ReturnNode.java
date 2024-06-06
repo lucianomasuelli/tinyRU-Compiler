@@ -68,6 +68,6 @@ public class ReturnNode extends SentenciaNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+
     }
 }

@@ -51,4 +51,8 @@ public class ParamInput {
         public Integer getColumn() {
             return column;
         }
+
+    public int getOffset() {
+            return 4* (position+1);
+    }
 }

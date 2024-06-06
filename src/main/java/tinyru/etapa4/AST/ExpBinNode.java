@@ -81,5 +81,7 @@ public class ExpBinNode extends ExpresionNode {
             case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
         }
+        cg.getTextSection().append("addiu $sp, $sp, 4\n"); // Desapila
+
     }
 }

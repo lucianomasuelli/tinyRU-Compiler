@@ -97,7 +97,8 @@ public class CodeGenerator {
     }
 
     public String getCode() {
-        return dataSection.toString() + textSection.toString();
+        generateExitInstruction();
+        return dataSection.toString() + textSection.toString() ;
     }
 
     public void genAsigCode(String varCode, String exprCode){
