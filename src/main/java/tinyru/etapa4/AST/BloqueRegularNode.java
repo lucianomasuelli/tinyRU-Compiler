@@ -43,6 +43,8 @@ public class BloqueRegularNode extends SentenciaNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        for (SentenciaNode sentencia : sentencias) {
+            sentencia.generateCode(cg);
+        }
     }
 }

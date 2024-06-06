@@ -63,6 +63,7 @@ public abstract class BloqueNode{
 
             int numArgs = cg.getSt().getStructTable().get(structName).getMethod(methodName).getParameterTable().size();
             cg.getTextSection().append("# Epilogo\n");
+            cg.getTextSection().append("_end_").append(structName).append("_").append(methodName).append(":\n");
             cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
             cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numArgs + 1)).append("\n");  // Restaura el stack pointer
             cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
