@@ -80,9 +80,8 @@ public class ExpBinNode extends ExpresionNode {
             case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
             case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
             case PROD -> cg.getTextSection().append("mul $a0, Sa0, St1\n");
-            //No se que onda la division tiene que romperse cuando es 0
-            case DIV -> cg.getTextSection().append("");
-            case MOD ->cg.getTextSection().append("");
+            case DIV -> cg.getTextSection().append("div $t1, $a0\n").append("mflo $a0\n");
+            case MOD ->cg.getTextSection().append("div $t1, $a0\n").append("mfhi $a0\n");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
             case DIF -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("not $a0, $a0\n");
             case AND -> cg.getTextSection().append("and $a0, $a0, $t1\n");

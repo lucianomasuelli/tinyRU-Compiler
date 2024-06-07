@@ -13,7 +13,7 @@ public class ExpUnNode extends ExpresionNode{
     ExpresionNode expRight;
     Token op;
 
-    HashSet<TokenType> booleanTypes = new HashSet<TokenType>(Set.of(TokenType.AND,TokenType.DIF,TokenType.IGUAL,TokenType.MAYOR,TokenType.MAYORIGUAL,TokenType.MENOR,TokenType.MENORIGUAL,TokenType.OR));
+    HashSet<TokenType> booleanTypes = new HashSet<TokenType>(Set.of(TokenType.NOT));
     String type;
 
     public ExpUnNode(){
@@ -66,6 +66,14 @@ public class ExpUnNode extends ExpresionNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        expRight.generateCode(cg);
+        cg.getTextSection().append("lw $t1, 4($sp)\n");
+        switch(op.getType()){
+            case NOT -> cg.getTextSection().append("seq $a0, $t1, $zero\n");
+            case INC -> cg.getTextSection().append("addi $a0, $t1, 1\n");
+            case DEC -> cg.getTextSection().append("addi $a0, $t1, -1\n");
+            case SUM -> cg.getTextSection().append("addi $a0, $t1, 0\n");
+            case RESTA -> cg.getTextSection().append("sub $a0, $zero, $t1\n");
+        }
     }
 }
