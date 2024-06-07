@@ -68,6 +68,15 @@ public class ReturnNode extends SentenciaNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        if (exp != null) {
+            // Generar el código para la expresión de retorno
+            exp.generateCode(cg);
+
+            // Mover el resultado de la expresión al registro $v0
+            cg.getTextSection().append("move $v0, $a0\n");
+        }
+
+        // Saltar al epílogo de la función
+        cg.getTextSection().append("j _end_").append(struct).append("_").append(metodo).append("\n");
     }
 }

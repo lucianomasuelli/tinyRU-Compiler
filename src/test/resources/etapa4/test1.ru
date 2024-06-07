@@ -1,8 +1,12 @@
 
-struct A{}
+struct A{
+    Int x;
+}
 
 impl A {
-    .(){}
+    .(Int y){
+        x = y;
+    }
     fn sum(Int x) -> Int {
         if(x == 0) {
             ret 0;
@@ -15,5 +19,6 @@ impl A {
 }
 
 start {
-
+    A a;
+    a = new A(10);
 }

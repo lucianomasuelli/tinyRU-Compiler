@@ -116,6 +116,7 @@ public class MetodoExprNode extends VarMetEncNode{
         int numArgs = argActuales.size();
         // Pushea el frame pointer a la pila.
         cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
+
         cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
         // Guardamos argumentos en orden inverso
@@ -134,7 +135,7 @@ public class MetodoExprNode extends VarMetEncNode{
 
         cg.getTextSection().append("jal ").append(structCaller).append("_").append(token.getLexeme()).append("\n");
 
-        cg.getTextSection().append("addiu $sp, $sp, ").append(4 * numArgs).append("\n"); // Incrementamos el puntero de pila
+        //cg.getTextSection().append("addiu $sp, $sp, ").append(4 * numArgs + 4).append("\n"); // Incrementamos el puntero de pila
 
 
         /*# Llamado a aObj.sum()

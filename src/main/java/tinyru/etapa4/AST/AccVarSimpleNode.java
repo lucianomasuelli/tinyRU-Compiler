@@ -23,8 +23,4 @@ public class AccVarSimpleNode extends AccesoVarNode {
         return json;
     }
 
-    @Override
-    public void generateCode(CodeGenerator cg) {
-        cg.allocateStackSpace();
-    }
 }

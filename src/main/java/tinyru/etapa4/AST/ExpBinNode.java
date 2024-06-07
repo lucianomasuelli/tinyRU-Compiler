@@ -91,5 +91,7 @@ public class ExpBinNode extends ExpresionNode {
             case MENOR -> cg.getTextSection().append("slt $a0, $t1, $a0\n");
             case MENORIGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("slt $t1, $t1, $a0\n").append("or $a0, $a0, $t1\n");
         }
+        cg.getTextSection().append("addiu $sp, $sp, 4\n"); // Desapila
+
     }
 }
