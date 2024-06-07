@@ -158,10 +158,32 @@ public class VariableExprNode extends VarMetEncNode{
         }
         else {
             if(metodo == "Constructor"){
-                type = cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getType();
+                //Busca el tipo en las variables locales del constructor, luego los parametros y finalmente en el struct
+                if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                    type = cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getType();
+                }
+                else {
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                        type = cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getType();
+                    }
+                    else {
+                        type = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getType();
+                    }
+                }
             }
             else {
-                type = getVarType(cg.getSt());
+                //Busca el tipo en las variables locales del método, luego los parametros y finalmente en el struct
+                if(cg.getSt().getStruct(struct).getMethod(metodo).fetchLocalVar(token.getLexeme())){
+                    type = cg.getSt().getStruct(struct).getMethod(metodo).getLocalVar(token.getLexeme()).getType();
+                }
+                else {
+                    if(cg.getSt().getStruct(struct).getMethod(metodo).fetchParameter(token.getLexeme())){
+                        type = cg.getSt().getStruct(struct).getMethod(metodo).getParameter(token.getLexeme()).getType();
+                    }
+                    else {
+                        type = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getType();
+                    }
+                }
             }
 
         }
@@ -175,7 +197,18 @@ public class VariableExprNode extends VarMetEncNode{
             }
             else { // Está en un struct
                 if(metodo == "Constructor"){  // Está en el constructor
-                    cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                    // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                        cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                            cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                        }
+                        else {
+                            cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
+                        }
+                    }
                 }
                 else {  // Está en un método
                     MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);

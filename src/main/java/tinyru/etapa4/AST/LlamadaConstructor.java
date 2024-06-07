@@ -84,6 +84,31 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
+        // Calcular el tamaño del objeto en bytes
+        int objectSize = cg.getSt().getStruct(idStruct).getAttributeTable().size() * 4 + 4;
+
+        // Asignar espacio en el heap para el objeto
+        cg.getTextSection().append("li $a0, ").append(objectSize).append("\n"); // Cargar el tamaño del objeto en $a0
+        cg.getTextSection().append("li $v0, 9\n"); // Código de servicio para asignar espacio en el heap
+        cg.getTextSection().append("syscall\n"); // Llamar al sistema para asignar espacio, devuelve la dirección del heap en $v0
+
+        //Creación del CIR
+
+        //Guardar la dirección de la vtable en el objeto
+        cg.getTextSection().append("la $t0, ").append(idStruct).append("_vt\n"); // Cargar la dirección de la vtable en $t0
+        cg.getTextSection().append("sw $t0, 0($v0)\n"); // Guardar la dirección de la vtable en el objeto
+
+        // Guardar los argumentos del constructor en la pila y saltar a la definición del constructor
+        for (int i = 0; i < args.size(); i++) {
+            args.get(i).generateCode(cg);
+            cg.getTextSection().append("sw $a0, ").append("0($sp)\n"); // Guardar el argumento en el stack
+            cg.getTextSection().append("addiu $sp, $sp, -4\n"); // Mover el stack pointer
+            //cg.getTextSection().append("sw $a0, ").append((i+1) * 4).append("($v0)\n"); // Guardar el argumento en el objeto
+        }
+        cg.getTextSection().append("jal ").append(idStruct).append("_constructor\n"); // Saltar a la definición del constructor
+
+        cg.getTextSection().append("addiu $sp, $sp, ").append(4 * args.size()).append("\n"); // Restaurar el stack pointer
+
 
     }
 }

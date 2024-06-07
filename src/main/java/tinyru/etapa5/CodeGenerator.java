@@ -25,6 +25,7 @@ public class CodeGenerator {
 
         // Inicia las secciones
         this.dataSection.append(".data\n");
+        addVirtualMethodLabels(st);
         this.textSection.append(".text\n.globl main\n.globl _start\n");
         this.textSection.append("_start:\njal main\n");
     }
@@ -106,13 +107,13 @@ public class CodeGenerator {
         textSection.append(exprCode);
     }
 
-    public int allocateStackSpace() {
-        textSection.append("addi $sp, $sp, -4\n"); // Decrementar el puntero de pila
-        textSection.append("sw $ra, ").append(stackOffset).append("($sp)\n");  // Guardar la dirección de retorno en el offset correcto
-        int currentOffset = stackOffset;
-        stackOffset += 4;
-        return currentOffset;
-    }
+//    public int allocateStackSpace() {
+//        textSection.append("addi $sp, $sp, -4\n"); // Decrementar el puntero de pila
+//        textSection.append("sw $ra, ").append(stackOffset).append("($sp)\n");  // Guardar la dirección de retorno en el offset correcto
+//        int currentOffset = stackOffset;
+//        stackOffset += 4;
+//        return currentOffset;
+//    }
 
     public void deallocateStackSpace() {
         stackOffset -= 4;
@@ -128,15 +129,15 @@ public class CodeGenerator {
         textSection.append("sw ").append(register).append(", ").append(offset).append("($sp)\n");
     }
 
-    public void addMethodLabels(SymbolTable st) {
+    public void addVirtualMethodLabels(SymbolTable st) {
         for (String struct : st.getStructTable().keySet()) {
             dataSection.append(struct).append("_vt").append(":\n");
             StructInput s = st.getStructTable().get(struct);
             for (String method : s.getMethodTable().keySet()) {
                 dataSection.append(".word ").append(struct).append("_").append(method).append("\n");
-                textSection.append(struct).append("_").append(method).append(":\n");
+                //textSection.append(struct).append("_").append(method).append(":\n");
             }
-            textSection.append(struct).append("_").append("constructor").append(":\n");
+            //textSection.append(struct).append("_").append("constructor").append(":\n");
         }
         textSection.append("start_start:\n");
     }
