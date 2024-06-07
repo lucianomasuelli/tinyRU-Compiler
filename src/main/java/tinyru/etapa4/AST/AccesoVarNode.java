@@ -198,7 +198,9 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             //tener en cuenta que el resultado siempre se guarda en $a0
             if(struct == null){ // Está en el start
                 if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
-
+                    //TODO: como acceder a la variable del start
+                    int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
+                    cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
                 }
             }
             else { // Está en un struct

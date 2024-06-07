@@ -41,4 +41,13 @@ public class StartInput {
     public int getLine() {
         return line;
     }
+
+    public VarInput getAttributeByPos(int pos) {
+        for(VarInput var : attributeTable.values()) {
+            if(var.getPosition() == pos) {
+                return var;
+            }
+        }
+        return null;
+    }
 }

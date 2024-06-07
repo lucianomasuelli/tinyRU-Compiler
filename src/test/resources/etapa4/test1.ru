@@ -20,5 +20,7 @@ impl A {
 
 start {
     A a;
+    Int b;
     a = new A(10);
+    b = 2;
 }

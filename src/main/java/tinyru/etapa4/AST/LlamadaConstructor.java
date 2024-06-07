@@ -109,6 +109,9 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
 
         cg.getTextSection().append("addiu $sp, $sp, ").append(4 * args.size()).append("\n"); // Restaurar el stack pointer
 
+        // Guarda en $a0 la dirección del objeto
+        cg.getTextSection().append("move $a0, $v0\n");
+
 
     }
 }

@@ -2,6 +2,7 @@ package tinyru.etapa4.AST;
 
 import tinyru.etapa3.MethodInput;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa3.VarInput;
 import tinyru.etapa4.Exceptions.MissingReturnError;
 import tinyru.etapa5.CodeGenerator;
 
@@ -54,10 +55,22 @@ public class BloqueMetodoNode extends  BloqueNode{
             cg.getTextSection().append("move $fp, $sp\n");  // Guarda el frame pointer
             cg.getTextSection().append("sw $ra, 0($sp)\n");  // Guarda el return address
             cg.getTextSection().append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+            // Deja lugar en el stack para las variables locales
+            for (int i =0; i < cg.getSt().getStart().getAttributeTable().size(); i++) {
+                cg.getTextSection().append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+            }
+
             // Genera el código de las sentencias
             for (SentenciaNode sentencia : sentencias) {
                 sentencia.generateCode(cg);
             }
+
+            //Restaura el stack pointer
+            cg.getTextSection().append("addiu $sp, $sp, ").append(4 * cg.getSt().getStart().getAttributeTable().size()).append("\n");
+            cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
+            cg.getTextSection().append("addiu $sp, $sp, 4\n");  // Restaura el stack pointer
+            cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
         }
         else{
             if(methodName.equals("constructor")){
@@ -78,8 +91,6 @@ public class BloqueMetodoNode extends  BloqueNode{
                 cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
                 cg.getTextSection().append("addiu $sp, $sp, 4\n");  // Restaura el stack pointer
                 cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
-
-
                 cg.getTextSection().append("jr $ra\n");  // Salta a la dirección de retorno
 
 
