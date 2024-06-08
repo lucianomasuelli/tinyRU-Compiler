@@ -9,17 +9,17 @@ import tinyru.etapa5.CodeGenerator;
 
 public class LlamadaMetodoEstaticoNode extends PrimarioNode{
     private String idStruct;
-    private MetodoExprNode llamadaMetodo;
+    private LlamadaMetodo llamadaMetodo;
     private VarMetEncNode encadenado;
 
-    public LlamadaMetodoEstaticoNode(Token token, String struct, String metodo,String idStruct, MetodoExprNode llamadaMetodo, VarMetEncNode encadenado) {
+    public LlamadaMetodoEstaticoNode(Token token, String struct, String metodo, String idStruct, LlamadaMetodo llamadaMetodo, VarMetEncNode encadenado) {
         super(token, metodo, struct);
         this.llamadaMetodo = llamadaMetodo;
         this.encadenado = encadenado;
         this.idStruct = idStruct;
     }
 
-    public LlamadaMetodoEstaticoNode(Token token, String idStruct, MetodoExprNode llamadaMetodo, VarMetEncNode encadenado) {
+    public LlamadaMetodoEstaticoNode(Token token, String idStruct, LlamadaMetodo llamadaMetodo, VarMetEncNode encadenado) {
         super(token);
         this.llamadaMetodo = llamadaMetodo;
         this.encadenado = encadenado;
@@ -75,7 +75,7 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
         return encadenado;
     }
 
-    public MetodoExprNode getMetodo() {
+    public LlamadaMetodo getMetodo() {
         return llamadaMetodo;
     }
 

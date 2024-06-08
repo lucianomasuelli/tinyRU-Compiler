@@ -73,7 +73,7 @@ public class ReturnNode extends SentenciaNode{
             exp.generateCode(cg);
 
             // Mover el resultado de la expresión al registro $v0
-            cg.getTextSection().append("move $v0, $a0\n");
+            //cg.getTextSection().append("move $v0, $a0\n");
         }
 
         // Saltar al epílogo de la función

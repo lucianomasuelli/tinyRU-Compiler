@@ -1433,11 +1433,11 @@ public class Parser {
 
         VarMetEncNode primario = null;
         if (onFirst(actualToken, first("llamada_metodo_encadenado'"))){
-            MetodoExprNode metodo;
+            LlamadaMetodo metodo;
             if(symbolTable.actualStruct != null){
-                metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+                metodo = new LlamadaMetodo(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
             } else {
-                metodo = new MetodoExprNode(id, "start", null);
+                metodo = new LlamadaMetodo(id, "start", null);
             }
             primario = metodo;
             llamadaMetodoEncadenadoPrima(metodo);
@@ -1594,19 +1594,19 @@ public class Parser {
     }
 
     // ⟨Llamada-Método⟩ ::= id ⟨Llamada-Método⟩’
-    private MetodoExprNode llamadaMetodo(){
+    private LlamadaMetodo llamadaMetodo(){
         Token id = actualToken;
         match(TokenType.ID);
         return llamadaMetodoPrima(id);
     }
     // ⟨Llamada-Método⟩’ ::= ⟨Argumentos-Actuales⟩ N12’
-    private MetodoExprNode llamadaMetodoPrima(Token id){
-        MetodoExprNode metodo;
+    private LlamadaMetodo llamadaMetodoPrima(Token id){
+        LlamadaMetodo metodo;
         if(symbolTable.actualStruct != null) {
-            metodo = new MetodoExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            metodo = new LlamadaMetodo(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
         }
         else {
-            metodo = new MetodoExprNode(id, "start", null);
+            metodo = new LlamadaMetodo(id, "start", null);
         }
 
         List<ExpresionNode> args =  argumentosActuales();
@@ -1619,7 +1619,7 @@ public class Parser {
     private LlamadaMetodoEstaticoNode llamadaMetodoEstatico(){
         Token token = match(TokenType.STRUCTID);
         match(TokenType.DOT);
-        MetodoExprNode met = llamadaMetodo();
+        LlamadaMetodo met = llamadaMetodo();
         VarMetEncNode enc = N12Prima();
         if(symbolTable.actualStruct != null){
             return new LlamadaMetodoEstaticoNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), token.getLexeme(), met, enc);
@@ -1703,7 +1703,7 @@ public class Parser {
 //        llamadaMetodoEncadenadoPrima();
 //    }
     // ⟨Llamada-Método-Encadenado⟩’ ::= ⟨Argumentos-Actuales⟩ N12 | ⟨Argumentos-Actuales⟩
-    private void llamadaMetodoEncadenadoPrima(MetodoExprNode metodo){
+    private void llamadaMetodoEncadenadoPrima(LlamadaMetodo metodo){
         if (onFirst(actualToken, first("argumentos_actuales"))){
             List<ExpresionNode> args = argumentosActuales();
             metodo.setArgActuales(args);

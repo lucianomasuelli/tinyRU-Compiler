@@ -22,6 +22,10 @@ public class ConstructorInput {
         return locaVars.get(name);
     }
 
+    public Hashtable<String, VarInput> getLocalVars() {
+        return locaVars;
+    }
+
     public boolean fetchLocalVar(String name) {
         return locaVars.containsKey(name);
     }

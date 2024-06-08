@@ -9,19 +9,19 @@ import tinyru.etapa5.CodeGenerator;
 
 import java.util.List;
 
-public class MetodoExprNode extends VarMetEncNode{
+public class LlamadaMetodo extends VarMetEncNode{
     private VarMetEncNode encadenado;
     private List<ExpresionNode> argActuales;
 
-    public MetodoExprNode(Token token, String struct, String metodo) {
+    public LlamadaMetodo(Token token, String struct, String metodo) {
         super(token,metodo, struct);
     }
 
-    public MetodoExprNode(Token token, String struct) {
+    public LlamadaMetodo(Token token, String struct) {
         super(token,struct);
     }
 
-    public MetodoExprNode(Token token) {
+    public LlamadaMetodo(Token token) {
         super(token, null);
     }
 
@@ -128,6 +128,9 @@ public class MetodoExprNode extends VarMetEncNode{
         }
 
         //TODO: acá creo que se debería guardar el CIR de self
+        // Guardamos CIR de self
+        cg.getTextSection().append("# Guarda CIR de self\n");
+
 
         // Llamamos a la función
         cg.getTextSection().append("# Jump a la definición del método\n");

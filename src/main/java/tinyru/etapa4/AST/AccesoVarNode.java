@@ -198,7 +198,6 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             //tener en cuenta que el resultado siempre se guarda en $a0
             if(struct == null){ // Está en el start
                 if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
-                    //TODO: como acceder a la variable del start
                     int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
                     cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
                 }
@@ -207,11 +206,11 @@ public abstract class AccesoVarNode extends EncadenadoNode {
                 if(metodo == "Constructor"){  // Está en el constructor
                     // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
                     if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
-                        cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                        cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
                     }
                     else {
                         if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
-                            cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                            cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
                         }
                         else {
                             if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
@@ -225,11 +224,11 @@ public abstract class AccesoVarNode extends EncadenadoNode {
                 else {  // Está en un método
                     MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
                     if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
-                        cg.getTextSection().append("lw $a0, ").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                        cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
                     }
                     else {
                         if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
-                            cg.getTextSection().append("lw $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                            cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
                         }
                         else {  // Está en los atributos del struct //TODO: creo que esta opción no va acá
                             //cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");

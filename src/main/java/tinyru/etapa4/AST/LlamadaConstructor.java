@@ -98,6 +98,7 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
 
         //Creación del CIR
 
+
         //Guardar la dirección de la vtable en el objeto
         cg.getTextSection().append("la $t0, ").append(idStruct).append("_vt\n"); // Cargar la dirección de la vtable en $t0
         cg.getTextSection().append("sw $t0, 0($v0)\n"); // Guardar la dirección de la vtable en el objeto
