@@ -34,6 +34,9 @@ public class CodeGenerator {
         return textSection;
     }
 
+    public StringBuilder getDataSection() {
+        return dataSection;
+    }
 
     public SymbolTable getSt() {
         return st;

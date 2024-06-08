@@ -128,7 +128,7 @@ public class BloqueMetodoNode extends  BloqueNode{
                 cg.getTextSection().append("_end_").append(structName).append("_").append(methodName).append(":\n");
                 cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numLocals)).append("\n");  // Restaura el lugar ocupado por las variables locales
                 cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
-                cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numArgs + 2)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+                cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numArgs + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
                 cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
                 cg.getTextSection().append("jr $ra\n");  // Salta a la dirección de retorno
             }

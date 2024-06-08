@@ -18,4 +18,6 @@ public abstract class VarMetEncNode extends PrimarioNode{
     }
 
     public abstract void generateCode(CodeGenerator cg, String structCaller);
+
+    //public abstract void generateCode(CodeGenerator cg, String varType, String varName);
 }

@@ -1,23 +1,20 @@
-
 struct A{
     Int x;
 }
 
 impl A {
-    .(Int y){
-        x = y;
+    .(Int j){
+        x = j;
     }
 
-    fn met1() -> Int {
-        Int c;
-        c = 5;
-        ret c;
+    fn met1(Int w) -> Int {
+        ret w*2;
     }
 }
 
 start {
     A a;
-    Int b;
+    Int c;
     a = new A(10);
-    b = a.met1();
+    c = a.met1(6);
 }

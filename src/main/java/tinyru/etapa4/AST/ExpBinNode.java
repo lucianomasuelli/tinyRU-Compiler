@@ -79,7 +79,7 @@ public class ExpBinNode extends ExpresionNode {
         switch(op.getType()) {
             case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
             case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
-            case PROD -> cg.getTextSection().append("mul $a0, Sa0, St1\n");
+            case PROD -> cg.getTextSection().append("mul $a0, $a0, $t1\n");
             case DIV -> cg.getTextSection().append("div $t1, $a0\n").append("mflo $a0\n");
             case MOD ->cg.getTextSection().append("div $t1, $a0\n").append("mfhi $a0\n");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");

@@ -195,50 +195,54 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             encadenado.generateCode(cg);
         }
         else {
-            //tener en cuenta que el resultado siempre se guarda en $a0
-            if(struct == null){ // Está en el start
-                if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
-                    int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
-                    cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
-                }
-            }
-            else { // Está en un struct
-                if(metodo == "Constructor"){  // Está en el constructor
-                    // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
-                    if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
-                        cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
-                    }
-                    else {
-                        if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
-                            cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
-                        }
-                        else {
-                            if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
-                                // v0 contiene la dirección del objeto
-                                int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
-                                cg.getTextSection().append("la $a0, ").append(offset).append("($v0)\n");  // Carga la dirección del atributo en $a0
-                            }
-                        }
-                    }
-                }
-                else {  // Está en un método
-                    MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
-                    if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
-                        cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
-                    }
-                    else {
-                        if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
-                            cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
-                        }
-                        else {  // Está en los atributos del struct //TODO: creo que esta opción no va acá
-                            //cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
-                        }
-                    }
-                }
-            }
-
+            varAccess(cg);
         }
     }
+
+    public void varAccess(CodeGenerator cg) {
+        //tener en cuenta que el resultado siempre se guarda en $a0
+        if(struct == null){ // Está en el start
+            if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
+                int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
+                cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
+            }
+        }
+        else { // Está en un struct
+            if(metodo == "Constructor"){  // Está en el constructor
+                // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                    cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                }
+                else {
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                        cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
+                            // v0 contiene la dirección del objeto
+                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                            cg.getTextSection().append("la $a0, ").append(offset).append("($v0)\n");  // Carga la dirección del atributo en $a0
+                        }
+                    }
+                }
+            }
+            else {  // Está en un método
+                MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
+                if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
+                    cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                }
+                else {
+                    if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
+                        cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset() +4).append("($fp)\n");
+                    }
+                    else {  // Está en los atributos del struct //TODO: creo que esta opción no va acá
+                        //cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
+                    }
+                }
+            }
+        }
+    }
+
 
     @Override
     public String jsonify() {

@@ -106,12 +106,23 @@ public class LlamadaMetodo extends VarMetEncNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        generateCode(cg, struct);
+        generateCode(cg, null);
     }
 
+//    public void generateCode(CodeGenerator cg, String structType) {
+//        generateCode(cg, structType, null);
+//    }
+
     @Override
-    public void generateCode(CodeGenerator cg, String structCaller) {
+    public void generateCode(CodeGenerator cg, String structType) {
         // Llamado a un método
+        if(structType == null) { // Si el metodo no es llamado desde una variable, cargamos el CIR, sino ya está cargado en $a0
+            cg.getTextSection().append("lw $a0 4($fp)\n"); // Cargamos el CIR de self
+        }
+
+        // Meto el CIR de self en el registro $t5
+        cg.getTextSection().append("move $t5 $a0\n");
+
         cg.getTextSection().append("# Llamado a ").append(token.getLexeme()).append("()\n");
         int numArgs = argActuales.size();
         // Pushea el frame pointer a la pila.
@@ -120,44 +131,24 @@ public class LlamadaMetodo extends VarMetEncNode{
 
         // Guardamos argumentos en orden inverso
         cg.getTextSection().append("# Guarda argumentos\n");
-        for (int i = argActuales.size() - 1; i >= 0; i--) {
+        for (int i = numArgs - 1; i >= 0; i--) {
             argActuales.get(i).generateCode(cg); //TODO: ver que se genere bien este código
             //Se espera que el resultado de la expresión esté en $a0
             cg.getTextSection().append("sw $a0 0($sp)\n"); // Guardamos el valor de la expresión en la pila
             cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
         }
 
-        //TODO: acá creo que se debería guardar el CIR de self
-        // Guardamos CIR de self
         cg.getTextSection().append("# Guarda CIR de self\n");
-
+        cg.getTextSection().append("sw $t5 0($sp)\n"); // Guardamos el valor de self en la pila
+        cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
         // Llamamos a la función
         cg.getTextSection().append("# Jump a la definición del método\n");
 
-        cg.getTextSection().append("jal ").append(structCaller).append("_").append(token.getLexeme()).append("\n");
+        cg.getTextSection().append("jal ").append(structType).append("_").append(token.getLexeme()).append("\n");
 
-        //cg.getTextSection().append("addiu $sp, $sp, ").append(4 * numArgs + 4).append("\n"); // Incrementamos el puntero de pila
+        //cg.getTextSection().append("addiu $sp $sp 4\n"); // Incrementamos el puntero de pila para sacar el CIR de self
 
-
-        /*# Llamado a aObj.sum()
-	# Guardamos el valor del fp actual en stack
-	sw $fp 0($sp)
-	addiu $sp $sp -4
-
-	# Guardamos argumentos
-	# No tiene xd
-
-	# Guardamos CIR de self (aObj)
-	la $t0, start_locvar_aObj # Cargamos el CIR de aObj
-	sw $t0 0($sp)
-	addiu $sp $sp -4
-
-	# Hacemos jump a la definición del método
-	la $t0, start_locvar_aObj # Cargamos el CIR de aObj
-	la $t0, 0($t0) # Cargamos VTable de A
-	la $t0, 0($t0) # Cargamos sum() según su índice dentro de A
-	jalr $t0*/
     }
 
 }
