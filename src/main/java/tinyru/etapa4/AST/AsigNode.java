@@ -58,12 +58,16 @@ public class AsigNode extends SentenciaNode {
     @Override
     public void generateCode(CodeGenerator cg) {
         // Genera el código para la expresión del lado derecho de la asignación
+        cg.getTextSection().append("# Asignación\n");
+        cg.getTextSection().append("# Expresión derecha\n");
         expr.generateCode(cg);
         cg.getTextSection().append("sw $a0, 0($sp)\n");  // Almacena el valor de la expresión en el tope del stack
         cg.getTextSection().append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
 
         // Genera el código para almacenar el valor del registro en la ubicación de memoria de la variable
+        cg.getTextSection().append("# Acceso variable\n");
         variable.generateCode(cg);
+        cg.getTextSection().append("# Asigna valor a variable\n");
         cg.getTextSection().append("lw $t0, 4($sp)\n");  // Carga el valor de la expresión en $t0
         cg.getTextSection().append("sw $t0, 0($a0)\n");  // Almacena el valor de la expresión en la ubicación de memoria de la variable
         cg.getTextSection().append("addiu $sp, $sp, 4\n");  // Mueve el stack pointer

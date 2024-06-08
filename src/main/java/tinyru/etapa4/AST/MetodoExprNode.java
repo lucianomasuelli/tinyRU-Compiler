@@ -116,7 +116,6 @@ public class MetodoExprNode extends VarMetEncNode{
         int numArgs = argActuales.size();
         // Pushea el frame pointer a la pila.
         cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
-
         cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
         // Guardamos argumentos en orden inverso

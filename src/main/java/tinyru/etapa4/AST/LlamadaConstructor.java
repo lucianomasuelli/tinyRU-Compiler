@@ -84,6 +84,10 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
+        // Pushea el frame pointer a la pila.
+        cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
+        cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
+
         // Calcular el tamaño del objeto en bytes
         int objectSize = cg.getSt().getStruct(idStruct).getAttributeTable().size() * 4 + 4;
 
@@ -103,11 +107,11 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
             args.get(i).generateCode(cg);
             cg.getTextSection().append("sw $a0, ").append("0($sp)\n"); // Guardar el argumento en el stack
             cg.getTextSection().append("addiu $sp, $sp, -4\n"); // Mover el stack pointer
-            //cg.getTextSection().append("sw $a0, ").append((i+1) * 4).append("($v0)\n"); // Guardar el argumento en el objeto
         }
         cg.getTextSection().append("jal ").append(idStruct).append("_constructor\n"); // Saltar a la definición del constructor
 
-        cg.getTextSection().append("addiu $sp, $sp, ").append(4 * args.size()).append("\n"); // Restaurar el stack pointer
+        //cg.getTextSection().append("addiu $sp, $sp, ").append(4 * args.size()).append("\n"); // Restaurar el stack pointer
+        //cg.getTextSection().append("lw $fp, 0($sp)\n");//Recupera el frame pointer
 
         // Guarda en $a0 la dirección del objeto
         cg.getTextSection().append("move $a0, $v0\n");

@@ -80,6 +80,8 @@ public class BloqueMetodoNode extends  BloqueNode{
                 cg.getTextSection().append("sw $ra, 0($sp)\n");  // Guarda el return address
                 cg.getTextSection().append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
 
+                //TODO: generar código para variables locales
+
                 // Genera el código de las sentencias
                 // En este momento $v0 contiene la dirección del CIR
                 cg.getTextSection().append("# Cuerpo del constructor\n");
@@ -87,9 +89,11 @@ public class BloqueMetodoNode extends  BloqueNode{
                     sentencia.generateCode(cg);
                 }
 
+                int numArgs = cg.getSt().getStructTable().get(structName).getConstructor().getConstructorParams().size();
                 cg.getTextSection().append("# Epilogo\n");
                 cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
-                cg.getTextSection().append("addiu $sp, $sp, 4\n");  // Restaura el stack pointer
+                cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numArgs + 2)).append("\n");  // Restaura el stack pointer
+                //cg.getTextSection().append("addiu $sp, $sp, 4").append("\n");  // Restaura el stack pointer
                 cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
                 cg.getTextSection().append("jr $ra\n");  // Salta a la dirección de retorno
 
@@ -102,6 +106,8 @@ public class BloqueMetodoNode extends  BloqueNode{
                 cg.getTextSection().append("move $fp, $sp\n");  // Guarda el frame pointer
                 cg.getTextSection().append("sw $ra, 0($sp)\n");  // Guarda el return address
                 cg.getTextSection().append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+                //TODO: generar código para variables locales
 
                 // Genera el código de las sentencias
                 cg.getTextSection().append("# Cuerpo del método\n");
