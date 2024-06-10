@@ -14,6 +14,7 @@ import java.util.Stack;
 public abstract class AccesoVarNode extends EncadenadoNode {
     private Token token;
     protected EncadenadoNode encadenado;
+    protected ExpresionNode index; //Caso de acceso array
     protected String struct;
     protected String metodo;
     private Boolean visible = true;
@@ -52,6 +53,9 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         this.visible = visible;
     }
 
+    public void setIndex(ExpresionNode index){this.index = index;}
+
+    public ExpresionNode getIndex(){return this.index;}
 
     public Token getToken() {
         return token;
