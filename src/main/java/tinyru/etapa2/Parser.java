@@ -1100,7 +1100,7 @@ public class Parser {
             var.setEncadenado(enc);
         } else if (actualToken.getLexeme().equals("[")) {
             match(TokenType.LBRACKET);
-            expresion();
+            var.setIndex(expresion());
             match(TokenType.RBRACKET);
         } else if(followAccesoVarSimplePrima.contains(actualToken.getLexeme())) {
             // lambda
@@ -1653,7 +1653,11 @@ public class Parser {
             match(TokenType.LBRACKET);
             ExpresionNode exp = expresion();
             match(TokenType.RBRACKET);
-            llamada = new ArrayNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), type, exp);
+            if (symbolTable.actualStruct!=null) {
+                llamada = new ArrayNode(token, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName(), type, exp);
+            } else {
+                llamada = new ArrayNode(token, "start", null, type, exp);
+            }
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }

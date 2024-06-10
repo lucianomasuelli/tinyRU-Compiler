@@ -18,6 +18,10 @@ public class AccVarSimpleNode extends AccesoVarNode {
         String json = "{\n";
         json += "\"AccVarSimpleNode\": {\n";
         json += "\"id\": " + getToken().getLexeme() + "\n";
+        if (this.getIndex()!=null){
+            json+="\"posición\":\n";
+            json += this.getIndex().jsonify();
+        }
         json += "}\n";
         json += "}\n";
         return json;
