@@ -7,6 +7,7 @@ import tinyru.etapa4.Exceptions.TypeDefinitionError;
 import tinyru.etapa5.CodeGenerator;
 
 public class ArrayNode extends LlamadaConstructorNode{
+    private String variable;
     private String primitiveType;
     private ExpresionNode size;
 
@@ -50,6 +51,23 @@ public class ArrayNode extends LlamadaConstructorNode{
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        //Calculo del tamaño del arreglo
+        size.generateCode(cg);
+        cg.getTextSection().append("lw $t1, $a0\n");
+        //Multiplicación del tamaño por el tamaño de cada elemento
+
+        int bytes = switch (primitiveType) {
+            case "Int" -> {cg.getTextSection().append("mul $a0, $t1, 4\n");}
+            case "Str" -> {cg.getTextSection().append("mul $a0, $t1 1025\n");}
+            case "Bool","Char" -> {cg.getTextSection().append("mul $a0, $t1, 1\n");}
+            default -> 0;
+        };
+
+        cg.getTextSection().append("li $v0, 9\n");
+        cg.getTextSection().append("syscall\n");
+
+        //Guardar el array en la stack
+        cg.getTextSection().append("sw $v0, 0($sp)\n");
+
     }
 }

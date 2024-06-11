@@ -72,7 +72,9 @@ public class ExpUnNode extends ExpresionNode{
             case NOT -> cg.getTextSection().append("seq $a0, $t0, $zero\n");
             case INC -> {
                 cg.getTextSection().append("add $a0, $t0, 1\n");
-
+                if (expRight.getClass()== VariableExprNode.class){
+                    cg.getTextSection().append("sw $a0, 4($sp)\n");
+                }
             }
             case DEC -> cg.getTextSection().append("add $a0, $t0, -1\n");
             case SUM -> cg.getTextSection().append("add $a0, $t0, 0\n");
