@@ -67,7 +67,7 @@ public class ExpUnNode extends ExpresionNode{
     @Override
     public void generateCode(CodeGenerator cg) {
         expRight.generateCode(cg);
-        cg.getTextSection().append("lw $t1, 4($sp)\n");
+        cg.getTextSection().append("lw $t1, $a0\n");
         switch(op.getType()){
             case NOT -> cg.getTextSection().append("seq $a0, $t1, $zero\n");
             case INC -> cg.getTextSection().append("addi $a0, $t1, 1\n");
