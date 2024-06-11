@@ -64,9 +64,9 @@ public class LlamadaMetodoEstaticoNode extends PrimarioNode{
     @Override
     public void generateCode(CodeGenerator cg) {
         if(encadenado == null)
-            llamadaMetodo.generateCode(cg);
+            llamadaMetodo.generateCode(cg, idStruct);
         else {
-            llamadaMetodo.generateCode(cg);
+            llamadaMetodo.generateCode(cg, idStruct);
             encadenado.generateCode(cg);
         }
     }
