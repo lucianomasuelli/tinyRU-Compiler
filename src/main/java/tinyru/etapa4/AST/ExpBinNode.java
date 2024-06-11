@@ -80,16 +80,19 @@ public class ExpBinNode extends ExpresionNode {
             case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
             case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
             case PROD -> cg.getTextSection().append("mul $a0, $a0, $t1\n");
-            case DIV -> cg.getTextSection().append("div $t1, $a0\n").append("mflo $a0\n");
+            case DIV -> {
+                cg.getTextSection().append("beqz $a0 , divByZero\n");
+                cg.getTextSection().append("div $t1, $a0\n").append("mflo $a0\n");
+            }
             case MOD ->cg.getTextSection().append("div $t1, $a0\n").append("mfhi $a0\n");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
             case DIF -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("not $a0, $a0\n");
             case AND -> cg.getTextSection().append("and $a0, $a0, $t1\n");
             case OR -> cg.getTextSection().append("or $a0, $a0, $t1\n");
             case MAYOR -> cg.getTextSection().append("slt $a0, $a0, $t1\n");
-            case MAYORIGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("slt $t1, $a0, $t1\n").append("or $a0, $a0, $t1\n");
+            case MAYORIGUAL -> cg.getTextSection().append("seq $t2, $a0, $t1\n").append("slt $t1, $a0, $t1\n").append("or $a0, $t2, $t1\n");
             case MENOR -> cg.getTextSection().append("slt $a0, $t1, $a0\n");
-            case MENORIGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("slt $t1, $t1, $a0\n").append("or $a0, $a0, $t1\n");
+            case MENORIGUAL -> cg.getTextSection().append("seq $t2, $a0, $t1\n").append("slt $t1, $t1, $a0\n").append("or $a0, $t2, $t1\n");
         }
         cg.getTextSection().append("addiu $sp, $sp, 4\n"); // Desapila
 

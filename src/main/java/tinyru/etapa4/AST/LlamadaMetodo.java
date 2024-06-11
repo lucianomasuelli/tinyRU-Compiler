@@ -116,9 +116,13 @@ public class LlamadaMetodo extends VarMetEncNode{
     @Override
     public void generateCode(CodeGenerator cg, String structType) {
         // Llamado a un método
-        if(structType == null) { // Si el metodo no es llamado desde una variable, cargamos el CIR, sino ya está cargado en $a0
+        if(!struct.equals("start")){
+            if(structType == null) { // Si el metodo no es llamado desde una variable, cargamos el CIR, sino ya está cargado en $a0
+                structType = cg.getSt().getStructTable().get(struct).getName();
+            }
             cg.getTextSection().append("lw $a0 4($fp)\n"); // Cargamos el CIR de self
         }
+
 
         // Meto el CIR de self en el registro $t5
         cg.getTextSection().append("move $t5 $a0\n");

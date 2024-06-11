@@ -4,6 +4,7 @@ import tinyru.etapa3.StructInput;
 import tinyru.etapa3.SymbolTable;
 import tinyru.etapa4.AST.AbstractSyntaxTree;
 import tinyru.etapa4.AST.BloqueNode;
+import tinyru.etapa4.AST.SentenciaNode;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -15,6 +16,7 @@ public class CodeGenerator {
     private Integer stackOffset;
     private SymbolTable st;
     private Integer ifCounter = 0;
+    private Integer whileCounter = 0;
 
     public CodeGenerator(SymbolTable st) {
         this.dataSection = new StringBuilder();
@@ -50,24 +52,12 @@ public class CodeGenerator {
         return ifCounter;
     }
 
-    public void generateCode() {
-//        for (BloqueNode node : ast.getRoot()) {
-//            for(SentenciaNode sentencia : node.getSentencias()){
-//                if(sentencia instanceof SentSimpleNode sentSimple){
-//                    if(sentSimple.getExpresion() instanceof LlamadaMetodoEstaticoNode llamadaMetodoEstatico){
-//                        if(llamadaMetodoEstatico.getEncadenado() == null){
-//                            List<ExpresionNode> args = llamadaMetodoEstatico.getMetodo().getArgActuales();
-//                            if(args.getFirst() instanceof LiteralNode literalNode) {
-//                                String data = literalNode.getLiteral();
-//                                addData("msg", data);
-//                                generatePrintInstruction("msg");
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        generateExitInstruction();
+    public void increaseWhileCounter() {
+        whileCounter++;
+    }
+
+    public Integer getWhileCounter() {
+        return whileCounter;
     }
 
     public Integer getStackOffset() {
@@ -100,8 +90,25 @@ public class CodeGenerator {
         textSection.append("syscall\n"); // Llamar al sistema para salir
     }
 
+    public void divByZero() {
+        //genera el label divByZero
+        textSection.append("divByZero:\n");
+        //Cargo el mensaje de error
+        dataSection.append("divError: .asciiz \"Error: Division by zero\\n\"\n");
+        //Imprime el mensaje de error
+        textSection.append("li $v0, 4\n");  // Código de servicio para imprimir cadena
+        textSection.append("la $a0, divError\n");  // Cargar la dirección del mensaje en $a0
+        textSection.append("syscall\n");
+        //Sale del programa
+        textSection.append("li $v0, 10\n"); // Código de servicio para salir del programa
+        textSection.append("syscall\n"); // Llamar al sistema para salir
+    }
+
     public String getCode() {
         generateExitInstruction();
+
+        generateOutInt();
+        divByZero();
         return dataSection.toString() + textSection.toString() ;
     }
 
@@ -150,6 +157,27 @@ public class CodeGenerator {
         textSection.append("move $fp, $sp\n");
         textSection.append("sw $ra, 0($sp)\n");
         textSection.append("addi $sp, $sp, -4\n");
+    }
+
+    public void generateOutInt() {
+        textSection.append("IO_out_int:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para imprimir el entero que se encuentra en los argumentos (arriba del $fp y de self)
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga el entero a imprimir
+        textSection.append("li $v0, 1\n");  // Código de servicio para imprimir entero
+        textSection.append("syscall\n");  // Llama al sistema para imprimir
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_out_int:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
     }
 
 }
