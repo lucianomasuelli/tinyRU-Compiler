@@ -55,7 +55,23 @@ public class WhileNode extends SentenciaNode {
 
     @Override
     public void generateCode(CodeGenerator cg) {
-        //TODO
+        cg.increaseWhileCounter();
+        Integer whileCounter = cg.getWhileCounter();
+        String whileLabel = "while_" + whileCounter;
+        String endWhileLabel = "end_while_" + whileCounter;
+
+        cg.getTextSection().append(whileLabel).append(":\n");
+
+        condicional.generateCode(cg);
+
+        //Si la condicion es falsa, salta al final del while
+        cg.getTextSection().append("beq $a0, $zero, ").append(endWhileLabel).append("\n");
+
+        cuerpo.generateCode(cg);
+
+        cg.getTextSection().append("j ").append(whileLabel).append("\n");
+
+        cg.getTextSection().append(endWhileLabel).append(":\n");
     }
 
 }

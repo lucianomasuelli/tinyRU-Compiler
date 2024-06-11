@@ -15,6 +15,7 @@ public class CodeGenerator {
     private Integer stackOffset;
     private SymbolTable st;
     private Integer ifCounter = 0;
+    private Integer whileCounter = 0;
 
     public CodeGenerator(SymbolTable st) {
         this.dataSection = new StringBuilder();
@@ -50,24 +51,12 @@ public class CodeGenerator {
         return ifCounter;
     }
 
-    public void generateCode() {
-//        for (BloqueNode node : ast.getRoot()) {
-//            for(SentenciaNode sentencia : node.getSentencias()){
-//                if(sentencia instanceof SentSimpleNode sentSimple){
-//                    if(sentSimple.getExpresion() instanceof LlamadaMetodoEstaticoNode llamadaMetodoEstatico){
-//                        if(llamadaMetodoEstatico.getEncadenado() == null){
-//                            List<ExpresionNode> args = llamadaMetodoEstatico.getMetodo().getArgActuales();
-//                            if(args.getFirst() instanceof LiteralNode literalNode) {
-//                                String data = literalNode.getLiteral();
-//                                addData("msg", data);
-//                                generatePrintInstruction("msg");
-//                            }
-//                        }
-//                    }
-//                }
-//            }
-//        }
-        generateExitInstruction();
+    public void increaseWhileCounter() {
+        whileCounter++;
+    }
+
+    public Integer getWhileCounter() {
+        return whileCounter;
     }
 
     public Integer getStackOffset() {
@@ -100,8 +89,23 @@ public class CodeGenerator {
         textSection.append("syscall\n"); // Llamar al sistema para salir
     }
 
+    public void divByZero() {
+        //genera el label divByZero
+        textSection.append("divByZero:\n");
+        //Cargo el mensaje de error
+        dataSection.append("divError: .asciiz \"Error: Division by zero\\n\"\n");
+        //Imprime el mensaje de error
+        textSection.append("li $v0, 4\n");  // Código de servicio para imprimir cadena
+        textSection.append("la $a0, divError\n");  // Cargar la dirección del mensaje en $a0
+        textSection.append("syscall\n");
+        //Sale del programa
+        textSection.append("li $v0, 10\n"); // Código de servicio para salir del programa
+        textSection.append("syscall\n"); // Llamar al sistema para salir
+    }
+
     public String getCode() {
         generateExitInstruction();
+        divByZero();
         return dataSection.toString() + textSection.toString() ;
     }
 

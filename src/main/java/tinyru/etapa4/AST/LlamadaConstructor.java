@@ -97,8 +97,6 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
         cg.getTextSection().append("syscall\n"); // Llamar al sistema para asignar espacio, devuelve la dirección del heap en $v0
 
         //Creación del CIR
-        //Crea un label que devuelve la dirección del objeto
-
 
         //Guardar la dirección de la vtable en el objeto
         cg.getTextSection().append("la $t0, ").append(idStruct).append("_vt\n"); // Cargar la dirección de la vtable en $t0

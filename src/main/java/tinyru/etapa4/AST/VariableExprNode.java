@@ -232,8 +232,13 @@ public class VariableExprNode extends VarMetEncNode{
                     if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
                         cg.getTextSection().append("lw $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset() + 4).append("($fp)\n"); // Se suma 4 por el self
                     }
-                    else {  // Está en los atributos del struct //TODO: creo que esta opción no va acá
-                        //cg.getTextSection().append("lw $a0, ").append(cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset()).append("($gp)\n");
+                    else {  // Está en los atributos del struct
+                        //Accedo al CIR de self
+                        cg.getTextSection().append("lw $t0, 4($fp)\n"); // Carga el CIR de self en $t0
+                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())) {
+                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                            cg.getTextSection().append("lw $a0, ").append(offset).append("($t0)\n");  // Carga la dirección del atributo en $a0
+                        }
                     }
                 }
             }
