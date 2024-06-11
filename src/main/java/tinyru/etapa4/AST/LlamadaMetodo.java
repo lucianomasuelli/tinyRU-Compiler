@@ -122,10 +122,6 @@ public class LlamadaMetodo extends VarMetEncNode{
             }
             cg.getTextSection().append("lw $a0 4($fp)\n"); // Cargamos el CIR de self
         }
-        else{
-            cg.getTextSection().append("li $a0 0\n"); // Si el método es llamado desde start, self es null
-
-        }
 
 
         // Meto el CIR de self en el registro $t5

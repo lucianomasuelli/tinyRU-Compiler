@@ -152,7 +152,7 @@ public class VariableExprNode extends VarMetEncNode{
     @Override
     public void generateCode(CodeGenerator cg) {
         String type;
-        if(struct == null){
+        if(struct == null || struct == "start"){
             struct = "start";
             type = cg.getSt().getStart().getAttribute(token.getLexeme()).getType();
         }
