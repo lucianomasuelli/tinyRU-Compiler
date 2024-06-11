@@ -201,7 +201,19 @@ public class VariableExprNode extends VarMetEncNode{
         if(struct == "start"){ // Está en el start
             if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
                 int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
-                cg.getTextSection().append("lw $a0, -").append(offset).append("($fp)\n");
+                //TODO Checkear que funcione
+                if (arrayAccess == null){
+                    cg.getTextSection().append("lw $a0, -").append(offset).append("($fp)\n");
+                } else {
+                    arrayAccess.generateCode(cg);
+                    cg.getTextSection().append("mul $a0, $a0, 4\n");
+                    cg.getTextSection().append("add $a0, $a0, $sp\n");
+                    cg.getTextSection().append("lw $a0, 0($a0)\n");
+
+                    cg.getTextSection().append("lw $a0, -").append(offset).append("($fp)\n");
+
+                }
+
             }
         }
         else { // Está en un struct
