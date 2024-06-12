@@ -1,25 +1,19 @@
 /? Acceso a variables encadenadas
 
-struct A {
-    Int a;
-}
-
-impl A {
-    .() { a = 10;}
-}
-
 struct B {
-    A a;
+    Int b;
+
 }
 
 impl B {
-    .() { a = new A();}
+    .() {
+    	b = 10;
+    }
 }
 
 start {
     B b;
     b = new B();
-    (IO.out_int(b.a.a));
-    b.a.a = 9;
-    (IO.out_int(b.a.a));
+    (IO.out_int(b.b));
+
 }
