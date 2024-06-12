@@ -92,8 +92,8 @@ public class LiteralNode extends OperandoNode {
             }
 
             // Add the null terminator
-            cg.getTextSection().append("li $t1, \0\n");
-            cg.getTextSection().append("sb $t1, ").append(length).append("($t0)\n");
+            cg.getTextSection().append("li $t0, 0\n");
+            cg.getTextSection().append("sb $t0, ").append(length).append("($a0)\n");
 
 
         }
