@@ -8,7 +8,9 @@ impl Factorial {
         resultado = 1;
         while (n > 1) {
             resultado = resultado * n;
-            (--n);
+            (IO.out_int(resultado));
+            (IO.out_int(n));
+            n = n - 1;
         }
         ret resultado;
     }
