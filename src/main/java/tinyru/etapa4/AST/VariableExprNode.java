@@ -158,7 +158,7 @@ public class VariableExprNode extends VarMetEncNode{
 
     public void varAccess(CodeGenerator cg, String caller) {
         // Como estas variables son expresiones queremos cargar en $a0 el valor de la variable, no la dirección
-        if(caller == null) {
+        if(caller == null) { //No viene de un encadenado
             if(struct == null || struct.equals("start")){ // Está en el start
                 if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
                     int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();

@@ -1447,7 +1447,12 @@ public class Parser {
             primario = metodo;
             llamadaMetodoEncadenadoPrima(metodo);
         } else if (onFirst(actualToken, first("acceso_variable_encadenado'"))){
-            VariableExprNode var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            VariableExprNode var;
+            if (symbolTable.actualStruct != null){
+                var = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                var = new VariableExprNode(id, "start", "start");
+            }
             primario = var;
             accesoVariableEncadenadoPrima(var);
         } else if(followLlamadaMetodoEncadenado_accVarEnc.contains(actualToken.getType())){

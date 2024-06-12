@@ -99,8 +99,11 @@ public class BloqueMetodoNode extends  BloqueNode{
                 cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numLocals)).append("\n");  // Restaura el lugar ocupado por las variables locales
                 cg.getTextSection().append("lw $ra, 4($sp)\n");  // Recupera el return address
                 cg.getTextSection().append("addiu $sp, $sp, ").append(4 * (numArgs + 2)).append("\n");  // Restaura el stack pointer
-                //cg.getTextSection().append("addiu $sp, $sp, 4").append("\n");  // Restaura el stack pointer
-                cg.getTextSection().append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+
+//                cg.getTextSection().append("lw $v0, 0($sp)\n");  // Recupera el valor de $v0 (si había un CIR anterior lo recupera)
+//                cg.getTextSection().append("addiu $sp, $sp, 4\n");
+
+                cg.getTextSection().append("lw $fp, 4($sp)\n");  // Recupera el frame pointer
                 cg.getTextSection().append("jr $ra\n");  // Salta a la dirección de retorno
 
             }

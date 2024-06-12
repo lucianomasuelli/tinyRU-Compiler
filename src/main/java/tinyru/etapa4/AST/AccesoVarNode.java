@@ -82,28 +82,35 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         if(structType == null ) {
             if (encadenado != null) { //Tiene encadenado
                 // Busca la variable en los atributos del struct
-                if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
-                    type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
-                } else {
-                    if(this.metodo == "Constructor") {
-                        if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
-                            } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
-                            }
-                        }
+                if(this.struct == null){ // Está en el start
+                    if(st.getStart().fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStart().getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        throw new AttrNotFoundError(token.getLexeme(), null, token.getLine(), token.getColumn());
                     }
-                    else {
-                        if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                } else {
+                    if (st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        if (this.metodo == "Constructor") {
+                            if (st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
                             } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                if (st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
+                            }
+                        } else {
+                            if (st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
+                            } else {
+                                if (st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
                             }
                         }
                     }
@@ -215,7 +222,7 @@ public abstract class AccesoVarNode extends EncadenadoNode {
 
     public void varAccess(CodeGenerator cg, String caller) {
         //tener en cuenta que el resultado siempre se guarda en $a0
-        if (caller == null){
+        if (caller == null){ //No viene de un encadenado
             if(struct == null || struct.equals("start")){ // Está en el start
 
                 if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
@@ -231,15 +238,15 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             }
             else { // Está en un struct
                 if(metodo == "Constructor"){  // Está en el constructor
-                    // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                    // variables locales
                     if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
                         cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
                     }
-                    else {
+                    else { //parámetros
                         if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
                             cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
                         }
-                        else {
+                        else { //struct
                             if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
                                 // v0 contiene la dirección del objeto
                                 int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();

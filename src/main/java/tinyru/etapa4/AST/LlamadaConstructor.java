@@ -88,6 +88,10 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
         cg.getTextSection().append("sw $fp 0($sp)\n"); // Guardamos el valor del fp actual en stack
         cg.getTextSection().append("addiu $sp $sp -4\n"); // Decrementamos el puntero de pila
 
+        //Guarda el valor de $v0 en el stack (en caso de que se hagan llamados a constructor dentro de otro constructor)
+        cg.getTextSection().append("sw $v0, 0($sp)\n");
+        cg.getTextSection().append("addiu $sp, $sp, -4\n");
+
         // Calcular el tamaño del objeto en bytes
         int objectSize = cg.getSt().getStruct(idStruct).getAttributeTable().size() * 4 + 4;
 
@@ -108,14 +112,15 @@ public class LlamadaConstructor extends LlamadaConstructorNode{
             cg.getTextSection().append("sw $a0, ").append("0($sp)\n"); // Guardar el argumento en el stack
             cg.getTextSection().append("addiu $sp, $sp, -4\n"); // Mover el stack pointer
         }
-        cg.getTextSection().append("jal ").append(idStruct).append("_constructor\n"); // Saltar a la definición del constructor
-
-        //cg.getTextSection().append("addiu $sp, $sp, ").append(4 * args.size()).append("\n"); // Restaurar el stack pointer
-        //cg.getTextSection().append("lw $fp, 0($sp)\n");//Recupera el frame pointer
+        cg.getTextSection().append("jal ").append(idStruct).append("_constructor\n"); // Saltar a la definición del constructorr
 
         // Guarda en $a0 la dirección del objeto
         cg.getTextSection().append("move $a0, $v0\n");
 
+        // Recupera el valor de $v0 del stack
+        cg.getTextSection().append("lw $v0, 0($sp)\n");
+
+        cg.getTextSection().append("addiu $sp, $sp, 4\n");
 
     }
 }
