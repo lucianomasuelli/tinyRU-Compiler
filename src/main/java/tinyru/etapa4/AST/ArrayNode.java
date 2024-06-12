@@ -56,11 +56,10 @@ public class ArrayNode extends LlamadaConstructorNode{
         cg.getTextSection().append("lw $t1, $a0\n");
         //Multiplicación del tamaño por el tamaño de cada elemento
 
-        int bytes = switch (primitiveType) {
+        switch (primitiveType) {
             case "Int" -> {cg.getTextSection().append("mul $a0, $t1, 4\n");}
             case "Str" -> {cg.getTextSection().append("mul $a0, $t1 1025\n");}
             case "Bool","Char" -> {cg.getTextSection().append("mul $a0, $t1, 1\n");}
-            default -> 0;
         };
 
         cg.getTextSection().append("li $v0, 9\n");
