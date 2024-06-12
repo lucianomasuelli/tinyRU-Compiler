@@ -6,6 +6,8 @@ import tinyru.etapa4.AST.AbstractSyntaxTree;
 import tinyru.etapa4.AST.BloqueNode;
 import tinyru.etapa4.AST.SentenciaNode;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -222,6 +224,16 @@ public class CodeGenerator {
         textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
         textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
         textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void createASM(String filename){
+        try {
+            FileWriter myWriter = new FileWriter(filename + ".asm");
+            myWriter.write(this.getCode());
+            myWriter.close();
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+        }
     }
 
 }
