@@ -109,6 +109,8 @@ public class CodeGenerator {
     public String getCode() {
         generateExitInstruction();
 
+        generateOutBool();
+        generateOutStr();
         generateOutInt();
         divByZero();
         return dataSection.toString() + textSection.toString() ;
@@ -176,6 +178,48 @@ public class CodeGenerator {
 
         textSection.append("# Epilogo\n");
         textSection.append("_end_IO_out_int:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateOutStr(){
+        textSection.append("IO_out_str:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para imprimir la cadena que se encuentra en los argumentos (arriba del $fp y de self)
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga la dirección de la cadena a imprimir
+        textSection.append("li $v0, 4\n");  // Código de servicio para imprimir cadena
+        textSection.append("syscall\n");  // Llama al sistema para imprimir
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_out_string:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateOutBool(){
+        textSection.append("IO_out_bool:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para imprimir el booleano que se encuentra en los argumentos (arriba del $fp y de self)
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga el booleano a imprimir
+        textSection.append("li $v0, 1\n");  // Código de servicio para imprimir booleano
+        textSection.append("syscall\n");  // Llama al sistema para imprimir
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_out_bool:\n");
         textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
         textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
         textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
