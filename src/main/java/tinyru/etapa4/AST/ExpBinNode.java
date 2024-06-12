@@ -3,6 +3,7 @@ package tinyru.etapa4.AST;
 import tinyru.etapa1.Token;
 import tinyru.etapa1.TokenType;
 import tinyru.etapa3.SymbolTable;
+import tinyru.etapa4.Exceptions.BoolOpError;
 import tinyru.etapa4.Exceptions.TypesMismatchError;
 import tinyru.etapa5.CodeGenerator;
 
@@ -50,6 +51,11 @@ public class ExpBinNode extends ExpresionNode {
 
         String typeLeft = expLeft.check(st);
         String typeRigth = expRight.check(st);
+        if(op.getType() == TokenType.AND || op.getType() == TokenType.OR){
+            if(!typeLeft.equals("Bool") || !typeRigth.equals("Bool")) {
+                throw new BoolOpError(typeLeft, typeRigth, op.getLine(), op.getColumn());
+            }
+        }
         if (typeLeft.equals(typeRigth)){
             return this.type;
         }else {
@@ -77,16 +83,16 @@ public class ExpBinNode extends ExpresionNode {
         expRight.generateCode(cg);
         cg.getTextSection().append("lw $t1, 4($sp)\n");
         switch(op.getType()) {
-            case SUM -> cg.getTextSection().append("add $a0, $a0, $t1\n");
-            case RESTA -> cg.getTextSection().append("sub $a0, $a0, $t1\n");
-            case PROD -> cg.getTextSection().append("mul $a0, $a0, $t1\n");
+            case SUM -> cg.getTextSection().append("add $a0, $t1, $a0\n");
+            case RESTA -> cg.getTextSection().append("sub $a0, $t1, $a0\n");
+            case PROD -> cg.getTextSection().append("mul $a0, $t1, $a0\n");
             case DIV -> {
                 cg.getTextSection().append("beqz $a0 , divByZero\n");
                 cg.getTextSection().append("div $t1, $a0\n").append("mflo $a0\n");
             }
             case MOD ->cg.getTextSection().append("div $t1, $a0\n").append("mfhi $a0\n");
             case IGUAL -> cg.getTextSection().append("seq $a0, $a0, $t1\n");
-            case DIF -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("not $a0, $a0\n");
+            case DIF -> cg.getTextSection().append("seq $a0, $a0, $t1\n").append("xori $a0, $a0, 1\n");
             case AND -> cg.getTextSection().append("and $a0, $a0, $t1\n");
             case OR -> cg.getTextSection().append("or $a0, $a0, $t1\n");
             case MAYOR -> cg.getTextSection().append("slt $a0, $a0, $t1\n");
