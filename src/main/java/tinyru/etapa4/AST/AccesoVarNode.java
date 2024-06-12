@@ -79,31 +79,40 @@ public abstract class AccesoVarNode extends EncadenadoNode {
     @Override
     public String check(String structType, SymbolTable st) {
         String type = null;
-        if(structType == null) {
+        if(structType == null ) {
             if (encadenado != null) { //Tiene encadenado
                 // Busca la variable en los atributos del struct
-                if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
-                    type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
-                } else {
-                    if(this.metodo == "Constructor") {
-                        if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
+                if(this.struct == null){ // Está en el start
+                    if(st.getStart().fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStart().getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        throw new AttrNotFoundError(token.getLexeme(), null, token.getLine(), token.getColumn());
+                    }
+                }
+                else{
+                    if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
+                        type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
+                    } else {
+                        if(this.metodo == "Constructor") {
+                            if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
                             } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
                             }
                         }
-                    }
-                    else {
-                        if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                            type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
-                        } else {
-                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                        else {
+                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
                             } else {
-                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                                    type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
+                                } else {
+                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
+                                }
                             }
                         }
                     }
@@ -193,19 +202,24 @@ public abstract class AccesoVarNode extends EncadenadoNode {
     }
 
     @Override
-    public void generateCode(CodeGenerator cg) {
-        String type;
+    public void generateCode(CodeGenerator cg){
+
+    }
+
+    @Override
+    public void generateCode(CodeGenerator cg, String caller) {
         if(encadenado != null){
-            encadenado.generateCode(cg);
+            varAccess(cg, caller);
+            encadenado.generateCode(cg, token.getLexeme());
         }
         else {
-            varAccess(cg);
+            varAccess(cg, null);
         }
     }
 
-    public void varAccess(CodeGenerator cg) {
+    public void varAccess(CodeGenerator cg, String caller) {
         //tener en cuenta que el resultado siempre se guarda en $a0
-        if(struct == null){ // Está en el start
+        if(struct == null || struct.equals("start")){ // Está en el start
             if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
                 int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
                 cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
@@ -232,7 +246,8 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             }
             else {  // Está en un método
                 MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
-                if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
+                if(actualMethod.fetchLocalVar(token.getLexeme())){
+                    // Está en las variables locales
                     cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
                 }
                 else {

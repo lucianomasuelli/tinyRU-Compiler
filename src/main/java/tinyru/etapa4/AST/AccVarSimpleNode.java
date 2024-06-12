@@ -27,4 +27,5 @@ public class AccVarSimpleNode extends AccesoVarNode {
         return json;
     }
 
+
 }

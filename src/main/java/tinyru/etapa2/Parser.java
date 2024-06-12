@@ -1144,7 +1144,12 @@ public class Parser {
     // ⟨Encadenado-Simple⟩ ::= . id
     private AccesoVarNode encadenadoSimple(){
         match(TokenType.DOT);
-        AccesoVarNode var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
+        AccVarSimpleNode var;
+        if(symbolTable.actualStruct != null){
+            var = new AccVarSimpleNode(actualToken, symbolTable.actualStruct.getName());
+        } else {
+            var = new AccVarSimpleNode(actualToken, "start");
+        }
         match(TokenType.ID);
         return var;
     }
@@ -1446,7 +1451,11 @@ public class Parser {
             primario = var;
             accesoVariableEncadenadoPrima(var);
         } else if(followLlamadaMetodoEncadenado_accVarEnc.contains(actualToken.getType())){
-            primario = new VariableExprNode(id, symbolTable.actualStruct.getName(),symbolTable.actualMethod.getName());
+            if(symbolTable.actualStruct != null){
+                primario = new VariableExprNode(id, symbolTable.actualStruct.getName(), symbolTable.actualMethod.getName());
+            } else {
+                primario = new VariableExprNode(id, "start", "start");
+            }
         } else {
             throw new UnexpectedTokenError(actualToken.getLexeme(), actualToken.getLine(), actualToken.getColumn());
         }

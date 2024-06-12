@@ -73,7 +73,7 @@ public class AbstractSyntaxTree{
 
     public void generateCode(CodeGenerator cg){
         for (BloqueNode node : children) {
-            if(!node.getSentencias().isEmpty()){
+            if(!node.getSentencias().isEmpty() || node.getMethodName().equals("constructor")){
                 node.generateCode(cg);
             }
         }

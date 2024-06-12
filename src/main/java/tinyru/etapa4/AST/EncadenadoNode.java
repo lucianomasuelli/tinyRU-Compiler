@@ -13,4 +13,6 @@ public abstract class EncadenadoNode{
 
     public abstract void generateCode(CodeGenerator cg);
 
+    public abstract void generateCode(CodeGenerator cg, String caller);
+
 }
