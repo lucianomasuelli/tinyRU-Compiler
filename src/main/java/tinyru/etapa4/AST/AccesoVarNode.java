@@ -214,6 +214,11 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             encadenado.generateCode(cg, type);
         }
         else {
+            if (this.getIndex()!=null){
+                arrayAccess(cg);
+            }else{
+                varAccess(cg);
+            }
             varAccess(cg, caller);
         }
     }
@@ -282,6 +287,62 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         }
     }
 
+    public void arrayAccess(CodeGenerator cg){
+        //tener en cuenta que el resultado siempre se guarda en $a0
+        if(struct == null){ // Está en el start
+            if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
+                index.generateCode(cg);
+                //Mover a t1 el tamaño del arreglo
+                cg.getTextSection().append("lw $t1, $a0");
+                int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
+                cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
+                //Acceder al arreglo en la posición de $t1
+                cg.getTextSection().append("mul $t1, $t1, 4\n");
+                cg.getTextSection().append("add $a0, $a0, $t1\n");
+
+            }
+        }
+        else { // Está en un struct
+            if(metodo == "Constructor"){  // Está en el constructor
+                // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                    cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                }
+                else {
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                        cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
+                            // v0 contiene la dirección del objeto
+                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                            cg.getTextSection().append("la $a0, ").append(offset).append("($v0)\n");  // Carga la dirección del atributo en $a0
+                        }
+                    }
+                }
+            }
+            else {  // Está en un método
+                //Está en un metodo
+                MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
+                if(actualMethod.fetchLocalVar(token.getLexeme())){  // Está en las variables locales
+                    cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                }
+                else {
+                    if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
+                        cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset() +4).append("($fp)\n");
+                    }
+                    else {  // Está en los atributos del struct
+                        //Accedo al CIR de self
+                        cg.getTextSection().append("lw $t0, 4($fp)\n"); // Carga el CIR de self en $t0
+                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
+                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                            cg.getTextSection().append("la $a0, ").append(offset).append("($t0)\n");  // Carga la dirección del atributo en $a0
+                        }
+                    }
+                }
+            }
+    }
+    }
     public String getVarType(CodeGenerator cg, String caller){
         String type;
         if(caller == null) {
