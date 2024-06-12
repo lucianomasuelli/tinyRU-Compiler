@@ -16,7 +16,7 @@ public class ASTTest {
     void analyze() {
         try {
             AbstractSyntaxTree ast;
-            Lexer lexer = new Lexer("src/test/resources/etapa4/test1.ru");
+            Lexer lexer = new Lexer("src/test/resources/etapa5/test.ru");
             Parser parser = new Parser(lexer);
             ast = parser.analyze();
             SymbolTable table = parser.getSymbolTable();
@@ -26,6 +26,7 @@ public class ASTTest {
             //System.out.println(jsonGenerator.jasonifyAST(ast,table));
             CodeGenerator codeGenerator = new CodeGenerator(table);
             ast.generateCode(codeGenerator);
+            codeGenerator.createASM("test");
             System.out.println(codeGenerator.getCode());
 
         } catch (IOException | RuntimeException e) {

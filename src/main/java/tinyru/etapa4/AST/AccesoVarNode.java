@@ -203,70 +203,135 @@ public abstract class AccesoVarNode extends EncadenadoNode {
 
     @Override
     public void generateCode(CodeGenerator cg){
-
+        generateCode(cg, null);
     }
 
     @Override
     public void generateCode(CodeGenerator cg, String caller) {
+        String type = getVarType(cg, caller);
         if(encadenado != null){
             varAccess(cg, caller);
-            encadenado.generateCode(cg, token.getLexeme());
+            encadenado.generateCode(cg, type);
         }
         else {
-            varAccess(cg, null);
+            varAccess(cg, caller);
         }
     }
 
     public void varAccess(CodeGenerator cg, String caller) {
         //tener en cuenta que el resultado siempre se guarda en $a0
-        if(struct == null || struct.equals("start")){ // Está en el start
-            if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
-                int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
-                cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
-            }
-        }
-        else { // Está en un struct
-            if(metodo == "Constructor"){  // Está en el constructor
-                // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
-                if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
-                    cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
-                }
-                else {
-                    if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
-                        cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+        if (caller == null){
+            if(struct == null || struct.equals("start")){ // Está en el start
+
+                if(cg.getSt().getStart().fetchAttribute(token.getLexeme())){
+                    int offset = cg.getSt().getStart().getAttribute(token.getLexeme()).getOffset();
+                    if(encadenado == null){
+                        cg.getTextSection().append("la $a0, -").append(offset).append("($fp)\n");
                     }
                     else {
-                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
-                            // v0 contiene la dirección del objeto
-                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
-                            cg.getTextSection().append("la $a0, ").append(offset).append("($v0)\n");  // Carga la dirección del atributo en $a0
+                        cg.getTextSection().append("lw $a0, -").append(offset).append("($fp)\n");
+                    }
+
+                }
+            }
+            else { // Está en un struct
+                if(metodo == "Constructor"){  // Está en el constructor
+                    // Reviso primero en las variables del constructor, luego los parametros y finalmente en el struct
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                        cg.getTextSection().append("la $a0, -").append(cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                            cg.getTextSection().append("la $a0, ").append(cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getOffset()).append("($fp)\n");
+                        }
+                        else {
+                            if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
+                                // v0 contiene la dirección del objeto
+                                int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                                cg.getTextSection().append("la $a0, ").append(offset).append("($v0)\n");  // Carga la dirección del atributo en $a0
+                            }
+                        }
+                    }
+                }
+                else {  // Está en un método
+                    MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
+                    if(actualMethod.fetchLocalVar(token.getLexeme())){
+                        // Está en las variables locales
+                        cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
+                    }
+                    else {
+                        if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
+                            cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset() +4).append("($fp)\n");
+                        }
+                        else {  // Está en los atributos del struct
+                            //Accedo al CIR de self
+                            cg.getTextSection().append("lw $t0, 4($fp)\n"); // Carga el CIR de self en $t0
+                            if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
+                                int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
+                                cg.getTextSection().append("la $a0, ").append(offset).append("($t0)\n");  // Carga la dirección del atributo en $a0
+                            }
                         }
                     }
                 }
             }
-            else {  // Está en un método
-                MethodInput actualMethod = cg.getSt().getStruct(struct).getMethod(metodo);
-                if(actualMethod.fetchLocalVar(token.getLexeme())){
-                    // Está en las variables locales
-                    cg.getTextSection().append("la $a0, -").append(actualMethod.getLocalVar(token.getLexeme()).getOffset()).append("($fp)\n");
-                }
-                else {
-                    if(actualMethod.fetchParameter(token.getLexeme())){  // Está en los parámetros
-                        cg.getTextSection().append("la $a0, ").append(actualMethod.getParameter(token.getLexeme()).getOffset() +4).append("($fp)\n");
-                    }
-                    else {  // Está en los atributos del struct
-                        //Accedo al CIR de self
-                        cg.getTextSection().append("lw $t0, 4($fp)\n"); // Carga el CIR de self en $t0
-                        if(cg.getSt().getStruct(struct).fetchAttribute(token.getLexeme())){
-                            int offset = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getOffset();
-                            cg.getTextSection().append("la $a0, ").append(offset).append("($t0)\n");  // Carga la dirección del atributo en $a0
-                        }
-                    }
-                }
+        }else {
+            if(cg.getSt().getStruct(caller).fetchAttribute(token.getLexeme())){
+                int offset = cg.getSt().getStruct(caller).getAttribute(token.getLexeme()).getOffset();
+                cg.getTextSection().append("la $a0, ").append(offset).append("($a0)\n");
             }
         }
     }
 
+    public String getVarType(CodeGenerator cg, String caller){
+        String type;
+        if(caller == null) {
+            if(struct == null || struct == "start"){
+                struct = "start";
+                type = cg.getSt().getStart().getAttribute(token.getLexeme()).getType();
+            }
+            else {
+                if(metodo == "Constructor"){
+                    //Busca el tipo en las variables locales del constructor, luego los parametros y finalmente en el struct
+                    if(cg.getSt().getStruct(struct).getConstructor().fetchLocalVar(token.getLexeme())){
+                        type = cg.getSt().getStruct(struct).getConstructor().getLocalVar(token.getLexeme()).getType();
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).getConstructor().fetchParameter(token.getLexeme())){
+                            type = cg.getSt().getStruct(struct).getConstructor().getParameter(token.getLexeme()).getType();
+                        }
+                        else {
+                            type = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getType();
+                        }
+                    }
+                }
+                else {
+                    //Busca el tipo en las variables locales del método, luego los parametros y finalmente en el struct
+                    if(cg.getSt().getStruct(struct).getMethod(metodo).fetchLocalVar(token.getLexeme())){
+                        type = cg.getSt().getStruct(struct).getMethod(metodo).getLocalVar(token.getLexeme()).getType();
+                    }
+                    else {
+                        if(cg.getSt().getStruct(struct).getMethod(metodo).fetchParameter(token.getLexeme())){
+                            type = cg.getSt().getStruct(struct).getMethod(metodo).getParameter(token.getLexeme()).getType();
+                        }
+                        else {
+                            type = cg.getSt().getStruct(struct).getAttribute(token.getLexeme()).getType();
+                        }
+                    }
+                }
+
+            }
+        }
+        else{
+            if(cg.getSt().getStruct(caller).fetchAttribute(token.getLexeme())){
+                type = cg.getSt().getStruct(caller).getAttribute(token.getLexeme()).getType();
+            }
+            else {
+                type = cg.getSt().getStruct(caller).getMethod(metodo).getLocalVar(token.getLexeme()).getType();
+            }
+        }
+
+        return type;
+    }
 
     @Override
     public String jsonify() {
