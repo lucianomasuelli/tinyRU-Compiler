@@ -85,15 +85,15 @@ public class LiteralNode extends OperandoNode {
             cg.getTextSection().append("move $a0, $v0\n"); // Store the address of the allocated memory in $t0
 
             // Copy the string to the allocated memory
-            for (int i = 1; i < length; i++) { // Start from 1 to skip the opening quote and end at length to skip the closing quote
+            for (int i = 0; i < length; i++) { // Start from 1 to skip the opening quote and end at length to skip the closing quote
                 char c = lexeme.charAt(i);
                 cg.getTextSection().append("li $t0, ").append((int) c).append("\n");
-                cg.getTextSection().append("sb $t0, ").append(i - 1).append("($a0)\n");
+                cg.getTextSection().append("sb $t0, ").append(i).append("($a0)\n");
             }
 
             // Add the null terminator
-            cg.getTextSection().append("li $t1, \0\n");
-            cg.getTextSection().append("sb $t1, ").append(length).append("($t0)\n");
+            cg.getTextSection().append("li $t0, 0\n");
+            cg.getTextSection().append("sb $t0, ").append(length).append("($a0)\n");
 
 
         }
