@@ -10,7 +10,7 @@ impl Fibonacci {
                 (imprimo_numero(i));
                 (imprimo_sucesion(suma));
             }
-            else{
+            else
                 if(i==1){
                     (imprimo_numero(i));
                     suma=suma+i;
@@ -22,7 +22,7 @@ impl Fibonacci {
                     j=suma;
                     (imprimo_sucesion(suma));
                 }
-                (++i);
+                i = i+1;
             }
             ret suma;
         }
@@ -32,22 +32,20 @@ impl Fibonacci {
             suma=0; /? inicializo suma
             }
         fn imprimo_numero(Int num) -> void{
-            (IO.out_str("f_"));
+            /? (IO.out_str("f_"));
             (IO.out_int(num));
-            (IO.out_str("="));
+            /? (IO.out_str("="));
         }
         fn imprimo_sucesion(Int s) -> void{
             /?El valor es:
             (IO.out_int(s));
-            (IO.out_str("\n"));
+            /? (IO.out_str("\n"));
         }
     }
-}
-
 start{
     Fibonacci fib;
     Int n;
     fib = new Fibonacci();
-    n = IO.in_int();
+    n = 10;
     (IO.out_int(fib.sucesion_fib(n)));
 }

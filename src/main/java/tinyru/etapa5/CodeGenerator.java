@@ -112,6 +112,18 @@ public class CodeGenerator {
         generateOutBool();
         generateOutStr();
         generateOutInt();
+        generateOutChar();
+        generateInInt();
+        generateInStr();
+        generateInBool();
+        generateInChar();
+        generateOutArrayInt();
+        generateOutArrayChar();
+        generateOutArrayStr();
+        generateOutArrayBool();
+        generateStrConcat();
+        generateStrLength();
+        generateArrayLength();
         divByZero();
         return dataSection.toString() + textSection.toString() ;
     }
@@ -225,6 +237,205 @@ public class CodeGenerator {
         textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
         textSection.append("jr $ra\n");  // Salta a la dirección de retorno
     }
+
+    public void generateOutChar(){
+        textSection.append("IO_out_char:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para imprimir el char que se encuentra en los argumentos (arriba del $fp y de self)
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga el char a imprimir
+        textSection.append("li $v0, 11\n");  // Código de servicio para imprimir char
+        textSection.append("syscall\n");  // Llama al sistema para imprimir
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_out_char:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+
+    }
+
+    public void generateInInt(){
+        textSection.append("IO_in_int:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para leer un entero
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("li $v0, 5\n");  // Código de servicio para leer entero
+        textSection.append("syscall\n");  // Llama al sistema para leer
+        textSection.append("move $t0, $v0\n");  // Guarda el entero leído en un registro temporal
+        textSection.append("sw $t0, 8($fp)\n");  // Guarda el entero leído en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_in_int:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateInStr(){
+        textSection.append("IO_in_str:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para leer una cadena
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("li $v0, 8\n");  // Código de servicio para leer cadena
+        textSection.append("la $a0, 8($fp)\n");  // Carga la dirección de la cadena a leer
+        textSection.append("li $a1, 256\n");  // Carga la longitud máxima de la cadena
+        textSection.append("syscall\n");  // Llama al sistema para leer
+        textSection.append("move $t0, $a0\n");  // Guarda la dirección de la cadena leída en un registro temporal
+        textSection.append("sw $t0, 8($fp)\n");  // Guarda la dirección de la cadena leída en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_in_str:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateInBool(){
+        textSection.append("IO_in_bool:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para leer un booleano
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("li $v0, 5\n");  // Código de servicio para leer entero
+        textSection.append("syscall\n");  // Llama al sistema para leer
+        textSection.append("move $t0, $v0\n");  // Guarda el entero leído en un registro temporal
+        textSection.append("sw $t0, 8($fp)\n");  // Guarda el entero leído en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_in_bool:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateInChar(){
+        textSection.append("IO_in_char:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para leer un char
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("li $v0, 12\n");  // Código de servicio para leer char
+        textSection.append("syscall\n");  // Llama al sistema para leer
+        textSection.append("move $t0, $v0\n");  // Guarda el char leído en un registro temporal
+        textSection.append("sw $t0, 8($fp)\n");  // Guarda el char leído en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_IO_in_char:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateOutArrayInt(){
+        textSection.append("IO_out_array_int:\n");
+    }
+
+    public void generateOutArrayChar(){
+        textSection.append("IO_out_array_char:\n");
+    }
+
+    public void generateOutArrayStr(){
+        textSection.append("IO_out_array_str:\n");
+    }
+
+    public void generateOutArrayBool(){
+        textSection.append("IO_out_array_bool:\n");
+    }
+
+    public void generateStrConcat(){
+        textSection.append("Str_concat:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para concatenar dos strings
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga la dirección del primer string
+        textSection.append("lw $a1, 12($fp)\n");  // Carga la dirección del segundo string
+        textSection.append("li $v0, 9\n");  // Código de servicio para concatenar strings
+        textSection.append("syscall\n");  // Llama al sistema para concatenar
+        textSection.append("move $t0, $v0\n");  // Guarda la dirección del string concatenado en un registro temporal
+        textSection.append("sw $t0, 16($fp)\n");  // Guarda la dirección del string concatenado en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_str_concat:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateStrLength(){
+        textSection.append("Str_length:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para obtener la longitud de un string
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga la dirección del string
+        textSection.append("li $v0, 10\n");  // Código de servicio para obtener la longitud de un string
+        textSection.append("syscall\n");  // Llama al sistema para obtener la longitud
+        textSection.append("move $t0, $v0\n");  // Guarda la longitud del string en un registro temporal
+        textSection.append("sw $t0, 12($fp)\n");  // Guarda la longitud del string en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_str_length:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
+    public void generateArrayLength(){
+        textSection.append("Array_length:\n");
+        textSection.append("# Prologo\n");
+        textSection.append("move $fp, $sp\n");  // Guarda el frame pointer
+        textSection.append("sw $ra, 0($sp)\n");  // Guarda el return address
+        textSection.append("addiu $sp, $sp, -4\n");  // Mueve el stack pointer
+
+        // Genera el código para obtener la longitud de un array
+        textSection.append("# Cuerpo del método\n");
+        textSection.append("lw $a0, 8($fp)\n");  // Carga la dirección del array
+        textSection.append("li $v0, 10\n");  // Código de servicio para obtener la longitud de un array
+        textSection.append("syscall\n");  // Llama al sistema para obtener la longitud
+        textSection.append("move $t0, $v0\n");  // Guarda la longitud del array en un registro temporal
+        textSection.append("sw $t0, 12($fp)\n");  // Guarda la longitud del array en la dirección correcta
+
+        textSection.append("# Epilogo\n");
+        textSection.append("_end_array_length:\n");
+        textSection.append("lw $ra, 4($sp)\n");  // Recupera el return address
+        textSection.append("addiu $sp, $sp, ").append(4 * (1 + 3)).append("\n");  // Restaura el stack pointer (z = 4*n + 8)
+        textSection.append("lw $fp, 0($sp)\n");  // Recupera el frame pointer
+        textSection.append("jr $ra\n");  // Salta a la dirección de retorno
+    }
+
 
     public void createASM(String filename){
         try {

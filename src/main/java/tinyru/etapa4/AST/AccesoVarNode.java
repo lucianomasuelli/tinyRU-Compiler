@@ -82,37 +82,28 @@ public abstract class AccesoVarNode extends EncadenadoNode {
         if(structType == null ) {
             if (encadenado != null) { //Tiene encadenado
                 // Busca la variable en los atributos del struct
-                if(this.struct == null){ // Está en el start
-                    if(st.getStart().fetchAttribute(token.getLexeme())) {
-                        type = encadenado.check(st.getStart().getAttribute(token.getLexeme()).getType(), st);
-                    } else {
-                        throw new AttrNotFoundError(token.getLexeme(), null, token.getLine(), token.getColumn());
-                    }
-                }
-                else{
-                    if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
-                        type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
-                    } else {
-                        if(this.metodo == "Constructor") {
-                            if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
+                if(st.getStruct(this.struct).fetchAttribute(token.getLexeme())) {
+                    type = encadenado.check(st.getStruct(this.struct).getAttribute(token.getLexeme()).getType(), st);
+                } else {
+                    if(this.metodo == "Constructor") {
+                        if(st.getStruct(this.struct).getConstructor().fetchLocalVar(token.getLexeme())) {
+                            type = encadenado.check(st.getStruct(this.struct).getConstructor().getLocalVar(token.getLexeme()).getType(), st);
+                        } else {
+                            if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
                             } else {
-                                if(st.getStruct(this.struct).getConstructor().fetchParameter(token.getLexeme())) {
-                                    type = encadenado.check(st.getStruct(this.struct).getConstructor().getParameter(token.getLexeme()).getType(), st);
-                                } else {
-                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
-                                }
+                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
                             }
                         }
-                        else {
-                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
-                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
+                    }
+                    else {
+                        if(st.getStruct(this.struct).getMethod(this.metodo).fetchLocalVar(token.getLexeme())) {
+                            type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getLocalVar(token.getLexeme()).getType(), st);
+                        } else {
+                            if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
+                                type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
                             } else {
-                                if(st.getStruct(this.struct).getMethod(this.metodo).fetchParameter(token.getLexeme())) {
-                                    type = encadenado.check(st.getStruct(this.struct).getMethod(this.metodo).getParameter(token.getLexeme()).getType(), st);
-                                } else {
-                                    throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
-                                }
+                                throw new AttrNotFoundError(token.getLexeme(), this.struct, token.getLine(), token.getColumn());
                             }
                         }
                     }
@@ -217,9 +208,8 @@ public abstract class AccesoVarNode extends EncadenadoNode {
             if (this.getIndex()!=null){
                 arrayAccess(cg);
             }else{
-                varAccess(cg);
+                varAccess(cg, caller);
             }
-            varAccess(cg, caller);
         }
     }
 
